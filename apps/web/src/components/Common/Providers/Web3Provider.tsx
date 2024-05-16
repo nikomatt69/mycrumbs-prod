@@ -45,6 +45,7 @@ const wagmiConfig = createConfig({
   autoConnect: true,
   connectors,
   publicClient
+  
 });
 
 interface Web3ProviderProps {

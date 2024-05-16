@@ -253,9 +253,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
     if (walletClient) {
       setIsPermit2Loading(true);
       try {
-        if (handleWrongNetwork()) {
-          return;
-        }
+        await handleWrongNetwork();
         const hash = await walletClient.writeContract({
           abi: parseAbi(['function approve(address, uint256) returns (bool)']),
           address: assetAddress as `0x${string}`,
@@ -290,9 +288,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
           chainId: actionData.uiData.dstChainId,
           data: actionData.actArguments.actionModuleData
         });
-        if (handleWrongNetwork()) {
-          return;
-        }
+        await handleWrongNetwork();
         const permit2Signature = await signPermitSignature(
           walletClient,
           signatureAmount,
@@ -352,7 +348,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
               setShowCurrencySelector(false);
             }}
           >
-            <ChevronLeftIcon className="mt-0.5 h-4 w-4 stroke-black" />
+            <ChevronLeftIcon className="mt-0.5 size-4 stroke-black" />
           </button>
         ) : isModalCollapsed ? (
           <button
@@ -361,7 +357,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
               setIsModalCollapsed(false);
             }}
           >
-            <ChevronLeftIcon className="mt-0.5 h-4 w-4 stroke-black" />
+            <ChevronLeftIcon className="mt-0.5 size-4 stroke-black" />
           </button>
         ) : null
       }
@@ -473,17 +469,17 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
             </div>
             <div className="ld-text-gray-500 flex items-center justify-between text-base">
               <div className="flex items-center gap-2">
-                <Squares2X2Icon className="h-5 w-5" />
+                <Squares2X2Icon className="size-5" />
                 <p>{formattedNftSchema}</p>
               </div>
               {nft.mintCount && (
                 <div className="flex items-center gap-2">
-                  <UserIcon className="h-5 w-5" />
+                  <UserIcon className="size-5" />
                   <p>{nft.mintCount} minted</p>
                 </div>
               )}
               <div className="flex items-center gap-2">
-                <ArrowTopRightOnSquareIcon className="h-5 w-5" />
+                <ArrowTopRightOnSquareIcon className="size-5" />
                 <Link
                   href={nft.mintUrl || nft.sourceUrl}
                   rel="noreferrer noopener"
@@ -497,7 +493,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
               <div className="ld-text-gray-500 flex items-center justify-start gap-1 text-base">
                 <img
                   alt={nftChainInfo?.name || 'NFT Chain'}
-                  className="h-4 w-4 rounded-full"
+                  className="size-4 rounded-full"
                   src={nftChainInfo?.logo}
                 />
                 <p>{nftChainInfo?.name}</p>
@@ -509,24 +505,24 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
               <p className="ld-text-gray-500">Quantity</p>
               <div className="flex items-center gap-4">
                 <button
-                  className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 disabled:opacity-50"
+                  className="flex size-6 items-center justify-center rounded-full bg-gray-200 disabled:opacity-50"
                   disabled={selectedQuantity === 1}
                   onClick={(e) => {
                     stopEventPropagation(e);
                     setSelectedQuantity(selectedQuantity - 1);
                   }}
                 >
-                  <MinusIcon className="h-3 w-3 text-gray-600" strokeWidth={3} />
+                  <MinusIcon className="size-3 text-gray-600" strokeWidth={3} />
                 </button>
-                <span className="h-6 w-6 text-center">{selectedQuantity}</span>
+                <span className="size-6 text-center">{selectedQuantity}</span>
                 <button
-                  className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 disabled:opacity-40"
+                  className="flex size-6 items-center justify-center rounded-full bg-gray-200 disabled:opacity-40"
                   onClick={(e) => {
                     stopEventPropagation(e);
                     setSelectedQuantity(selectedQuantity + 1);
                   }}
                 >
-                  <PlusIcon className="h-3 w-3 text-gray-600" strokeWidth={3} />
+                  <PlusIcon className="size-3 text-gray-600" strokeWidth={3} />
                 </button>
               </div>
             </div>
@@ -591,7 +587,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
                   asset: {
                     contract: {
                       address: selectedNftOaCurrency,
-                      chainId: CHAIN_ID
+                      chainId: CHAIN.id
                     },
                     decimals: getTokenDetails(selectedNftOaCurrency).decimals,
                     name: getTokenDetails(selectedNftOaCurrency).name,
@@ -612,7 +608,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
                 }}
               >
                 Select another token{' '}
-                <ChevronRightIcon className="h-2 w-2 stroke-black" />
+                <ChevronRightIcon className="size-2 stroke-black" />
               </button>
             </div>
           </div>

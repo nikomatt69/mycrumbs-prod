@@ -8022,7 +8022,7 @@
   dependencies:
     "@noble/hashes" "1.4.0"
 
-"@noble/ed25519@1.7.3", "@noble/ed25519@^1.6.1", "@noble/ed25519@^1.7.1", "@noble/ed25519@^1.7.3":
+"@noble/ed25519@1.7.3", "@noble/ed25519@^1.6.1", "@noble/ed25519@^1.7.1":
   version "1.7.3"
   resolved "https://registry.yarnpkg.com/@noble/ed25519/-/ed25519-1.7.3.tgz#57e1677bf6885354b466c38e2b620c62f45a7123"
   integrity sha512-iR8GBkDt0Q3GyaVcIu7mSsVIqnFbkbRzGLWlvhwunacoLwt4J3swfKhfaM6rN6WY+TBGoYT1GtT1mIh2/jGbRQ==
@@ -13877,7 +13877,30 @@
     lodash.isequal "4.5.0"
     uint8arrays "^3.1.0"
 
-"@walletconnect/core@^2.10.1", "@walletconnect/core@^2.10.2", "@walletconnect/core@^2.10.5":
+"@walletconnect/core@2.12.2":
+  version "2.12.2"
+  resolved "https://registry.yarnpkg.com/@walletconnect/core/-/core-2.12.2.tgz#12bd568b90daed876e58ebcc098c12843a3321e6"
+  integrity sha512-7Adv/b3pp9F42BkvReaaM4KS8NEvlkS7AMtwO3uF/o6aRMKtcfTJq9/jgWdKJh4RP8pPRTRFjCw6XQ/RZtT4aQ==
+  dependencies:
+    "@walletconnect/heartbeat" "1.2.1"
+    "@walletconnect/jsonrpc-provider" "1.0.13"
+    "@walletconnect/jsonrpc-types" "1.0.3"
+    "@walletconnect/jsonrpc-utils" "1.0.8"
+    "@walletconnect/jsonrpc-ws-connection" "1.0.14"
+    "@walletconnect/keyvaluestorage" "^1.1.1"
+    "@walletconnect/logger" "^2.1.2"
+    "@walletconnect/relay-api" "^1.0.9"
+    "@walletconnect/relay-auth" "^1.0.4"
+    "@walletconnect/safe-json" "^1.0.2"
+    "@walletconnect/time" "^1.0.2"
+    "@walletconnect/types" "2.12.2"
+    "@walletconnect/utils" "2.12.2"
+    events "^3.3.0"
+    isomorphic-unfetch "3.1.0"
+    lodash.isequal "4.5.0"
+    uint8arrays "^3.1.0"
+
+"@walletconnect/core@^2.10.1":
   version "2.10.6"
   resolved "https://registry.yarnpkg.com/@walletconnect/core/-/core-2.10.6.tgz#786b0d2e2045c210c917e29bfa0498bbc210be20"
   integrity sha512-Z4vh4ZdfcoQjgPEOxeuF9HUZCVLtV3MgRbS/awLIj/omDrFnOwlBhxi5Syr4Y8muVGC0ocRetQYHae0/gX5crQ==
@@ -13920,10 +13943,10 @@
     bs58 "5.0.0"
     multiformats "9.9.0"
 
-"@walletconnect/did-jwt@2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@walletconnect/did-jwt/-/did-jwt-2.0.3.tgz#f775ec30566c78918267b5e03ac8601fed0f8f82"
-  integrity sha512-maWNR0uzbzqsN0Fknorq/be5NXIAg0e32ILLl5EQE48WhAxK7bTzwqceI2Biq0cgI9knr3G2A9CGBJ9mUPa4kA==
+"@walletconnect/did-jwt@2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@walletconnect/did-jwt/-/did-jwt-2.1.0.tgz#a5a3f2feb652bd3c4c98aee25b88f071309c3964"
+  integrity sha512-4K1uZpiFS/wk4zSbB2PWGdQPtVnM3DQokyAVLJSHDg+91vF47qG0jdlr2WRTgXasXcZbRhVRHWLdhWbzznt1dA==
   dependencies:
     "@noble/ed25519" "1.7.3"
     bs58 "5.0.0"
@@ -13994,15 +14017,17 @@
     "@walletconnect/time" "^1.0.2"
     tslib "1.14.1"
 
-"@walletconnect/identity-keys@^0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@walletconnect/identity-keys/-/identity-keys-0.2.3.tgz#c8699613759d5940fe8c0506243e85e1f3a10589"
-  integrity sha512-mu80J+FEiL24TEVuEO6vw1Tjs1sEMyHhui53W2VPaJMmlSa6wUSVLXTsONYZnW70uwlUo9D4R8VureWsZ6sBcg==
+"@walletconnect/identity-keys@2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@walletconnect/identity-keys/-/identity-keys-2.1.0.tgz#a4673f12b16879f0a4d3f9fea874ead09bac3cb3"
+  integrity sha512-cBW0afKS+JCBLypfmuSuODrhTinKveeKL2FRIkHfBDS12zaqONS4HR+EZAFNo9gXA0P2yei8BG2r581VbTwHJw==
   dependencies:
+    "@ethersproject/hash" "^5.7.0"
+    "@ethersproject/transactions" "^5.7.0"
     "@noble/ed25519" "^1.7.1"
     "@walletconnect/cacao" "1.0.2"
     "@walletconnect/core" "^2.10.1"
-    "@walletconnect/did-jwt" "2.0.3"
+    "@walletconnect/did-jwt" "2.1.0"
     "@walletconnect/types" "^2.10.1"
     "@walletconnect/utils" "^2.10.1"
     axios "^1.3.5"
@@ -14139,6 +14164,14 @@
     pino "7.11.0"
     tslib "1.14.1"
 
+"@walletconnect/logger@^2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@walletconnect/logger/-/logger-2.1.2.tgz#813c9af61b96323a99f16c10089bfeb525e2a272"
+  integrity sha512-aAb28I3S6pYXZHQm5ESB+V6rDqIYfsnHaQyzFbwUUBFY4H0OXx/YtTl8lvhUNhMMfb9UxbwEBS253TlXUYJWSw==
+  dependencies:
+    "@walletconnect/safe-json" "^1.0.2"
+    pino "7.11.0"
+
 "@walletconnect/modal-core@2.6.2":
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/@walletconnect/modal-core/-/modal-core-2.6.2.tgz#d73e45d96668764e0c8668ea07a45bb8b81119e9"
@@ -14164,21 +14197,21 @@
     "@walletconnect/modal-core" "2.6.2"
     "@walletconnect/modal-ui" "2.6.2"
 
-"@walletconnect/notify-client@^0.14.6":
-  version "0.14.6"
-  resolved "https://registry.yarnpkg.com/@walletconnect/notify-client/-/notify-client-0.14.6.tgz#fa72f6e1caf8400081b5583b96fc9d4c7b0bbbd4"
-  integrity sha512-z3KtZu0DYITp5o9wtCpkdKbb7m8AZwY69HeJCtqwifIEpA9eLACYjetN3g3of2DGSSpiw8L4BuVOuHW4E3bNsA==
+"@walletconnect/notify-client@1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@walletconnect/notify-client/-/notify-client-1.4.1.tgz#a79da37b0af519239f110b6787f12d5913ed16d4"
+  integrity sha512-+1ZwPjaleDYJpoeqAGsBRPv385D+RyXvIbt+0pMiezZDxg2zGfMOu4FBA1VkQmQFQqjzzImTA9a1/LxtbWF4Og==
   dependencies:
-    "@noble/ed25519" "^1.7.3"
+    "@noble/ed25519" "1.7.3"
     "@walletconnect/cacao" "1.0.2"
-    "@walletconnect/core" "^2.10.5"
+    "@walletconnect/core" "2.12.2"
     "@walletconnect/did-jwt" "2.0.1"
-    "@walletconnect/identity-keys" "^0.2.3"
+    "@walletconnect/identity-keys" "2.1.0"
     "@walletconnect/jsonrpc-utils" "1.0.7"
     "@walletconnect/time" "1.0.2"
-    "@walletconnect/utils" "^2.10.5"
-    axios "^1.4.0"
-    jwt-decode "^3.1.2"
+    "@walletconnect/utils" "2.12.2"
+    axios "1.4.0"
+    jwt-decode "3.1.2"
 
 "@walletconnect/randombytes@^1.0.3":
   version "1.0.3"
@@ -14290,6 +14323,18 @@
     "@walletconnect/logger" "^2.0.1"
     events "^3.3.0"
 
+"@walletconnect/types@2.12.2":
+  version "2.12.2"
+  resolved "https://registry.yarnpkg.com/@walletconnect/types/-/types-2.12.2.tgz#8b64a2015a0a96972d28acb2ff317a9a994abfdb"
+  integrity sha512-9CmwTlPbrFTzayTL9q7xM7s3KTJkS6kYFtH2m1/fHFgALs6pIUjf1qAx1TF2E4tv7SEzLAIzU4NqgYUt2vWXTg==
+  dependencies:
+    "@walletconnect/events" "^1.0.1"
+    "@walletconnect/heartbeat" "1.2.1"
+    "@walletconnect/jsonrpc-types" "1.0.3"
+    "@walletconnect/keyvaluestorage" "^1.1.1"
+    "@walletconnect/logger" "^2.0.1"
+    events "^3.3.0"
+
 "@walletconnect/universal-provider@2.11.0":
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/@walletconnect/universal-provider/-/universal-provider-2.11.0.tgz#89053c2360b5ce766c213ca4e33bb4ce4976b0be"
@@ -14320,7 +14365,7 @@
     "@walletconnect/utils" "2.11.2"
     events "^3.3.0"
 
-"@walletconnect/utils@2.10.6", "@walletconnect/utils@^2.10.1", "@walletconnect/utils@^2.10.5":
+"@walletconnect/utils@2.10.6", "@walletconnect/utils@^2.10.1":
   version "2.10.6"
   resolved "https://registry.yarnpkg.com/@walletconnect/utils/-/utils-2.10.6.tgz#749b37d14e291e346862e7027ec7548463350226"
   integrity sha512-oRsWWhN2+hi3aiDXrQEOfysz6FHQJGXLsNQPVt+WIBJplO6Szmdau9dbleD88u1iiT4GKPqE0R9FOYvvPm1H/w==
@@ -14380,6 +14425,26 @@
     query-string "7.1.3"
     uint8arrays "^3.1.0"
 
+"@walletconnect/utils@2.12.2":
+  version "2.12.2"
+  resolved "https://registry.yarnpkg.com/@walletconnect/utils/-/utils-2.12.2.tgz#a2c349d4effef7c1c5e72e74a5483d8dfbb10918"
+  integrity sha512-zf50HeS3SfoLv1N9GPl2IXTZ9TsXfet4usVAsZmX9P6/Xzq7d/7QakjVQCHH/Wk1O9XkcsfeoZoUhRxoMJ5uJw==
+  dependencies:
+    "@stablelib/chacha20poly1305" "1.0.1"
+    "@stablelib/hkdf" "1.0.1"
+    "@stablelib/random" "^1.0.2"
+    "@stablelib/sha256" "1.0.1"
+    "@stablelib/x25519" "^1.0.3"
+    "@walletconnect/relay-api" "^1.0.9"
+    "@walletconnect/safe-json" "^1.0.2"
+    "@walletconnect/time" "^1.0.2"
+    "@walletconnect/types" "2.12.2"
+    "@walletconnect/window-getters" "^1.0.1"
+    "@walletconnect/window-metadata" "^1.0.1"
+    detect-browser "5.3.0"
+    query-string "7.1.3"
+    uint8arrays "^3.1.0"
+
 "@walletconnect/window-getters@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@walletconnect/window-getters/-/window-getters-1.0.1.tgz#f36d1c72558a7f6b87ecc4451fc8bd44f63cbbdc"
@@ -14395,14 +14460,21 @@
     "@walletconnect/window-getters" "^1.0.1"
     tslib "1.14.1"
 
-"@web3inbox/core@^0.0.25":
-  version "0.0.25"
-  resolved "https://registry.yarnpkg.com/@web3inbox/core/-/core-0.0.25.tgz#afbdca607dd0761d996fa71ee58c8a6ac92b160d"
-  integrity sha512-Jxsfv9S+88PlnHvFrWUAGRbOZ9UD+cKcY0Vsnb4kGiFDHUiIwl/W7CtrSQnDFLzyfNpG95Zr+7qtumrnFdQh6w==
+"@web3inbox/core@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@web3inbox/core/-/core-1.4.0.tgz#350dc90d0b82b3a7694360d0933bfdeb7220f017"
+  integrity sha512-DoegP0ngxyF2aW9Kp/GMdYZQHXxO/hcuq5/GdvgXh20VcazJjyDLNBQ1NmKQVjI/+ZYNLS8pSBzjbOK+EnND+A==
   dependencies:
-    "@walletconnect/core" "^2.10.2"
-    "@walletconnect/notify-client" "^0.14.6"
-    valtio "^1.11.2"
+    "@walletconnect/core" "2.12.2"
+    "@walletconnect/notify-client" "1.4.1"
+    valtio "1.11.2"
+
+"@web3inbox/react@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@web3inbox/react/-/react-1.4.0.tgz#bbfa1ff2b6ee91cf80cc6280f4e4f095608f35b3"
+  integrity sha512-UwtR6kI7aifIozzlyV1hJmRlslXbCsOn7TgZYfAlOdaEjqk7ARJm+Z/i+wJSlBkkmohLwZqPjyZLt5K7QBg7Lg==
+  dependencies:
+    react "^18.2.0"
 
 "@web3inbox/widget-react@^0.6.25":
   version "0.6.25"
@@ -14415,6 +14487,13 @@
     react-router-dom "^6.15.0"
     react-toastify "^9.1.3"
 
+"@web3modal/common@3.5.7":
+  version "3.5.7"
+  resolved "https://registry.yarnpkg.com/@web3modal/common/-/common-3.5.7.tgz#34cdf8177d9dc3bac97a67582b16fbc299a0ebbd"
+  integrity sha512-QUT9VP7GLTbJB+a8DDdLqyi97E7J/VAgFqCZrtO4rTnilI/0CaDP5WkU1sX/O5AJO5CsLfJMxUmBKxppy6kl2g==
+  dependencies:
+    dayjs "1.11.10"
+
 "@web3modal/core@3.2.1":
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/@web3modal/core/-/core-3.2.1.tgz#ffaf8530cc9ac0c38a79757a7524e1b54633a713"
@@ -14422,10 +14501,26 @@
   dependencies:
     valtio "1.11.2"
 
+"@web3modal/core@3.5.7":
+  version "3.5.7"
+  resolved "https://registry.yarnpkg.com/@web3modal/core/-/core-3.5.7.tgz#ea2babc82629656cf5958c2d8105909d5a558c2b"
+  integrity sha512-RCqhydtqZRVrOtC5E88s97cJcRNcD3euBatu0Z+TXUvuK52p9JHC7Yq2j/E7rDS4dTa0hgzqNOw3/pYScoLfiQ==
+  dependencies:
+    "@web3modal/common" "3.5.7"
+    "@web3modal/wallet" "3.5.7"
+    valtio "1.11.2"
+
 "@web3modal/polyfills@3.2.1":
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/@web3modal/polyfills/-/polyfills-3.2.1.tgz#f5d745e7809f6795ef05154bda42bfcf9ce10452"
   integrity sha512-oa+R6rxxFkjKOwjEnmWL9vQ5wCcyQFdVyekeZfcnRD2lBCEWNi6eeDCqAvZ4VJZpHRpQ5jsBFXVxjFOpDv7iAQ==
+  dependencies:
+    buffer "6.0.3"
+
+"@web3modal/polyfills@3.5.7":
+  version "3.5.7"
+  resolved "https://registry.yarnpkg.com/@web3modal/polyfills/-/polyfills-3.5.7.tgz#74ac30844bcc115f0fe02b2899d4582328e950fc"
+  integrity sha512-B0lyHcXOsJfd70HEAi+6uiCDhoIu5am76aV+0E2UrQ4mAFBhH7zJlVeLdPHZ/phfk4y9Eq9kQgwJC2dk2SMIVQ==
   dependencies:
     buffer "6.0.3"
 
@@ -14436,12 +14531,35 @@
   dependencies:
     "@web3modal/scaffold" "3.2.1"
 
+"@web3modal/scaffold-react@3.5.7":
+  version "3.5.7"
+  resolved "https://registry.yarnpkg.com/@web3modal/scaffold-react/-/scaffold-react-3.5.7.tgz#7250ceafa09df63a004e7dc6e69362cd19606585"
+  integrity sha512-t2mzqPWpxes5SkwAsXwcE+2TEXfnS3x+cc1d8VKevvz2/R9Z9Kf14RY/2hKHeKN4W3E5KFftHuAepUZleKgYVQ==
+  dependencies:
+    "@web3modal/scaffold" "3.5.7"
+
+"@web3modal/scaffold-utils@3.5.7":
+  version "3.5.7"
+  resolved "https://registry.yarnpkg.com/@web3modal/scaffold-utils/-/scaffold-utils-3.5.7.tgz#e3ac46563d613275f1675680126628b83881e618"
+  integrity sha512-pRa47Ev1VPAqOhkH3H1N+NkziCuTB6iJ2I7tbEe/zKSdSN6CuNeYEwhcwukagGk1yV00He4MsLhIDz54tAs3Fg==
+  dependencies:
+    "@web3modal/polyfills" "3.5.7"
+    "@web3modal/scaffold" "3.5.7"
+    valtio "1.11.2"
+
 "@web3modal/scaffold-vue@3.2.1":
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/@web3modal/scaffold-vue/-/scaffold-vue-3.2.1.tgz#37f81ade84a0094a8b325b447c070e5c9caa46cb"
   integrity sha512-HnKYgNdCyYTF9ElnqrAVNV2glzSZBblwGJQI5MH1glmddTKsU7Ri5zOEH1rtY3zwf3SFwFnDyY477HP+Tnhm7w==
   dependencies:
     "@web3modal/scaffold" "3.2.1"
+
+"@web3modal/scaffold-vue@3.5.7":
+  version "3.5.7"
+  resolved "https://registry.yarnpkg.com/@web3modal/scaffold-vue/-/scaffold-vue-3.5.7.tgz#27b9cd3e0aa71a2f887beb44cde5f1f5d64ef099"
+  integrity sha512-WIS4tXauPMTGD+nUbemc+lhR3hiRh51yICm6hkbaW4Agf6e0rKpCiqtIAqLJL+hhMLNu6ZJ6gWjCOSym4hb9wQ==
+  dependencies:
+    "@web3modal/scaffold" "3.5.7"
 
 "@web3modal/scaffold@3.2.1":
   version "3.2.1"
@@ -14452,12 +14570,42 @@
     "@web3modal/ui" "3.2.1"
     lit "3.0.0"
 
+"@web3modal/scaffold@3.5.7":
+  version "3.5.7"
+  resolved "https://registry.yarnpkg.com/@web3modal/scaffold/-/scaffold-3.5.7.tgz#94faaa628a2f083832c954e3cf567f414c6b892b"
+  integrity sha512-/yQwXg2qUX1srNmoqmVAgqa8INNi2ObR9BaaNo/UFzRn02qMQsV9BQfkTrp2lC91HPUGewM833eKQw20+sUfTg==
+  dependencies:
+    "@web3modal/common" "3.5.7"
+    "@web3modal/core" "3.5.7"
+    "@web3modal/ui" "3.5.7"
+    lit "3.1.0"
+
+"@web3modal/siwe@3.5.7":
+  version "3.5.7"
+  resolved "https://registry.yarnpkg.com/@web3modal/siwe/-/siwe-3.5.7.tgz#2097a7268fee38ff3da4cd733178ef73385c4e7b"
+  integrity sha512-dV0yhJYtKq4VxKSSlTxpFgVice0qhcTPfTxrD9Z8u8O5QYw4gv8S7g6dvtFCvTce4DlHSlqNM9MZqeViB6BHpg==
+  dependencies:
+    "@web3modal/core" "3.5.7"
+    "@web3modal/scaffold-utils" "3.5.7"
+  optionalDependencies:
+    react ">=17"
+    react-dom ">=17"
+    vue ">=3"
+
 "@web3modal/ui@3.2.1":
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/@web3modal/ui/-/ui-3.2.1.tgz#7694d85184aa5e80cbf4374c0612d481371ca33b"
   integrity sha512-Fkiguco+3C9PJndqCcEbXTDKVOVh7KiR2bOstgLtr+lAXQnkTXEB5H9VcRpwhBU4ZlM6c3/7PYC4rzRblt7qmQ==
   dependencies:
     lit "3.0.0"
+    qrcode "1.5.3"
+
+"@web3modal/ui@3.5.7":
+  version "3.5.7"
+  resolved "https://registry.yarnpkg.com/@web3modal/ui/-/ui-3.5.7.tgz#dedb7ba8dcf48ec39d3be7665c6ecb74f0b6f925"
+  integrity sha512-tXoRq9vZro/5oGYQtGXnq5KZ3YB2NuTNVKJ1evSq6WfHFcQr3AxinWfaJaWryLgkCmvMJXGvL6oSUWpodgTi5Q==
+  dependencies:
+    lit "3.1.0"
     qrcode "1.5.3"
 
 "@web3modal/utils@3.2.1":
@@ -14467,6 +14615,22 @@
   dependencies:
     "@web3modal/polyfills" "3.2.1"
     "@web3modal/scaffold" "3.2.1"
+
+"@web3modal/wagmi@3.5.7":
+  version "3.5.7"
+  resolved "https://registry.yarnpkg.com/@web3modal/wagmi/-/wagmi-3.5.7.tgz#7c444ae0245e770f96cdda0f4dd00407f34e665c"
+  integrity sha512-Bag6YCnXn26maD4qVWCQHjlSQo9hMBkf5zivGlwMRA/akNFZyAVrjEGdZTiCrFq3hhRI4k4wdek/pyELYhWpQg==
+  dependencies:
+    "@web3modal/polyfills" "3.5.7"
+    "@web3modal/scaffold" "3.5.7"
+    "@web3modal/scaffold-react" "3.5.7"
+    "@web3modal/scaffold-utils" "3.5.7"
+    "@web3modal/scaffold-vue" "3.5.7"
+  optionalDependencies:
+    "@web3modal/siwe" "3.5.7"
+    react ">=17"
+    react-dom ">=17"
+    vue ">=3"
 
 "@web3modal/wagmi@^3.2.1":
   version "3.2.1"
@@ -14482,6 +14646,13 @@
     react ">=17"
     react-dom ">=17"
     vue ">=3"
+
+"@web3modal/wallet@3.5.7":
+  version "3.5.7"
+  resolved "https://registry.yarnpkg.com/@web3modal/wallet/-/wallet-3.5.7.tgz#6952a6f51caabcd47c7159bba5b4ec0bdf066982"
+  integrity sha512-jJq7q2N3KImLDZt5E5vJTIeVsJTf7Gc4YBaA9/pBrv/k/tKFrGfZKloHm+sklLGtFVn0j2IeEx136DnXxmitUg==
+  dependencies:
+    zod "3.22.4"
 
 "@webassemblyjs/ast@1.12.1", "@webassemblyjs/ast@^1.12.1":
   version "1.12.1"
@@ -15514,6 +15685,15 @@ axios@0.27.2, axios@^0.27.2:
   dependencies:
     follow-redirects "^1.14.9"
     form-data "^4.0.0"
+
+axios@1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.4.0.tgz#38a7bf1224cd308de271146038b551d725f0be1f"
+  integrity sha512-S4XCWMEmzvo64T9GfvQDOXgYRDJ/wsSZc7Jvdgx5u1sd0JwsuPLqb3SYmusag+edF6ziyMensPVqLTSc1PiSEA==
+  dependencies:
+    follow-redirects "^1.15.0"
+    form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
 
 axios@1.6.2, axios@^1.3.5, axios@^1.6.2:
   version "1.6.2"
@@ -17473,7 +17653,7 @@ dayjs-twitter@^0.5.0:
   dependencies:
     duration-js "^4.0.0"
 
-dayjs@^1.11.10, dayjs@^1.8.15:
+dayjs@1.11.10, dayjs@^1.11.10, dayjs@^1.8.15:
   version "1.11.10"
   resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.10.tgz#68acea85317a6e164457d6d6947564029a6a16a0"
   integrity sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==
@@ -17744,11 +17924,6 @@ dequal@^2.0.0, dequal@^2.0.2, dequal@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/dequal/-/dequal-2.0.3.tgz#2644214f1997d39ed0ee0ece72335490a7ac67be"
   integrity sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==
-
-derive-valtio@0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/derive-valtio/-/derive-valtio-0.1.0.tgz#4b9fb393dfefccfef15fcbbddd745dd22d5d63d7"
-  integrity sha512-OCg2UsLbXK7GmmpzMXhYkdO64vhJ1ROUUGaTFyHjVwEdMEcTTRj7W1TxLbSBxdY8QLBPCcp66MTyaSy0RpO17A==
 
 des.js@^1.0.0:
   version "1.1.0"
@@ -22025,7 +22200,7 @@ jws@^4.0.0:
     jwa "^2.0.0"
     safe-buffer "^5.0.1"
 
-jwt-decode@^3.1.2:
+jwt-decode@3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/jwt-decode/-/jwt-decode-3.1.2.tgz#3fb319f3675a2df0c2895c8f5e9fa4b67b04ed59"
   integrity sha512-UfpWE/VZn0iP50d8cz9NrZLM9lSWhcJ+0Gt/nm4by88UL+J1SiKN8/5dkjMmbEzwL2CAe+67GsegCbIKtbp75A==
@@ -22291,6 +22466,13 @@ lit-html@^3.0.0:
   dependencies:
     "@types/trusted-types" "^2.0.2"
 
+lit-html@^3.1.0:
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/lit-html/-/lit-html-3.1.3.tgz#ae2e9fee0258d0a1b5d7b86c87da51117e4f911b"
+  integrity sha512-FwIbqDD8O/8lM4vUZ4KvQZjPPNx7V1VhT7vmRB8RBAO0AU6wuTVdoXiu2CivVjEGdugvcbPNBLtPE1y0ifplHA==
+  dependencies:
+    "@types/trusted-types" "^2.0.2"
+
 lit@2.8.0:
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/lit/-/lit-2.8.0.tgz#4d838ae03059bf9cafa06e5c61d8acc0081e974e"
@@ -22308,6 +22490,15 @@ lit@3.0.0:
     "@lit/reactive-element" "^2.0.0"
     lit-element "^4.0.0"
     lit-html "^3.0.0"
+
+lit@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/lit/-/lit-3.1.0.tgz#76429b85dc1f5169fed499a0f7e89e2e619010c9"
+  integrity sha512-rzo/hmUqX8zmOdamDAeydfjsGXbbdtAFqMhmocnh2j9aDYqbu0fjXygjCa0T99Od9VQ/2itwaGrjZz/ZELVl7w==
+  dependencies:
+    "@lit/reactive-element" "^2.0.0"
+    lit-element "^4.0.0"
+    lit-html "^3.1.0"
 
 livepeer@^2.5.8:
   version "2.9.2"
@@ -29117,15 +29308,6 @@ valtio@1.11.2:
     proxy-compare "2.5.1"
     use-sync-external-store "1.2.0"
 
-valtio@^1.11.2:
-  version "1.12.1"
-  resolved "https://registry.yarnpkg.com/valtio/-/valtio-1.12.1.tgz#741f8bd46586f8c4b1a7639b1348252a052b746e"
-  integrity sha512-R0V4H86Xi2Pp7pmxN/EtV4Q6jr6PMN3t1IwxEvKUp6160r8FimvPh941oWyeK1iec/DTsh9Jb3Q+GputMS8SYg==
-  dependencies:
-    derive-valtio "0.1.0"
-    proxy-compare "2.5.1"
-    use-sync-external-store "1.2.0"
-
 value-or-promise@^1.0.11, value-or-promise@^1.0.12:
   version "1.0.12"
   resolved "https://registry.yarnpkg.com/value-or-promise/-/value-or-promise-1.0.12.tgz#0e5abfeec70148c78460a849f6b003ea7986f15c"
@@ -29168,6 +29350,20 @@ video-stream-merger@^4.0.1:
   resolved "https://registry.yarnpkg.com/video-stream-merger/-/video-stream-merger-4.0.1.tgz#b0061251bd211121d1256ccf9e2be9477e59d5cb"
   integrity sha512-VazYSr8tk6S/zkOq5jpR/ryy1HnGxm5XCw+d2Ejpqy1m6d71oZpyFG82dUkgAo7dg/lk3k4TqvJPtuRUtR8URA==
 
+viem@1.21.4, viem@^1.1.4, viem@^1.19.9, viem@^1.20.3, viem@^1.6.0:
+  version "1.21.4"
+  resolved "https://registry.yarnpkg.com/viem/-/viem-1.21.4.tgz#883760e9222540a5a7e0339809202b45fe6a842d"
+  integrity sha512-BNVYdSaUjeS2zKQgPs+49e5JKocfo60Ib2yiXOWBT6LuVxY1I/6fFX3waEtpXvL1Xn4qu+BVitVtMh9lyThyhQ==
+  dependencies:
+    "@adraffy/ens-normalize" "1.10.0"
+    "@noble/curves" "1.2.0"
+    "@noble/hashes" "1.3.2"
+    "@scure/bip32" "1.3.2"
+    "@scure/bip39" "1.2.1"
+    abitype "0.9.8"
+    isows "1.0.3"
+    ws "8.13.0"
+
 viem@2.7.15:
   version "2.7.15"
   resolved "https://registry.yarnpkg.com/viem/-/viem-2.7.15.tgz#0dfdcb75be196c85839950b0ccb88be0b377609c"
@@ -29188,20 +29384,6 @@ viem@^1.0.0, viem@^1.18.3:
   integrity sha512-eAXtoTwAFA3YEgjTYMb5ZTQrDC0UPx5qyZ4sv90TirVKepcM9mBPksTkC1SSWya0UdxhBmhEBL/CiYMjmGCTWg==
   dependencies:
     "@adraffy/ens-normalize" "1.9.4"
-    "@noble/curves" "1.2.0"
-    "@noble/hashes" "1.3.2"
-    "@scure/bip32" "1.3.2"
-    "@scure/bip39" "1.2.1"
-    abitype "0.9.8"
-    isows "1.0.3"
-    ws "8.13.0"
-
-viem@^1.1.4, viem@^1.18.0, viem@^1.19.9, viem@^1.20.3, viem@^1.6.0:
-  version "1.21.4"
-  resolved "https://registry.yarnpkg.com/viem/-/viem-1.21.4.tgz#883760e9222540a5a7e0339809202b45fe6a842d"
-  integrity sha512-BNVYdSaUjeS2zKQgPs+49e5JKocfo60Ib2yiXOWBT6LuVxY1I/6fFX3waEtpXvL1Xn4qu+BVitVtMh9lyThyhQ==
-  dependencies:
-    "@adraffy/ens-normalize" "1.10.0"
     "@noble/curves" "1.2.0"
     "@noble/hashes" "1.3.2"
     "@scure/bip32" "1.3.2"
@@ -29317,7 +29499,7 @@ vue@>=3:
     "@vue/server-renderer" "3.3.8"
     "@vue/shared" "3.3.8"
 
-wagmi@^1.4.12:
+wagmi@1.4.13:
   version "1.4.13"
   resolved "https://registry.yarnpkg.com/wagmi/-/wagmi-1.4.13.tgz#dc8dc077c7c2195877d7e33477b0417f5d2add4f"
   integrity sha512-AScVYFjqNt1wMgL99Bob7MLdhoTZ3XKiOZL5HVBdy4W1sh7QodA3gQ8IsmTuUrQ7oQaTxjiXEhwg7sWNrPBvJA==
@@ -30393,7 +30575,7 @@ zod-validation-error@^1.4.0:
   resolved "https://registry.yarnpkg.com/zod-validation-error/-/zod-validation-error-1.5.0.tgz#2b355007a1c3b7fb04fa476bfad4e7b3fd5491e3"
   integrity sha512-/7eFkAI4qV0tcxMBB/3+d2c1P6jzzZYdYSlBuAklzMuCrJu5bzJfHS0yVAS87dRHVlhftd6RFJDIvv03JgkSbw==
 
-zod@^3.21.4, zod@^3.22.4:
+zod@3.22.4, zod@^3.21.4, zod@^3.22.4:
   version "3.22.4"
   resolved "https://registry.yarnpkg.com/zod/-/zod-3.22.4.tgz#f31c3a9386f61b1f228af56faa9255e845cf3fff"
   integrity sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==

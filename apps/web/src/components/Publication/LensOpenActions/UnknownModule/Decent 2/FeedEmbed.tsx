@@ -109,7 +109,7 @@ const FeedEmbed: FC<FeedEmbedProps> = ({
         quantity: selectedQuantity,
         senderAddress: address || ZERO_ADDRESS,
         sourceUrl: og.url,
-        srcChainId: CHAIN_ID.toString()
+        srcChainId: CHAIN.id.toString()
       })
       .then((actionData) => {
         setNft((prevNft) => ({

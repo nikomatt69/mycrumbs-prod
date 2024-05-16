@@ -20,13 +20,12 @@ import PolymarketOembed from './PolymarketOembed';
 import EmptyOembed from './EmptyOembed';
 
 interface OembedProps {
-  className?: string;
   onLoad?: (og: OG) => void;
   publication?: AnyPublication;
   url: string;
 }
 
-const Oembed: FC<OembedProps> = ({ onLoad, publication, url,className = '', }) => {
+const Oembed: FC<OembedProps> = ({ onLoad, publication, url }) => {
   const { data, error, isLoading } = useQuery({
     enabled: Boolean(url),
     queryFn: async () => {

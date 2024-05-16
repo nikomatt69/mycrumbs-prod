@@ -33,7 +33,7 @@ const Embed: FC<EmbedProps> = ({ og, publicationId }) => {
             {og.image ? (
               <Image
                 alt="Thumbnail"
-                className="h-16 w-16 rounded-xl bg-gray-200 md:h-20 w-20"
+                className="h-16 w-16 rounded-xl bg-gray-200"
                 height={80}
                 onError={({ currentTarget }) => {
                   currentTarget.src = og.image as string;

@@ -23,6 +23,7 @@ import LeafwatchProvider from './LeafwatchProvider';
 import OptimisticTransactionsProvider from './OptimisticTransactionsProvider';
 import PreferencesProvider from './PreferencesProvider';
 import LensAuthProvider from './LensAuthProvider';
+import NotificationsProvider from './NotificationsProvider';
 
 const lensApolloClient = apolloClient(authLink);
 const livepeerClient = createReactClient({
@@ -44,6 +45,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
         <ApolloProvider client={lensApolloClient}>
           <LensAuthProvider/>
           <LensSubscriptionsProvider />
+          <NotificationsProvider >
           <OptimisticTransactionsProvider />
           <QueryClientProvider client={queryClient}>
             <PreferencesProvider />
@@ -55,6 +57,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
               <Analytics />
             </LivepeerConfig>
           </QueryClientProvider>
+          </NotificationsProvider>
         </ApolloProvider>
       </Web3Provider>
     </ErrorBoundary>

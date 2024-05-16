@@ -29,27 +29,7 @@ const sendVisiblePublicationsToServer = () => {
 async function handleInstall(): Promise<void> {
   void self.skipWaiting();
 };
-self.addEventListener('push', event => {
-  const data = event.data ? event.data.json() : null;
-  const options = {
-    body: data?.body,
-    icon: '/icons/icon-192x192.png',
-    badge: '/icons/badge-96x96.png',
-    actions: [{ action: 'open_url', title: 'View' }, { action: 'snooze', title: 'Snooze' }],
-    data: { url: data?.url }
-  };
-  event.waitUntil(self.registration.showNotification(data?.title, options));
-});
 
-self.addEventListener('notificationclick', event => {
-  event.notification.close();
-  if (event.action === 'open_url') {
-      // Ensure to use clients.openWindow to open a new window
-      self.clients.openWindow(event.notification.data.url);
-  } else if (event.action === 'snooze') {
-      // Handle snooze action
-  }
-});
 
 
 

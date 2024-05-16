@@ -8,7 +8,7 @@ import Head from 'next/head';
 import { useTheme } from 'next-themes';
 import { useEffect, type FC, type ReactNode } from 'react';
 import { Toaster } from 'react-hot-toast';
-import { useAppStore } from 'src/store/persisted/useAppStore';
+import { useAppStore} from 'src/store/persisted/useAppStore';
 
 import { useEffectOnce, useIsMounted } from 'usehooks-ts';
 import { useAccount, useDisconnect } from 'wagmi';
@@ -45,65 +45,19 @@ interface LayoutProps {
 }
 
 const Layout: FC<LayoutProps> = ({ children }) => {
+  const { resolvedTheme } = useTheme();
+  const { currentProfile, setCurrentProfile, setFallbackToCuratedFeed } =
+    useAppStore();
+  const { setLensHubOnchainSigNonce } = useNonceStore();
   const [refreshing, setRefreshing] = React.useState(false);
   const transactions = useOaTransactionStore((state) => state.transactions);
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
-  }, []);
-
-  const { resolvedTheme } = useTheme();
-  const { selectedConversation } = useMessagesStore();
-  const { currentProfile, setCurrentProfile , setFallbackToCuratedFeed } = useAppStore();
-  const { resetPreferences } = usePreferencesStore();
-
-  const { setLensHubOnchainSigNonce } = useNonceStore();
-  useRouter();
-
-  const { connector } = useAccount();
-;
-
-
-  const { isRoomJoined } = useRoom();
-
-  useEffectOnce(() => {
-    // Listen for switch account in wallet and logout
-    connector?.addListener('change', () => logout());
-  });
-
- 
-
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1
-    },
-    scrollView: {
-      flex: 1
-    }
-  });
-  useSpacesStore();
-  useEffectOnce(() => {
-    validateAuthentication();
-  });
-  const GlobalHooks = () => {
-    useNotifictionSubscriptions();
-
-    // eslint-disable-next-line react/jsx-no-useless-fragment
-    return <></>;
-  };
-
-
-
   const isMounted = useIsClient();
   const { disconnect } = useDisconnect();
 
   const { id: sessionProfileId } = getCurrentSession();
-  const disconnectXmtp = useDisconnectXmtp();
+
   const logout = (reload = false) => {
-    resetPreferences();
-    disconnectXmtp()
+    
     signOut();
     disconnect?.();
     if (reload) {
@@ -133,6 +87,16 @@ const Layout: FC<LayoutProps> = ({ children }) => {
       logout();
     }
   };
+  const { isRoomJoined } = useRoom();
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1
+    },
+    scrollView: {
+      flex: 1
+    }
+  });
+  useSpacesStore();
 
   useEffect(() => {
     validateAuthentication();
@@ -144,7 +108,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
   if (profileLoading || !isMounted) {
     return <Loading />;
   }
-
+  
 
   return (
     <>
@@ -166,7 +130,6 @@ const Layout: FC<LayoutProps> = ({ children }) => {
       
       <GlobalModals />
       <GlobalBanners />
-      <GlobalHooks />
       <GlobalAlerts />
       <div className="flex min-h-screen  flex-col pb-14 md:pb-0">
         <SafeAreaView style={styles.container}>
@@ -179,14 +142,8 @@ const Layout: FC<LayoutProps> = ({ children }) => {
           txHash={tx.txHash}
           />
           ))}
-          <ScrollView
-            style={styles.scrollView}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-          >
-            {children}
-          </ScrollView>
+          {children}
+         
           {isRoomJoined ? <SpacesWindow /> : null}
           <BottomNavigation />
         </SafeAreaView>

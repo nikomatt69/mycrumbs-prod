@@ -11,9 +11,6 @@ import { useOaCurrency } from 'src/store/persisted/useOaCurrency';
 import cn from '@lensshare/ui/cn';
 import { useAllowedTokensStore } from 'src/store/persisted/useAllowedTokensStore';
 import { useNftOaCurrencyStore } from 'src/store/persisted/useNftOaCurrencyStore';
-// TODO: take into account other currencies
-
-
 const formatPrice = (value: Number) => {
   const num = Number(value);
   if (num < 1) {
@@ -71,7 +68,7 @@ const ActionInfo: FC<ActionInfoProps> = ({
       <div className="flex flex-col items-start justify-start">
         <Image
           alt={uiData.platformName}
-          className="h-6 w-6 rounded-full border bg-gray-200 dark:border-gray-700"
+          className="w-6 h-6 rounded-full border bg-gray-200 dark:border-gray-700"
           height={24}
           loading="lazy"
           src={uiData.platformLogoUrl}
@@ -109,3 +106,4 @@ const ActionInfo: FC<ActionInfoProps> = ({
 };
 
 export default ActionInfo;
+

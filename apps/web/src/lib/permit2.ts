@@ -12,6 +12,7 @@ import {
   parseAbi
 } from 'viem';
 import { polygon, polygonMumbai } from 'viem/chains';
+import { POLYGON_RPC_URL } from 'src/store/persisted/bytes';
 
 
 const timeToMilliseconds = (
@@ -120,8 +121,10 @@ export const getPermit2Allowance = async ({
   token: Address;
 }) => {
   const client = createPublicClient({
-    chain: IS_MAINNET ? polygon : polygonMumbai,
-    transport: http(RPC_URL)
+    chain: IS_MAINNET ? polygon : polygon,
+    transport: IS_MAINNET
+      ? fallback([http(POLYGON_RPC_URL)])
+      : fallback([http(POLYGON_RPC_URL)])
   });
 
   if (hash) {
@@ -131,10 +134,10 @@ export const getPermit2Allowance = async ({
   }
 
   const allowanceData = await client.readContract({
-    abi: parseAbi(['function allowance(address, address) returns (uint256)']),
+    abi: parseAbi(['function allowance(address, address) view returns (uint256)']),
     address: token,
-    args: [owner, spender],
-    functionName: 'allowance' as never
+    functionName: 'allowance',
+    args: [owner, spender]
   });
 
   return allowanceData;
@@ -152,7 +155,7 @@ export const constructPermit2Sig = ({
   const PERMIT2_DOMAIN_NAME = 'Permit2';
   const permit2Address = PERMIT_2_ADDRESS;
   const domain = {
-    chainId: IS_MAINNET ? 137 : 137,
+    chainId: IS_MAINNET ? 137 : 80001,
     name: PERMIT2_DOMAIN_NAME,
     verifyingContract: permit2Address as `0x${string}`
   };
