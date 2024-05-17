@@ -13,14 +13,16 @@ import { hydrateLeafwatchAnonymousId } from 'src/store/persisted/useLeafwatchSto
 const pushToImpressions = (id: string): void => {
   const anonymousId = hydrateLeafwatchAnonymousId();
   const { id: sessionProfileId } = getCurrentSession();
-
+  const headers = new Headers({
+    'Access-Control-Allow-Origin': '*'
+  });
   // Don't push impressions for the current user
   const publicationProfileId = id.split('-')[0];
   if (publicationProfileId === sessionProfileId) {
     return;
   }
 
-  if (IS_MAINNET && id && navigator.serviceWorker?.controller) {
+  if (IS_MAINNET && id && headers && navigator.serviceWorker?.controller) {
     navigator.serviceWorker.controller.postMessage({
       id,
       type: 'PUBLICATION_VISIBLE',

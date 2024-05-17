@@ -57,30 +57,20 @@ import { useRatesStore } from 'src/store/persisted/useRatesStore';
 import { useNftOaCurrencyStore } from 'src/store/persisted/useNftOaCurrencyStore';
 import { OptmisticPublicationType } from '@lensshare/types/enums';
 import cn from '@lensshare/ui/cn';
+import { useQuery } from '@tanstack/react-query';
+import { useNftOpenActionStore } from './FeedEmbed';
+import QuantityConfig from './QuantityConfig';
 
 const generateOptimisticNftMintOA = ({
-  txHash
+  txId
 }: {
-  txHash?: string;
-  txId?: string;
+  txId: string;
 }): OptimisticTransaction => {
   return {
-    txHash,
+    txId,
     type: OptmisticPublicationType.NftMintOA
   };
 };
-
-interface DecentOpenActionModuleProps {
-  actionData?: ActionData;
-  loadingCurrency?: boolean;
-  module: UnknownOpenActionModuleSettings;
-  nft: Nft;
-  onClose: () => void;
-  publication: MirrorablePublication;
-  selectedQuantity: number;
-  setSelectedQuantity: Dispatch<number>;
-  show: boolean;
-}
 
 interface Permit2Data {
   deadline: number;
@@ -88,16 +78,20 @@ interface Permit2Data {
   signature: string;
 }
 
+interface DecentOpenActionModuleProps {
+  actionData?: ActionData;
+  module: UnknownOpenActionModuleSettings;
+  nft: Nft;
+  publication: MirrorablePublication;
+}
+
 const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
   actionData,
-  loadingCurrency,
   nft,
-  onClose,
-  publication,
-  selectedQuantity,
-  setSelectedQuantity,
-  show
+  publication
 }) => {
+  const { selectedQuantity, setShowOpenActionModal, showOpenActionModal } =
+    useNftOpenActionStore();
   const { selectedNftOaCurrency, setSelectedNftOaCurrency } =
     useNftOaCurrencyStore();
   const { addTransaction } = useTransactionStore();
@@ -106,9 +100,6 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
 
   const [isApprovalLoading, setIsApprovalLoading] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
-  const [loadingCurrencyDetails, setLoadingCurrencyDetails] = useState(
-    loadingCurrency || !allowedTokens || !allowedTokens.length
-  );
   const [showLongDescription, setShowLongDescription] = useState(false);
   const [showCurrencySelector, setShowCurrencySelector] = useState(false);
   const [isModalCollapsed, setIsModalCollapsed] = useState(false);
@@ -128,12 +119,17 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
   const { address } = useAccount();
   const handleWrongNetwork = useHandleWrongNetwork();
 
-  const { actOnUnknownOpenAction, isLoading, relayStatus, txHash } =
-    useActOnUnknownOpenAction({
-      onSuccess: onClose,
+  const { actOnUnknownOpenAction, isLoading, txId } = useActOnUnknownOpenAction(
+    {
+      onSuccess: () => {
+        setPermit2Data(undefined);
+        setIsApproved(false);
+        setShowOpenActionModal(false);
+      },
       signlessApproved: true,
-      successToast: 'NFT has been minted!'
-    });
+      successToast: 'NFT has been minted successfully!'
+    }
+  );
 
   const { data: creatorProfileData } = useDefaultProfileQuery({
     skip: !actionData?.uiData.nftCreatorAddress,
@@ -141,22 +137,11 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
   });
 
   useEffect(() => {
-    if (allowedTokens && allowedTokens.length && !loadingCurrency) {
-      return setLoadingCurrencyDetails(false);
-    }
-
-    return setLoadingCurrencyDetails(true);
-  }, [allowedTokens, loadingCurrency]);
-
-  useEffect(() => {
-    if (relayStatus) {
-      if (!relayStatus.startsWith('0x')) {
-        addTransaction(generateOptimisticNftMintOA({ txId: relayStatus }));
-      }
-      localStorage.setItem(`pendingTx`, relayStatus);
+    if (txId) {
+      addTransaction(generateOptimisticNftMintOA({ txId }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [relayStatus]);
+  }, [txId]);
 
   useEffect(() => {
     if (nft?.mediaUrl) {
@@ -228,26 +213,29 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [actionData?.uiData.dstChainId]);
 
-  useEffect(() => {
-    const fetchPermit2Allowance = async () => {
-      setPermit2Data(undefined);
-      if (address && Boolean(assetAddress)) {
-        const allowanceData = await getPermit2Allowance({
-          owner: address as `0x${string}`,
-          spender: PERMIT_2_ADDRESS,
-          token: assetAddress as `0x${string}`
-        });
-        const approvedAmount = allowanceData;
-        if (Number(approvedAmount) > amount) {
-          setPermit2Allowed(true);
-        } else {
-          setPermit2Allowed(false);
-        }
+  const fetchPermit2Allowance = async () => {
+    setPermit2Data(undefined);
+    if (address && Boolean(assetAddress)) {
+      const allowanceData = await getPermit2Allowance({
+        owner: address as `0x${string}`,
+        spender: PERMIT_2_ADDRESS,
+        token: assetAddress as `0x${string}`
+      });
+      const approvedAmount = allowanceData;
+      if (Number(approvedAmount) > amount) {
+        setPermit2Allowed(true);
+      } else {
+        setPermit2Allowed(false);
       }
-    };
+    }
 
-    fetchPermit2Allowance();
-  }, [amount, assetAddress, address]);
+    return;
+  };
+
+  useQuery({
+    queryFn: fetchPermit2Allowance,
+    queryKey: ['fetchPermit2Allowance', amount, assetAddress, address]
+  });
 
   const approvePermit2 = async () => {
     if (walletClient) {
@@ -267,15 +255,18 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
           token: assetAddress as `0x${string}`
         });
         const approvedAmount = allowanceData;
+
         if (Number(approvedAmount) > amount) {
           setPermit2Allowed(true);
         } else {
           setPermit2Allowed(false);
         }
-        setIsPermit2Loading(false);
+
+        return toast.success('Approved Permit2');
       } catch (error) {
-        setIsPermit2Loading(false);
         return toast.error('Failed to approve Permit2');
+      } finally {
+        setIsPermit2Loading(false);
       }
     }
   };
@@ -300,11 +291,13 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
           signature: permit2Signature.signature
         });
         setIsModalCollapsed(false);
-        setIsApprovalLoading(false);
         setIsApproved(true);
+
+        return toast.success('Approved module');
       } catch (error) {
-        setIsApprovalLoading(false);
         return toast.error('Failed to approve module');
+      } finally {
+        setIsApprovalLoading(false);
       }
     }
   };
@@ -319,7 +312,8 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
           nonce: BigInt(permit2Data.nonce),
           signature: permit2Data.signature as `0x${string}`
         });
-        await actOnUnknownOpenAction({
+
+        return await actOnUnknownOpenAction({
           address: VerifiedOpenActionModules.DecentNFT as `0x${string}`,
           data: updatedCalldata,
           publicationId: publication.id,
@@ -348,7 +342,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
               setShowCurrencySelector(false);
             }}
           >
-            <ChevronLeftIcon className="mt-0.5 size-4 stroke-black" />
+            <ChevronLeftIcon className="mt-0.5 w-4 h-4 stroke-black" />
           </button>
         ) : isModalCollapsed ? (
           <button
@@ -357,15 +351,15 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
               setIsModalCollapsed(false);
             }}
           >
-            <ChevronLeftIcon className="mt-0.5 size-4 stroke-black" />
+            <ChevronLeftIcon className="mt-0.5 w-4 h-4 stroke-black" />
           </button>
         ) : null
       }
       onClose={() => {
         setIsModalCollapsed(false);
-        onClose();
+        setShowOpenActionModal(false);
       }}
-      show={show}
+      show={showOpenActionModal}
       title={
         showCurrencySelector
           ? 'Select token'
@@ -391,9 +385,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
             creator: getProfile(creatorProfileData?.defaultProfile as Profile)
               .slug,
             name: actionData?.uiData.nftName || '',
-            price:
-              formattedTotalAmount.toFixed(4) +
-              getTokenDetails(selectedNftOaCurrency).symbol,
+            price: formattedTotalAmount.toFixed(4),
             schema: formattedNftSchema,
             uri: sanitizeDStorageUrl(actionData?.uiData.nftUri)
           }}
@@ -404,9 +396,9 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
         <>
           <div className="space-y-2 p-5">
             <div>
-              <h2 className="text-xl">{actionData?.uiData.nftName}</h2>
+              <b className="text-xl">{actionData?.uiData.nftName}</b>
               {creatorProfileData ? (
-                <p className="opacity-50">
+                <p className="ld-text-gray-500">
                   by{' '}
                   {creatorProfileExists
                     ? getProfile(creatorProfileData.defaultProfile as Profile)
@@ -444,7 +436,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
                 </div>
                 {isImageLoading && (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="spinner">Loading...</div>{' '}
+                    <div>Loading...</div>
                   </div>
                 )}
               </div>
@@ -455,7 +447,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
                     : truncateByWords(nft.description, 30)}
                   {nft.description.trim().split(/\s+/).length > 30 ? (
                     <button
-                      className="ml-1 opacity-50"
+                      className="ld-text-gray-500 ml-1"
                       onClick={(e) => {
                         stopEventPropagation(e);
                         setShowLongDescription((v) => !v);
@@ -468,19 +460,20 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
               )}
             </div>
             <div className="ld-text-gray-500 flex items-center justify-between text-base">
-              <div className="flex items-center gap-2">
-                <Squares2X2Icon className="size-5" />
-                <p>{formattedNftSchema}</p>
+              <div className="flex items-center space-x-2">
+                <Squares2X2Icon className="w-4 h-4" />
+                <p className="text-sm">{formattedNftSchema}</p>
               </div>
               {nft.mintCount && (
-                <div className="flex items-center gap-2">
-                  <UserIcon className="size-5" />
-                  <p>{nft.mintCount} minted</p>
+                <div className="flex items-center space-x-2">
+                  <UserIcon className="w-5 h-5" />
+                  <p className="text-sm">{nft.mintCount} minted</p>
                 </div>
               )}
-              <div className="flex items-center gap-2">
-                <ArrowTopRightOnSquareIcon className="size-5" />
+              <div className="flex items-center space-x-2">
+                <ArrowTopRightOnSquareIcon className="w-4 h-4" />
                 <Link
+                  className="text-sm"
                   href={nft.mintUrl || nft.sourceUrl}
                   rel="noreferrer noopener"
                   target="_blank"
@@ -490,85 +483,48 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
               </div>
             </div>
             {nftChainInfo ? (
-              <div className="ld-text-gray-500 flex items-center justify-start gap-1 text-base">
+              <div className="flex items-center justify-start space-x-2">
                 <img
                   alt={nftChainInfo?.name || 'NFT Chain'}
-                  className="size-4 rounded-full"
+                  className="w-4 h-4 rounded-full"
+                  height={16}
                   src={nftChainInfo?.logo}
+                  width={16}
                 />
-                <p>{nftChainInfo?.name}</p>
+                <p className="ld-text-gray-500 text-sm">{nftChainInfo?.name}</p>
               </div>
             ) : null}
           </div>
-          {nft.schema === 'erc1155' ? (
-            <div className="flex items-center justify-between border-y border-zinc-200 px-5 py-4">
-              <p className="ld-text-gray-500">Quantity</p>
-              <div className="flex items-center gap-4">
-                <button
-                  className="flex size-6 items-center justify-center rounded-full bg-gray-200 disabled:opacity-50"
-                  disabled={selectedQuantity === 1}
-                  onClick={(e) => {
-                    stopEventPropagation(e);
-                    setSelectedQuantity(selectedQuantity - 1);
-                  }}
-                >
-                  <MinusIcon className="size-3 text-gray-600" strokeWidth={3} />
-                </button>
-                <span className="size-6 text-center">{selectedQuantity}</span>
-                <button
-                  className="flex size-6 items-center justify-center rounded-full bg-gray-200 disabled:opacity-40"
-                  onClick={(e) => {
-                    stopEventPropagation(e);
-                    setSelectedQuantity(selectedQuantity + 1);
-                  }}
-                >
-                  <PlusIcon className="size-3 text-gray-600" strokeWidth={3} />
-                </button>
-              </div>
-            </div>
-          ) : null}
+          {nft.schema === 'erc1155' ? <QuantityConfig /> : null}
           <div className="space-y-5 p-5 pt-2">
             <div>
               <div className="ld-text-gray-500 flex items-center justify-between space-y-0.5">
                 <span className="space-x-1">Price</span>
-                {loadingCurrencyDetails ? (
-                  <span className="shimmer h-6 w-24 rounded-lg bg-gray-200" />
-                ) : (
-                  <div>
-                    {(formattedTotalAmount - formattedTotalFees).toFixed(4)}{' '}
-                    {getTokenDetails(selectedNftOaCurrency).symbol}
-                  </div>
-                )}
+                <div>
+                  {(formattedTotalAmount - formattedTotalFees).toFixed(4)}{' '}
+                  {getTokenDetails(selectedNftOaCurrency).symbol}
+                </div>
               </div>
               <FeesDisclosure
                 actionData={actionData}
                 bridgeFee={bridgeFee}
                 formattedTotalAmount={formattedTotalAmount}
                 formattedTotalFees={formattedTotalFees}
-                loadingCurrencyDetails={loadingCurrencyDetails}
                 tokenSymbol={getTokenDetails(selectedNftOaCurrency).symbol}
               />
               <div className="mt-4 flex items-start justify-between space-y-0.5 text-xl text-gray-600 dark:text-gray-100">
-                <span className="flex items-baseline justify-start gap-1 space-x-1">
+                <span className="flex items-baseline justify-start space-x-1">
                   Total
                 </span>
                 <div className="flex flex-col items-end">
-                  {loadingCurrencyDetails ? (
-                    <span className="shimmer h-7 w-36 rounded-lg bg-gray-200" />
-                  ) : (
-                    <p>
-                      {formattedTotalAmount.toFixed(4)}{' '}
-                      {getTokenDetails(selectedNftOaCurrency).symbol}
-                    </p>
-                  )}
-                  {loadingCurrencyDetails ? (
-                    <div className="shimmer mt-1 h-5 w-16 rounded-lg bg-gray-200" />
-                  ) : (
-                    <div className="ld-text-gray-500 mt-1 text-sm">
-                      ~$
-                      {(formattedTotalAmount * usdPrice).toFixed(4)}{' '}
-                    </div>
-                  )}
+                  <p>
+                    {formattedTotalAmount.toFixed(4)}{' '}
+                    {getTokenDetails(selectedNftOaCurrency).symbol}
+                  </p>
+                  <div className="ld-text-gray-500 mt-1 text-sm">
+                    ~$
+                    {(formattedTotalAmount * usdPrice).toFixed(4)}{' '}
+                  </div>
                 </div>
               </div>
             </div>
@@ -580,9 +536,8 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
                     : () => setIsModalCollapsed(!isModalCollapsed)
                 }
                 className="w-full justify-center"
-                isLoading={isLoading || loadingCurrencyDetails}
+                isLoading={isLoading}
                 isReadyToMint={isApproved && permit2Allowed}
-                loadingCurrency={loadingCurrencyDetails}
                 moduleAmount={{
                   asset: {
                     contract: {
@@ -595,20 +550,19 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
                   },
                   value: formattedTotalAmount.toFixed(4)
                 }}
-                txHash={txHash}
                 uiData={actionData?.uiData}
               />
             ) : null}
-            <div className="flex w-full items-center justify-center text-center text-sm">
+            <div className="flex w-full items-center justify-center">
               <button
-                className="flex items-baseline justify-center gap-1 opacity-70"
+                className="ld-text-gray-500 flex items-center space-x-1"
                 onClick={(e) => {
                   stopEventPropagation(e);
                   setShowCurrencySelector(true);
                 }}
               >
-                Select another token{' '}
-                <ChevronRightIcon className="size-2 stroke-black" />
+                <span className="text-sm">Select another token</span>
+                <ChevronRightIcon className="w-3 h-3 stroke-black" />
               </button>
             </div>
           </div>

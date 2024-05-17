@@ -21,7 +21,7 @@ const AmountConfig: FC<AmountConfigProps> = ({ setCollectType }) => {
       <ToggleWithHelper
         description="Get paid whenever someone collects your post"
         heading="Charge for collecting"
-        icon={<CurrencyDollarIcon className="size-5" />}
+        icon={<CurrencyDollarIcon className="w-5 h-5" />}
         on={Boolean(collectModule.amount?.value)}
         setOn={() => {
           setCollectType({

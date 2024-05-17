@@ -2,6 +2,7 @@ import NewPublication from '@components/Composer/NewPublication';
 import ReportPublication from '@components/Shared/Modal/ReportPublication';
 import {
   ArrowRightCircleIcon,
+  CircleStackIcon,
   ShieldCheckIcon,
   TicketIcon
 } from '@heroicons/react/24/outline';
@@ -16,8 +17,12 @@ import Auth from './Auth';
 import WrongNetwork from './Auth/WrongNetwork';
 import { usePublicationStore } from 'src/store/non-persisted/usePublicationStore';
 import { useGlobalModalStateStore } from 'src/store/non-persisted/useGlobalModalStateStore';
+import OptimisticTransactions from './Modal/OptimisticTransactions';
+import GlobalModalsFromUrl from './GlobalModalsFromUrl';
+import { useAccount } from 'wagmi';
 
 const GlobalModals: FC = () => {
+  const { address } = useAccount();
   // Report modal state
   const {
     showPublicationReportModal,
@@ -36,7 +41,9 @@ const GlobalModals: FC = () => {
     showReportProfileModal,
     reportingProfile,
     setShowReportProfileModal,
-    setShowDiscardModal
+    setShowDiscardModal,
+    showOptimisticTransactionsModal,
+    setShowOptimisticTransactionsModal
   } = useGlobalModalStateStore();
 
   const {
@@ -75,6 +82,7 @@ const GlobalModals: FC = () => {
 
   return (
     <>
+    <GlobalModalsFromUrl />
       <Modal
         title="Report Publication"
         icon={<ShieldCheckIcon className="text-brand h-5 w-5" />}
@@ -94,10 +102,10 @@ const GlobalModals: FC = () => {
         <ReportProfile profile={reportingProfile} />
       </Modal>
       <Modal
-        title="Switch Profile"
-        show={showProfileSwitchModal}
         onClose={() => setShowProfileSwitchModal(false)}
-        size="xs"
+        show={showProfileSwitchModal}
+        size={!address ? 'sm' : 'xs'}
+        title="Switch Profile"
       >
         <SwitchProfiles />
       </Modal>
@@ -143,6 +151,14 @@ const GlobalModals: FC = () => {
         onClose={() => setShowInvitesModal(false)}
       >
         <Invites />
+      </Modal>
+      <Modal
+        icon={<CircleStackIcon className="w-5 h-5" />}
+        onClose={() => setShowOptimisticTransactionsModal(false)}
+        show={showOptimisticTransactionsModal}
+        title="Optimistic Transactions"
+      >
+        <OptimisticTransactions />
       </Modal>
     </>
   );

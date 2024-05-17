@@ -97,7 +97,7 @@ const PublicationBody: FC<PublicationBodyProps> = ({
       KNOWN_ATTRIBUTES.HIDE_OEMBED
     ) === 'true';
   const hasDecentOpenAction = targetPublication.openActionModules.some(
-    (module) => module.contract.address === VerifiedOpenActionModules.DecentNFT
+      (module) => module.contract.address === VerifiedOpenActionModules.DecentNFT
   );
   const showOembed =
     !hasDecentOpenAction &&

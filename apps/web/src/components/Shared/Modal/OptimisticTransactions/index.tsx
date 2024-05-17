@@ -13,7 +13,7 @@ const OptimisticTransactions: FC = () => {
     return (
       <EmptyState
         hideCard
-        icon={<CircleStackIcon className="h-8 w-88" />}
+        icon={<CircleStackIcon className="w-8 h-8" />}
         message="No transactions"
       />
     );

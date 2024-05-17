@@ -6,7 +6,6 @@ import { LensTransactionStatusType } from '@lensshare/lens';
 import { Spinner } from '@lensshare/ui';
 import cn from '@lensshare/ui/cn';
 import { useTransactionStatus } from 'src/hooks/useIndexStatus';
-
 interface IndexStatusProps {
   message?: string;
   reload?: boolean;
@@ -39,12 +38,12 @@ const IndexStatus: FC<IndexStatusProps> = ({
       ) : data?.lensTransactionStatus?.status ===
         LensTransactionStatusType.Failed ? (
         <div className="flex items-center space-x-1.5">
-          <XCircleIcon className="h-5 w-5 text-red-500" />
+          <XCircleIcon className="w-5 h-5 text-red-500" />
           <div>Index failed</div>
         </div>
       ) : (
         <div className="flex items-center space-x-1">
-          <CheckCircleIcon className="h-5 w-5 text-green-500" />
+          <CheckCircleIcon className="w-5 h-5 text-green-500" />
           <div className="text-black dark:text-white">Index Successful</div>
         </div>
       )}

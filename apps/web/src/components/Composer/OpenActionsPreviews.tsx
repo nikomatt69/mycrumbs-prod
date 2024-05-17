@@ -145,7 +145,7 @@ const OpenActionsPreviews: FC<OpenActionsPreviewsProps> = ({
             }
             type="button"
           >
-            <XMarkIcon className="h-4 w-4 text-white" />
+            <XMarkIcon className="w-4 h-4 text-white" />
           </button>
         </div>
       </div>
@@ -169,7 +169,7 @@ const OpenActionsPreviews: FC<OpenActionsPreviewsProps> = ({
             onClick={() => reset()}
             type="button"
           >
-            <XMarkIcon className="h-4 w-4 text-white" />
+            <XMarkIcon className="w-4 h-4 text-white" />
           </button>
         </div>
       </div>

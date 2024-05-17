@@ -59,16 +59,17 @@ import { VerifiedOpenActionModules } from '@lensshare/data/verified-openaction-m
 import { usePublicationStore } from 'src/store/non-persisted/usePublicationStore';
 import { useOpenActionStore } from 'src/store/non-persisted/useOpenActionStore';
 import { usePublicationAttributesStore } from 'src/store/non-persisted/usePublicationAttributesStore';
-import OpenActions from './OpenActions';
 import { useGlobalModalStateStore } from 'src/store/non-persisted/useGlobalModalStateStore';
 import { useNonceStore } from 'src/store/non-persisted/useNonceStore';
 import { useCollectModuleStore } from 'src/store/non-persisted/useCollectModuleStore';
 import { useReferenceModuleStore } from 'src/store/non-persisted/useReferenceModuleStore';
 import usePolymarket from 'src/hooks/usePolymarket';
 import MarketEditor from './Actions/OpenActionSettings/Config/Polymarket/MarketEditor';
-import { HEY_REFERRAL_PROFILE_ID } from '@lensshare/data/constants';
+import { HEY_REFERRAL_PROFILE_ID, KNOWN_ATTRIBUTES } from '@lensshare/data/constants';
 import OpenActionsPreviews from './OpenActionsPreviews';
 import { useAppStore } from 'src/store/persisted/useAppStore';
+import { MetadataAttributeType } from '@lens-protocol/metadata';
+import getMentions from '@lensshare/lib/getMentions';
 
 const Attachment = dynamic(
   () => import('@components/Composer/Actions/Attachment'),
@@ -126,10 +127,7 @@ interface NewPublicationProps {
 const NewPublication: FC<NewPublicationProps> = ({ publication }) => {
   const { currentProfile } = useAppStore();
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
-  
-  const [openActionEmbed, setOpenActionEmbed] = useState<any | undefined>();
-
-  // Modal store
+  // Global modal store
   const { setShowDiscardModal, setShowNewPostModal } =
     useGlobalModalStateStore();
 
@@ -139,8 +137,8 @@ const NewPublication: FC<NewPublicationProps> = ({ publication }) => {
   // Publication store
   const {
     publicationContent,
-    setPublicationContent,
     quotedPublication,
+    setPublicationContent,
     setQuotedPublication,
     audioPublication,
     attachments,
@@ -162,25 +160,38 @@ const NewPublication: FC<NewPublicationProps> = ({ publication }) => {
     resetLiveVideoConfig
   } = usePublicationStore();
 
-  const { openAction, reset: resetOpenActionSettings } = useOpenActionStore();
+  // Audio store
+
+  
+
   // Collect module store
-  const { collectModule, reset: resetCollectSettings } =
-    useCollectModuleStore();
+  const { collectModule, reset: resetCollectSettings } = useCollectModuleStore(
+    (state) => state
+  );
+
+  // Open action store
+  const { openAction, reset: resetOpenActionSettings } = useOpenActionStore();
 
   // Reference module store
-  const { selectedReferenceModule, onlyFollowers, degreesOfSeparation } =
+  const { degreesOfSeparation, onlyFollowers, selectedReferenceModule } =
     useReferenceModuleStore();
+
+  // Attributes store
+  const { reset: resetAttributes } = usePublicationAttributesStore();
 
   // States
   const [isLoading, setIsLoading] = useState(false);
+  
   const [publicationContentError, setPublicationContentError] = useState('');
-  const { reset: resetAttributes } = usePublicationAttributesStore();
-  const [editor] = useLexicalComposerContext();
-  const createPoll = useCreatePoll();
-  const createPolymarket = usePolymarket();
-  const getMetadata = usePublicationMetadata();
-  const handleWrongNetwork = useHandleWrongNetwork();
   const [nftOpenActionEmbed, setNftOpenActionEmbed] = useState();
+  const [exceededMentionsLimit, setExceededMentionsLimit] = useState(false);
+
+  const [editor] = useLexicalComposerContext();
+
+  const createPoll = useCreatePoll();
+  const getMetadata = usePublicationMetadata();
+const handleWrongNetwork = useHandleWrongNetwork();
+ ;
   const { isSponsored, canUseLensManager } =
     checkDispatcherPermissions(currentProfile);
 
@@ -188,9 +199,15 @@ const NewPublication: FC<NewPublicationProps> = ({ publication }) => {
   const isQuote = Boolean(quotedPublication);
   const hasAudio = attachments[0]?.type === 'Audio';
   const hasVideo = attachments[0]?.type === 'Video';
-  const noOpenAction = !openAction;
+
   const noCollect = !collectModule.type;
+  const noOpenAction = !openAction;
   // Use Momoka if the profile the comment or quote has momoka proof and also check collect module has been disabled
+  const useMomoka = isComment
+    ? publication?.momoka?.proof
+    : isQuote
+      ? quotedPublication?.momoka?.proof
+      : noCollect && noOpenAction;
 
   const reset = () => {
     editor.update(() => {
@@ -198,11 +215,8 @@ const NewPublication: FC<NewPublicationProps> = ({ publication }) => {
     });
 
     setPublicationContent('');
-    setQuotedPublication(null);
     setShowPollEditor(false);
     resetPollConfig();
-    setShowMarketEditor(false),
-    resetMarketConfig(),
     setShowLiveVideoEditor(false);
     resetLiveVideoConfig();
     setAttachments([]);
@@ -216,12 +230,6 @@ const NewPublication: FC<NewPublicationProps> = ({ publication }) => {
     resetCollectSettings();
   };
 
-  const useMomoka = isComment
-    ? publication.momoka?.proof
-    : isQuote
-    ? quotedPublication?.momoka?.proof
-    : noCollect && noOpenAction;
-
   const onError = (error?: any) => {
     setIsLoading(false);
     errorToast(error);
@@ -229,10 +237,10 @@ const NewPublication: FC<NewPublicationProps> = ({ publication }) => {
 
   const onCompleted = (
     __typename?:
-      | 'RelayError'
-      | 'RelaySuccess'
       | 'CreateMomokaPublicationResult'
       | 'LensProfileManagerRelayError'
+      | 'RelayError'
+      | 'RelaySuccess'
   ) => {
     if (
       __typename === 'RelayError' ||
@@ -242,6 +250,7 @@ const NewPublication: FC<NewPublicationProps> = ({ publication }) => {
     }
 
     setIsLoading(false);
+    setQuotedPublication(null);
     reset();
 
     if (!isComment) {
@@ -250,57 +259,64 @@ const NewPublication: FC<NewPublicationProps> = ({ publication }) => {
 
     // Track in leafwatch
     const eventProperties = {
-      // TODO: add encrypted type in future
-      publication_type: 'public',
+      comment_on: isComment ? publication?.id : null,
       publication_collect_module: collectModule.type,
+      publication_has_attachments: attachments.length > 0,
+      publication_has_poll: showPollEditor,
+      publication_is_live: showLiveVideoEditor,
+      publication_open_action: openAction?.address,
       publication_reference_module: selectedReferenceModule,
       publication_reference_module_degrees_of_separation:
         selectedReferenceModule ===
         ReferenceModuleType.DegreesOfSeparationReferenceModule
           ? degreesOfSeparation
           : null,
-      publication_has_attachments: attachments.length > 0,
-      publication_has_poll: showPollEditor,
-      publication_open_action: openAction?.address,
-      publication_is_live: showLiveVideoEditor,
-      comment_on: isComment ? publication.id : null,
       quote_on: isQuote ? quotedPublication?.id : null
     };
     Leafwatch.track(
       isComment
         ? PUBLICATION.NEW_COMMENT
         : isQuote
-        ? PUBLICATION.NEW_QUOTE
-        : PUBLICATION.NEW_POST,
+          ? PUBLICATION.NEW_QUOTE
+          : PUBLICATION.NEW_POST,
       eventProperties
     );
   };
 
   const {
-    createCommentOnMomka,
-    createQuoteOnMomka,
-    createPostOnMomka,
     createCommentOnChain,
-    createQuoteOnChain,
-    createPostOnChain,
+    createCommentOnMomka,
     createMomokaCommentTypedData,
-    createMomokaQuoteTypedData,
     createMomokaPostTypedData,
+    createMomokaQuoteTypedData,
     createOnchainCommentTypedData,
-    createOnchainQuoteTypedData,
     createOnchainPostTypedData,
+    createOnchainQuoteTypedData,
+    createPostOnChain,
+    createPostOnMomka,
+    createQuoteOnChain,
+    createQuoteOnMomka,
     error
   } = useCreatePublication({
+    commentOn: publication,
     onCompleted,
     onError,
-    commentOn: publication,
     quoteOn: quotedPublication as Quote
   });
 
-  useUpdateEffect(() => {
+  useEffect(() => {
     setPublicationContentError('');
   }, [audioPublication]);
 
+  useEffect(() => {
+    if (getMentions(publicationContent).length > 50) {
+      setExceededMentionsLimit(true);
+      setPublicationContentError('You can only mention 50 people at a time!');
+    } else {
+      setExceededMentionsLimit(false);
+      setPublicationContentError('');
+    }
+  }, [publicationContent]);
 
   useEffect(() => {
     editor.update(() => {
@@ -312,9 +328,11 @@ const NewPublication: FC<NewPublicationProps> = ({ publication }) => {
   const getAnimationUrl = () => {
     const fallback =
       'ipfs://bafkreiaoua5s4iyg4gkfjzl6mzgenw4qw7mwgxj7zf7ev7gga72o5d3lf4';
+
     if (attachments.length > 0 || hasAudio || hasVideo) {
       return attachments[0]?.uri || fallback;
     }
+
     return fallback;
   };
 
@@ -331,15 +349,10 @@ const NewPublication: FC<NewPublicationProps> = ({ publication }) => {
       return toast.error(Errors.SignWallet);
     }
 
-    if (handleWrongNetwork()) {
+if (handleWrongNetwork()) {
       return;
     }
-
-    if (isComment && publication.momoka?.proof && !isSponsored) {
-      return toast.error(
-        'Momoka is currently in beta - during this time certain actions are not available to all profiles.'
-      );
-    }
+    
 
     try {
       setIsLoading(true);
@@ -348,11 +361,13 @@ const NewPublication: FC<NewPublicationProps> = ({ publication }) => {
         const parsedData = AudioPublicationSchema.safeParse(audioPublication);
         if (!parsedData.success) {
           const issue = parsedData.error.issues[0];
+          setIsLoading(false);
           return setPublicationContentError(issue.message);
         }
       }
 
       if (publicationContent.length === 0 && attachments.length === 0) {
+        setIsLoading(false);
         return setPublicationContentError(
           `${
             isComment ? 'Comment' : isQuote ? 'Quote' : 'Post'
@@ -362,29 +377,39 @@ const NewPublication: FC<NewPublicationProps> = ({ publication }) => {
 
       setPublicationContentError('');
 
-      let processedPublicationContent =
-        publicationContent.length > 0 ? publicationContent : undefined;
-
+      let pollId;
       if (showPollEditor) {
-        processedPublicationContent = await createPoll();
+        pollId = await createPoll();
       }
-      if (showMarketEditor) {
-        processedPublicationContent = await createPolymarket();
-      }
+
+      const processedPublicationContent =
+        publicationContent.length > 0 ? publicationContent : undefined;
       const title = hasAudio
         ? audioPublication.title
         : `${getTitlePrefix()} by ${getProfile(currentProfile).slugWithPrefix}`;
+      const hasAttributes = Boolean(pollId);
 
       const baseMetadata = {
-        title,
         content: processedPublicationContent,
-       
-       
+        title,
+        ...(hasAttributes && {
+          attributes: [
+            ...(pollId
+              ? [
+                  {
+                    key: KNOWN_ATTRIBUTES.POLL_ID,
+                    type: MetadataAttributeType.STRING,
+                    value: pollId
+                  }
+                ]
+              : [])
+          ]
+        }),
         marketplace: {
-          name: title,
-          description: processedPublicationContent,
           animation_url: getAnimationUrl(),
-          external_url: `https://mycrumbs.xyz${getProfile(currentProfile).link}`
+          description: processedPublicationContent,
+          external_url: `https://mycrumbs.xyz${getProfile(currentProfile).link}`,
+          name: title
         }
       };
 
@@ -398,26 +423,27 @@ const NewPublication: FC<NewPublicationProps> = ({ publication }) => {
         openActionModules.push(nftOpenActionEmbed);
       }
 
-      if (collectModule.type) {
+      if (Boolean(collectModule.type)) {
         openActionModules.push({
           collectOpenAction: collectModuleParams(collectModule, currentProfile)
         });
       }
-      if (openAction) {
+
+      if (Boolean(openAction)) {
         openActionModules.push({ unknownOpenAction: openAction });
       }
 
       // Payload for the Momoka post/comment/quote
       const momokaRequest:
-        | MomokaPostRequest
         | MomokaCommentRequest
+        | MomokaPostRequest
         | MomokaQuoteRequest = {
-        ...(isComment && { commentOn: publication.id }),
+        ...(isComment && { commentOn: publication?.id }),
         ...(isQuote && { quoteOn: quotedPublication?.id }),
         contentURI: `ar://${arweaveId}`
       };
 
-      if (useMomoka && !openActionEmbed) {
+      if (useMomoka && !nftOpenActionEmbed) {
         if (canUseLensManager) {
           if (isComment) {
             return await createCommentOnMomka(
@@ -453,11 +479,11 @@ const NewPublication: FC<NewPublicationProps> = ({ publication }) => {
 
       // Payload for the post/comment/quote
       const onChainRequest:
-        | OnchainPostRequest
         | OnchainCommentRequest
+        | OnchainPostRequest
         | OnchainQuoteRequest = {
         contentURI: `ar://${arweaveId}`,
-        ...(isComment && { commentOn: publication.id }),
+        ...(isComment && { commentOn: publication?.id }),
         ...(isQuote && { quoteOn: quotedPublication?.id }),
         openActionModules,
         ...(onlyFollowers && {
@@ -468,9 +494,9 @@ const NewPublication: FC<NewPublicationProps> = ({ publication }) => {
               : {
                   degreesOfSeparationReferenceModule: {
                     commentsRestricted: true,
+                    degreesOfSeparation,
                     mirrorsRestricted: true,
-                    quotesRestricted: true,
-                    degreesOfSeparation
+                    quotesRestricted: true
                   }
                 }
         })
@@ -533,28 +559,30 @@ const NewPublication: FC<NewPublicationProps> = ({ publication }) => {
 
   const isSubmitDisabledByPoll = showPollEditor
     ? !pollConfig.options.length ||
-      pollConfig.options.some((choice: string | any[]) => !choice.length)
+      pollConfig.options.some((option: string | any[]) => !option.length)
     : false;
 
   const onDiscardClick = () => {
+    setQuotedPublication(null);
     setShowNewPostModal(false);
     setShowDiscardModal(false);
+    reset();
   };
 
-  useUnmountEffect(() => {
-    reset();
-  });
+  useUnmountEffect(() => reset());
 
   return (
     <Card
+      className={cn({
+        '!rounded-b-xl !rounded-t-none border-none': !isComment
+      })}
       onClick={() => setShowEmojiPicker(false)}
-      className={cn({ 'border-none dark:bg-gray-800/80': !isComment })}
     >
       {error ? (
         <ErrorMessage
-          title="Transaction failed!"
-          error={error}
           className="!rounded-none"
+          error={error}
+          title="Transaction failed!"
         />
       ) : null}
       <Editor />
@@ -564,8 +592,10 @@ const NewPublication: FC<NewPublicationProps> = ({ publication }) => {
         </div>
       ) : null}
       {showPollEditor ? <PollEditor /> : null}
-      {showMarketEditor ? <MarketEditor /> : null}
       {showLiveVideoEditor ? <LivestreamEditor /> : null}
+      <OpenActionsPreviews setNftOpenActionEmbed={setNftOpenActionEmbed} />
+      {!nftOpenActionEmbed ? <LinkPreviews /> : null}
+      <NewAttachments attachments={attachments} />
       {quotedPublication ? (
         <Wrapper className="m-5" zeroPadding>
           <QuotedPublication
@@ -574,12 +604,9 @@ const NewPublication: FC<NewPublicationProps> = ({ publication }) => {
           />
         </Wrapper>
       ) : null}
-       <OpenActionsPreviews setNftOpenActionEmbed={setNftOpenActionEmbed} />
-      {!nftOpenActionEmbed ? <LinkPreviews /> : null}
-      <OpenActions />
       <div className="divider mx-5" />
-      <div className="mx-5 my-3 block items-center sm:flex">
-        <div className="mx-1.5 flex items-center space-x-4">
+      <div className="block items-center px-5 py-3 sm:flex">
+        <div className="flex items-center space-x-4">
           <Attachment />
           <EmojiPicker
             setEmoji={(emoji) => {
@@ -609,34 +636,23 @@ const NewPublication: FC<NewPublicationProps> = ({ publication }) => {
             </>
           ) : null}
           <PollSettings />
-          <MarketSettings />
           {!isComment && <LivestreamSettings />}
+          
         </div>
-        <div className="ml-auto pt-2 sm:pt-0">
+        <div className="ml-auto mt-2 sm:mt-0">
           <Button
             disabled={
               isLoading ||
               isUploading ||
               isSubmitDisabledByPoll ||
-              videoThumbnail.uploading
-            }
-            icon={
-              isLoading ? (
-                <Spinner size="xs" />
-              ) : isComment ? (
-                <ChatBubbleOvalLeftEllipsisIcon className="h-4 w-4" />
-              ) : (
-                <PencilSquareIcon className="h-4 w-4" />
-              )
+              videoThumbnail.uploading ||
+              exceededMentionsLimit
             }
             onClick={createPublication}
           >
             {isComment ? 'Comment' : 'Post'}
           </Button>
         </div>
-      </div>
-      <div className="px-5 py-2">
-        <NewAttachments attachments={attachments} />
       </div>
       <Discard onDiscard={onDiscardClick} />
     </Card>

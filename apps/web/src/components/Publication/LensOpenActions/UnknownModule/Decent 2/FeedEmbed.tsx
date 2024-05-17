@@ -1,5 +1,5 @@
 
-import type { ActionData, PublicationInfo } from 'nft-openaction-kit';
+import type { ActionData, PublicationInfo, UIData } from 'nft-openaction-kit';
 import type { Address } from 'viem';
 
 import ActionInfo from '@components/Shared/Oembed/Nft/ActionInfo';
@@ -11,7 +11,7 @@ import { type FC, useEffect, useRef, useState } from 'react';
 
 import { useAccount } from 'wagmi';
 
-import { OPEN_ACTION_EMBED_TOOLTIP, openActionCTA } from '.';
+import { OPEN_ACTION_EMBED_TOOLTIP, OPEN_ACTION_NO_EMBED_TOOLTIP, openActionCTA } from '.';
 import DecentOpenActionModule from './Module';
 import { AnyPublication, MirrorablePublication, UnknownOpenActionModuleSettings } from '@lensshare/lens';
 import { Nft, OG } from '@lensshare/types/misc';
@@ -30,6 +30,30 @@ import { useNftOaCurrencyStore } from 'src/store/persisted/useNftOaCurrencyStore
 import getNftOpenActionKit from 'src/hooks/getNftOpenActionKit';
 import { useQuery } from '@tanstack/react-query';
 import cn from '@lensshare/ui/cn';
+import { create } from 'zustand';
+import { createTrackedSelector } from 'react-tracked';
+import { CursorArrowRaysIcon } from '@heroicons/react/24/outline';
+
+interface State {
+  selectedQuantity: number;
+  setSelectedQuantity: (selectedQuantity: number) => void;
+  setShowOpenActionModal: (showOpenActionModal: boolean) => void;
+  showOpenActionModal: boolean;
+}
+
+const store = create<State>((set) => ({
+  selectedQuantity: 1,
+  setSelectedQuantity: (selectedQuantity) => set({ selectedQuantity }),
+  setShowOpenActionModal: (showOpenActionModal) => set({ showOpenActionModal }),
+  showOpenActionModal: false
+}));
+
+export const useNftOpenActionStore = createTrackedSelector(store);
+
+enum ActionDataResponseType {
+  FULL = 'FULL',
+  PARTIAL = 'PARTIAL'
+}
 
 const formatPublicationData = (
   targetPublication: MirrorablePublication
@@ -67,9 +91,8 @@ const FeedEmbed: FC<FeedEmbedProps> = ({
 }) => {
   const { address } = useAccount();
   const { selectedNftOaCurrency } = useNftOaCurrencyStore();
+  const { selectedQuantity, setShowOpenActionModal } = useNftOpenActionStore();
 
-  const [showOpenActionModal, setShowOpenActionModal] = useState(false);
-  const [selectedQuantity, setSelectedQuantity] = useState(1);
   const [nft, setNft] = useState({
     chain: og.nft?.chain || null,
     collectionName: og.nft?.collectionName || '',
@@ -93,7 +116,23 @@ const FeedEmbed: FC<FeedEmbedProps> = ({
     (module) => module.contract.address === VerifiedOpenActionModules.DecentNFT
   );
 
-  const getActionData = async (): Promise<ActionData> => {
+  const getUiData = async () => {
+    const nftOpenActionKit = getNftOpenActionKit();
+    try {
+      const uiDataResult = await nftOpenActionKit.generateUiData({
+        contentURI: og.url
+      });
+
+      return uiDataResult;
+    } catch (error) {
+      return null;
+    }
+  };
+
+  const getActionData = async (): Promise<{
+    data: ActionData | null | UIData;
+    type: ActionDataResponseType;
+  }> => {
     const nftOpenActionKit = getNftOpenActionKit();
     const pubInfo = formatPublicationData(targetPublication);
 
@@ -123,12 +162,27 @@ const FeedEmbed: FC<FeedEmbedProps> = ({
           schema: actionData.uiData.tokenStandard || prevNft.schema
         }));
 
-        return actionData;
+        return { data: actionData, type: ActionDataResponseType.FULL };
+      })
+      .catch(async () => {
+        return await getUiData().then((uiData) => {
+          setNft((prevNft) => ({
+            ...prevNft,
+            chain: uiData?.dstChainId.toString() || prevNft.chain,
+            collectionName: uiData?.nftName || prevNft.collectionName,
+            creatorAddress: (uiData?.nftCreatorAddress ||
+              prevNft.creatorAddress) as `0x{string}`,
+            mediaUrl: sanitizeDStorageUrl(uiData?.nftUri) || prevNft.mediaUrl,
+            schema: uiData?.tokenStandard || prevNft.schema
+          }));
+
+          return { data: uiData, type: ActionDataResponseType.PARTIAL };
+        });
       });
   };
 
   const {
-    data: actionData,
+    data: actionDataResponse,
     isLoading: loadingActionData,
     refetch
   } = useQuery({
@@ -146,6 +200,21 @@ const FeedEmbed: FC<FeedEmbedProps> = ({
       targetPublication?.id
     ]
   });
+
+  const [actionData, setActionData] = useState(actionDataResponse?.data);
+  const [dataType, setDataType] = useState(actionDataResponse?.type);
+
+  useEffect(() => {
+    if (actionDataResponse?.data) {
+      setActionData(actionDataResponse?.data);
+    }
+  }, [actionDataResponse?.data]);
+
+  useEffect(() => {
+    if (actionDataResponse?.type) {
+      setDataType(actionDataResponse?.type);
+    }
+  }, [actionDataResponse?.type]);
 
   useEffect(() => {
     refetch();
@@ -175,43 +244,57 @@ const FeedEmbed: FC<FeedEmbedProps> = ({
           />
         </div>
         {actionData && Boolean(nft) && !loadingActionData ? (
-          <div className="flex flex-col items-start justify-between gap-4 border-t p-4 sm:flex-row sm:items-center sm:gap-0 dark:border-gray-700">
-            {nft.creatorAddress ? (
-              <ActionInfo
-                actionData={actionData}
-                collectionName={nft.collectionName}
-                creatorAddress={nft.creatorAddress}
-                uiData={actionData?.uiData}
-              />
-            ) : null}
-            <Button
-              className="w-full sm:w-auto"
-              onClick={() => {
-                setShowOpenActionModal(true);
-                Leafwatch.track(PUBLICATION.OPEN_ACTIONS.DECENT.OPEN_DECENT, {
-                  publication_id: publication.id
-                });
-              }}
-              size="lg"
-            >
-              {openActionCTA(actionData.uiData.platformName)}
-            </Button>
+          <div className="flex items-center justify-between border-t px-4 py-2 dark:border-gray-700">
+            <ActionInfo
+              collectionName={nft.collectionName}
+              uiData={
+                dataType === ActionDataResponseType.FULL
+                  ? (actionData as ActionData)?.uiData
+                  : (actionData as UIData)
+              }
+            />
+            {dataType === ActionDataResponseType.FULL ? (
+              <Button
+                className="px-4 py-1"
+                icon={<CursorArrowRaysIcon className="w-4 h-4" />}
+                onClick={() => {
+                  setShowOpenActionModal(true);
+                  Leafwatch.track(PUBLICATION.OPEN_ACTIONS.DECENT.OPEN_DECENT, {
+                    publication_id: publication.id
+                  });
+                }}
+                size="sm"
+              >
+                {openActionCTA((actionData as ActionData).uiData?.platformName)}
+              </Button>
+            ) : (
+              <Tooltip
+                content={<span>{OPEN_ACTION_NO_EMBED_TOOLTIP}</span>}
+                placement="top"
+              >
+                <Button
+                  className="px-4 py-1"
+                  disabled
+                  icon={<CursorArrowRaysIcon className="w-4 h-4" />}
+                  size="sm"
+                >
+                  Mint
+                </Button>
+              </Tooltip>
+            )}
           </div>
         ) : loadingActionData ? (
           <DecentOpenActionShimmer />
         ) : null}
       </Card>
-      <DecentOpenActionModule
-        actionData={actionData}
-        loadingCurrency={loadingActionData}
-        module={module as UnknownOpenActionModuleSettings}
-        nft={nft}
-        onClose={() => setShowOpenActionModal(false)}
-        publication={targetPublication}
-        selectedQuantity={selectedQuantity}
-        setSelectedQuantity={setSelectedQuantity}
-        show={showOpenActionModal}
-      />
+      {dataType === ActionDataResponseType.FULL ? (
+        <DecentOpenActionModule
+          actionData={actionData as ActionData}
+          module={module as UnknownOpenActionModuleSettings}
+          nft={nft}
+          publication={targetPublication}
+        />
+      ) : null}
     </>
   );
 };

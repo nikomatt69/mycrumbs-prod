@@ -15,7 +15,7 @@ import getURLs from '@lensshare/lib/getURLs';
 import EmptyOembed from '@components/Shared/Oembed/EmptyOembed';
 
 export const OPEN_ACTION_EMBED_TOOLTIP = 'Open action embedded';
-export const OPEN_ACTION_NO_EMBED_TOOLTIP = 'Unable to embed open action';
+export const OPEN_ACTION_NO_EMBED_TOOLTIP = 'Mint not availabe anymore';
 
 export const openActionCTA = (platformName?: string): string => {
   const name = platformName || '';

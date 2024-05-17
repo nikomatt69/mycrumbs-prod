@@ -10,8 +10,11 @@ import createIdbStorage from '../lib/createIdbStorage';
 interface State {
   addTransaction: (txn: OptimisticTransaction) => void;
   hydrateTxnQueue: () => OptimisticTransaction[];
+  indexedPostHash: null | string;
+ 
   removeTransaction: (hashOrId: string) => void;
   reset: () => void;
+  setIndexedPostHash: (hash: string) => void;
   txnQueue: OptimisticTransaction[];
 }
 
@@ -23,6 +26,8 @@ const store = create(
       hydrateTxnQueue: () => {
         return get().txnQueue;
       },
+      indexedPostHash: null,
+    
       removeTransaction: (hashOrId) =>
         set((state) => ({
           txnQueue: state.txnQueue.filter(
@@ -30,14 +35,12 @@ const store = create(
           )
         })),
       reset: () => set({ txnQueue: [] }),
+      setIndexedPostHash: (hash) => set({ indexedPostHash: hash }),
       txnQueue: []
     }),
-    {
-      name: IndexDB.TransactionStore,
-      storage: createIdbStorage()
-    }
+    { name: IndexDB.TransactionStore, storage: createIdbStorage() }
   )
 );
 
 export const hydrateTxnQueue = () => store.getState().hydrateTxnQueue();
-export const useTransactionStore = createTrackedSelector(store);
+export const useTransactionStore = store;

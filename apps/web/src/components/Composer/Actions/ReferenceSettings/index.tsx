@@ -17,12 +17,12 @@ import { useReferenceModuleStore } from 'src/store/non-persisted/useReferenceMod
 
 const ReferenceSettings: FC = () => {
   const {
-    selectedReferenceModule,
-    setSelectedReferenceModule,
-    onlyFollowers,
-    setOnlyFollowers,
     degreesOfSeparation,
-    setDegreesOfSeparation
+    onlyFollowers,
+    selectedReferenceModule,
+    setDegreesOfSeparation,
+    setOnlyFollowers,
+    setSelectedReferenceModule
   } = useReferenceModuleStore();
 
   const MY_FOLLOWS = 'My follows';
@@ -44,13 +44,13 @@ const ReferenceSettings: FC = () => {
     isDegreesOfSeparationReferenceModule && degreesOfSeparation === 2;
 
   interface ModuleProps {
-    title: string;
     icon: ReactNode;
     onClick: () => void;
     selected: boolean;
+    title: string;
   }
 
-  const Module: FC<ModuleProps> = ({ title, icon, onClick, selected }) => (
+  const Module: FC<ModuleProps> = ({ icon, onClick, selected, title }) => (
     <Menu.Item
       as="a"
       className={cn({ 'dropdown-active': selected }, 'menu-item')}
@@ -58,10 +58,10 @@ const ReferenceSettings: FC = () => {
     >
       <div className="flex items-center justify-between space-x-2">
         <div className="flex items-center space-x-1.5">
-          <div className="text-brand">{icon}</div>
+          {icon}
           <div>{title}</div>
         </div>
-        {selected ? <CheckCircleIcon className="w-5 text-green-500" /> : null}
+        {selected ? <CheckCircleIcon className="w-5 h-5" /> : null}
       </div>
     </Menu.Item>
   );
@@ -69,82 +69,85 @@ const ReferenceSettings: FC = () => {
   const getSelectedReferenceModuleTooltipText = () => {
     if (isMyFollowers) {
       return 'My followers can comment and mirror';
-    } else if (isMyFollows) {
-      return 'My follows can comment and mirror';
-    } else if (isFriendsOfFriends) {
-      return 'Friend of friends can comment and mirror';
-    } else {
-      return 'Everyone can comment and mirror';
     }
+
+    if (isMyFollows) {
+      return 'My follows can comment and mirror';
+    }
+
+    if (isFriendsOfFriends) {
+      return 'Friend of friends can comment and mirror';
+    }
+
+    return 'Everyone can comment and mirror';
   };
 
   return (
-    <Menu as="div">
-      <Tooltip
-        placement="top"
-        content={getSelectedReferenceModuleTooltipText()}
-      >
-        <Menu.Button as={motion.button} whileTap={{ scale: 0.9 }}>
-          <div className="text-brand">
-            {isEveryone ? <GlobeAltIcon className="w-5" /> : null}
-            {isMyFollowers ? <UsersIcon className="w-5" /> : null}
-            {isMyFollows ? <UserPlusIcon className="w-5" /> : null}
-            {isFriendsOfFriends ? <UserGroupIcon className="w-5" /> : null}
-          </div>
-        </Menu.Button>
-      </Tooltip>
-      <MenuTransition>
-        <Menu.Items
-          static
-          className="absolute z-[5] mt-2 rounded-xl border bg-white py-1 shadow-sm focus:outline-none dark:border-gray-700 dark:bg-gray-900"
+    <Tooltip content={getSelectedReferenceModuleTooltipText()} placement="top">
+      <Menu as="div">
+        <Menu.Button
+          as={motion.button}
+          className="rounded-full outline-offset-8"
+          whileTap={{ scale: 0.9 }}
         >
-          <Module
-            title={EVERYONE}
-            selected={isEveryone}
-            icon={<GlobeAltIcon className="h-4 w-4" />}
-            onClick={() => {
-              setSelectedReferenceModule(
-                ReferenceModuleType.FollowerOnlyReferenceModule
-              );
-              setOnlyFollowers(false);
-            }}
-          />
-          <Module
-            title={MY_FOLLOWERS}
-            selected={isMyFollowers}
-            icon={<UsersIcon className="h-4 w-4" />}
-            onClick={() => {
-              setSelectedReferenceModule(
-                ReferenceModuleType.FollowerOnlyReferenceModule
-              );
-              setOnlyFollowers(true);
-            }}
-          />
-          <Module
-            title={MY_FOLLOWS}
-            selected={isMyFollows}
-            icon={<UserPlusIcon className="h-4 w-4" />}
-            onClick={() => {
-              setSelectedReferenceModule(
-                ReferenceModuleType.DegreesOfSeparationReferenceModule
-              );
-              setDegreesOfSeparation(1);
-            }}
-          />
-          <Module
-            title={FRIENDS_OF_FRIENDS}
-            selected={isFriendsOfFriends}
-            icon={<UserGroupIcon className="h-4 w-4" />}
-            onClick={() => {
-              setSelectedReferenceModule(
-                ReferenceModuleType.DegreesOfSeparationReferenceModule
-              );
-              setDegreesOfSeparation(2);
-            }}
-          />
-        </Menu.Items>
-      </MenuTransition>
-    </Menu>
+          {isEveryone ? <GlobeAltIcon className="w-5" /> : null}
+          {isMyFollowers ? <UsersIcon className="w-5" /> : null}
+          {isMyFollows ? <UserPlusIcon className="w-5" /> : null}
+          {isFriendsOfFriends ? <UserGroupIcon className="w-5" /> : null}
+        </Menu.Button>
+        <MenuTransition>
+          <Menu.Items
+            className="absolute z-[5] mt-2 rounded-xl border bg-white py-1 shadow-sm focus:outline-none dark:border-gray-700 dark:bg-gray-900"
+            static
+          >
+            <Module
+              icon={<GlobeAltIcon className="w-4 h-4" />}
+              onClick={() => {
+                setSelectedReferenceModule(
+                  ReferenceModuleType.FollowerOnlyReferenceModule
+                );
+                setOnlyFollowers(false);
+              }}
+              selected={isEveryone}
+              title={EVERYONE}
+            />
+            <Module
+              icon={<UsersIcon className="w-4 h-4" />}
+              onClick={() => {
+                setSelectedReferenceModule(
+                  ReferenceModuleType.FollowerOnlyReferenceModule
+                );
+                setOnlyFollowers(true);
+              }}
+              selected={isMyFollowers}
+              title={MY_FOLLOWERS}
+            />
+            <Module
+              icon={<UserPlusIcon className="w-4 h-4" />}
+              onClick={() => {
+                setSelectedReferenceModule(
+                  ReferenceModuleType.DegreesOfSeparationReferenceModule
+                );
+                setDegreesOfSeparation(1);
+              }}
+              selected={isMyFollows}
+              title={MY_FOLLOWS}
+            />
+            <Module
+              icon={<UserGroupIcon className="w-4 h-4" />}
+              onClick={() => {
+                setSelectedReferenceModule(
+                  ReferenceModuleType.DegreesOfSeparationReferenceModule
+                );
+                setDegreesOfSeparation(2);
+              }}
+              selected={isFriendsOfFriends}
+              title={FRIENDS_OF_FRIENDS}
+            />
+          </Menu.Items>
+        </MenuTransition>
+      </Menu>
+    </Tooltip>
   );
 };
 

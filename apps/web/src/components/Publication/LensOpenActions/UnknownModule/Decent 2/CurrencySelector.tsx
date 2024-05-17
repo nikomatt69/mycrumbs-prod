@@ -30,7 +30,6 @@ const CurrencySelector: FC<CurrencySelectorProps> = ({ onSelectCurrency }) => {
     useBalance({
       address,
       chainId: 137,
-      
       token: SUPPORTED_DECENT_OA_TOKENS.WMATIC.address
     });
 
@@ -90,7 +89,7 @@ const CurrencySelector: FC<CurrencySelectorProps> = ({ onSelectCurrency }) => {
                 <div className="relative">
                   <img
                     alt={token.symbol}
-                    className="h-10 w-1010"
+                    className="w-10 h-10"
                     height={40}
                     src={getTokenImage(token.symbol)}
                     title={token.name}

@@ -86,14 +86,8 @@ const DecentOpenActionPreview: FC<DecentOpenActionPreviewProps> = ({
       </div>
       {Boolean(uiData) && Boolean(nft) && !isLoading ? (
         <div className="flex items-center justify-between border-t px-4 py-2 dark:border-gray-700">
-          {uiData && nft.creatorAddress ? (
-            <ActionInfo
-              collectionName={nft.collectionName}
-              creatorAddress={nft.creatorAddress}
-              hidePrice
-              isPreview
-              uiData={uiData}
-            />
+          {uiData ? (
+            <ActionInfo collectionName={nft.collectionName} uiData={uiData} />
           ) : null}
           {openActionEmbedLoading ? (
             <Spinner size="xs" />
@@ -103,8 +97,9 @@ const DecentOpenActionPreview: FC<DecentOpenActionPreviewProps> = ({
               placement="top"
             >
               <Button
-                icon={<CursorArrowRaysIcon className="h-5 w-5" />}
-                size="md"
+                className="px-4 py-1"
+                icon={<CursorArrowRaysIcon className="w-4 h-4" />}
+                size="sm"
               >
                 {openActionCTA(uiData?.platformName)}
               </Button>

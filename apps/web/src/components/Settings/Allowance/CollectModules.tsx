@@ -65,21 +65,24 @@ const CollectModules: FC = () => {
       <div className="divider my-5" />
       <div className="label mt-6">Select currency</div>
       <Select
-        defaultValue={DEFAULT_COLLECT_TOKEN}
-        onChange={(e) => {
           
-          setSelectedCurrency(
-            (allowedTokens as Array<any>)?.find((token: { contractAddress: any; }) => token.contractAddress) ||
-              null
-          );
-        }}
-        options={allowedTokens && allowedTokens.map((token: AllowedToken) => ({
-          icon: `${STATIC_ASSETS_URL}/tokens/${token.symbol}.svg`,
-          label: token.name,
-          selected: token.contractAddress === selectedCurrency,
-          value: token.contractAddress
-        }))}
-      />
+          onChange={(event) => {
+            const value = event.target.value as string;
+            setCurrencyLoading(true);
+            setSelectedCurrency(value);
+            refetch({
+              request: getAllowancePayload(value)
+            }).finally(() => setCurrencyLoading(false));
+          }}
+          options={
+            allowedTokens?.map((token) => ({
+              icon: `${STATIC_ASSETS_URL}/images/tokens/${token.symbol}.svg`,
+              label: token.name,
+              selected: token.contractAddress === selectedCurrency,
+              value: token.contractAddress
+            })) || [{ label: 'Loading...', value: 'Loading...' }]
+          }
+        />
       {loading || currencyLoading ? (
         <div className="py-5">
           <Loader />
