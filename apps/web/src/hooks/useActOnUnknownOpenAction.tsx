@@ -88,7 +88,9 @@ const useActOnUnknownOpenAction = ({
       onCompleted: async ({ createActOnOpenActionTypedData }) => {
         try {
           const { id, typedData } = createActOnOpenActionTypedData;
-          await handleWrongNetwork();
+          if (handleWrongNetwork()) {
+            return;
+          }
 
           if (canBroadcast) {
             const signature = await signTypedDataAsync(getSignature(typedData));

@@ -29,12 +29,13 @@ const useActOnUnknownOpenAction = ({
 }: CreatePublicationProps) => {
   const { currentProfile } = useAppStore();
   const {
-    setLensHubOnchainSigNonce,
+    decrementLensHubOnchainSigNonce,
+    incrementLensHubOnchainSigNonce,
     lensHubOnchainSigNonce
   } = useNonceStore();
   const [isLoading, setIsLoading] = useState(false);
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
-  const [relayStatus, setRelayStatus] = useState<string | undefined>();
+  const [txId, setTxId] = useState<string | undefined>();
   const handleWrongNetwork = useHandleWrongNetwork();
 
   const { canBroadcast, canUseLensManager } =
@@ -57,22 +58,23 @@ const useActOnUnknownOpenAction = ({
 
     onSuccess?.();
     setIsLoading(false);
-    toast.success(successToast || 'Success!');
+    toast.success(successToast || 'Success!', { duration: 5000 });
   };
 
-  const { signTypedDataAsync } = useSignTypedData({ onError });
+  const { signTypedDataAsync } = useSignTypedData({ onError } );
   const { write } = useContractWrite({
     abi: LensHub,
     address: LENSHUB_PROXY,
     functionName: 'act',
-    onError: (error: any) => {
-      onError(error);
-      setLensHubOnchainSigNonce(lensHubOnchainSigNonce - 1);
-    },
-    onSuccess: () => {
-      onCompleted();
-      setLensHubOnchainSigNonce(lensHubOnchainSigNonce + 1);
-    }
+      onError: (error: Error) => {
+        onError(error);
+        decrementLensHubOnchainSigNonce();
+      },
+      onSuccess: () => {
+        onCompleted();
+        incrementLensHubOnchainSigNonce();
+      }
+    
   });
 
 
@@ -97,23 +99,19 @@ const useActOnUnknownOpenAction = ({
             });
             if (data?.broadcastOnchain.__typename === 'RelayError') {
               const txResult = await write({ args: [typedData.value] });
-              if (txResult !== undefined) {
-                setTxHash(txResult);
-              }
+              setTxHash(txResult as `0x${string}` | undefined);
               return txResult;
             }
             if (data?.broadcastOnchain.__typename === 'RelaySuccess') {
-              setRelayStatus(data?.broadcastOnchain.txId);
+              setTxId(data?.broadcastOnchain.txId);
             }
-            setLensHubOnchainSigNonce(lensHubOnchainSigNonce + 1);
+            incrementLensHubOnchainSigNonce();
 
             return;
           }
 
           const txResult = await write({ args: [typedData.value] });
-          if (txResult !== undefined) {
-            setTxHash(txResult);
-          }
+          setTxHash(txResult as `0x${string}` | undefined);
           return txResult;
         } catch (error) {
           onError(error);
@@ -137,6 +135,10 @@ const useActOnUnknownOpenAction = ({
 
     if (errors?.toString().includes('has already acted on')) {
       return;
+    }
+
+    if (data?.actOnOpenAction.__typename === 'RelaySuccess') {
+      setTxId(data?.actOnOpenAction.txId);
     }
 
     if (
@@ -182,7 +184,7 @@ const useActOnUnknownOpenAction = ({
     }
   };
 
-  return { actOnUnknownOpenAction, isLoading, relayStatus, txHash };
+  return { actOnUnknownOpenAction, isLoading, txHash, txId };
 };
 
 export default useActOnUnknownOpenAction;

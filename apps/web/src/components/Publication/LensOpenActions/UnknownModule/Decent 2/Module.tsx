@@ -241,7 +241,9 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
     if (walletClient) {
       setIsPermit2Loading(true);
       try {
-        await handleWrongNetwork();
+        if (handleWrongNetwork()) {
+            return;
+          }
         const hash = await walletClient.writeContract({
           abi: parseAbi(['function approve(address, uint256) returns (bool)']),
           address: assetAddress as `0x${string}`,
@@ -279,7 +281,9 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
           chainId: actionData.uiData.dstChainId,
           data: actionData.actArguments.actionModuleData
         });
-        await handleWrongNetwork();
+        if (handleWrongNetwork()) {
+            return;
+          }
         const permit2Signature = await signPermitSignature(
           walletClient,
           signatureAmount,
