@@ -12,7 +12,11 @@ const getProxyUrl = (url: string) => {
     return null;
   }
 
-  
+  const isDirect = directUrls.some((directUrl) => url.includes(directUrl));
+
+  if (isDirect) {
+    return url;
+  }
   const height =  400 ;
   const width = 400 ;
 
