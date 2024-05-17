@@ -23,8 +23,7 @@ import NotSupportedPublication from './NotSupportedPublication';
 import getSnapshotProposalId from '@lib/getSnapshotProposalId';
 import EncryptedPublication from './EncryptedPublication';
 import { CardBody, CardContainer } from '@lensshare/ui/src/3DCard';
-import Embed from './HeyOpenActions/Embed';
-import Nft from './HeyOpenActions/Nft';
+
 import OpenActionOnBody from './LensOpenActions/OnBody';
 import { useProfileThemeStore } from '@components/Profile';
 import { useRouter } from 'next/router';

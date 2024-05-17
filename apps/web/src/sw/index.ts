@@ -2,7 +2,7 @@
 
 declare let self: ServiceWorkerGlobalScope;
 
-const impressionsEndpoint = `https://api.mycrumbs.xyz/leafwatch/impressions`;
+const impressionsEndpoint = `https://mycrumbs.xyz/api/leafwatch/impressions`;
 const publicationsVisibilityInterval = 5000;
 let viewerId: null | string = null;
 let visiblePublicationsSet = new Set();

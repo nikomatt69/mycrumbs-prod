@@ -10,6 +10,8 @@ interface State {
   authModalType: AuthModalType;
   reportingProfile: null | Profile;
   reportingPublicationId: null | string;
+  score: null | number;
+  scoreViewerProfileId: null | string;
   setShowAuthModal: (
     showAuthModal: boolean,
     authModalType?: AuthModalType
@@ -30,7 +32,11 @@ interface State {
     reportProfileModal: boolean,
     reportingProfile: null | Profile
   ) => void;
-  setShowWrongNetworkModal: (showWrongNetworkModal: boolean) => void;
+  setShowScoreModal: (
+    showScoreModal: boolean,
+    score: null | number,
+    scoreViewerProfileId: null | string
+  ) => void;
   showAuthModal: boolean;
   showDiscardModal: boolean;
   showInvitesModal: boolean;
@@ -40,13 +46,17 @@ interface State {
   showProfileSwitchModal: boolean;
   showPublicationReportModal: boolean;
   showReportProfileModal: boolean;
+  showScoreModal: boolean;
   showWrongNetworkModal: boolean;
+  setShowWrongNetworkModal: (showWrongNetworkModal: boolean) => void;
 }
 
 const store = create<State>((set) => ({
   authModalType: 'login',
   reportingProfile: null,
   reportingPublicationId: null,
+  score: null,
+  scoreViewerProfileId: null,
   setShowAuthModal: (showAuthModal, authModalType) => {
     set(() => ({ authModalType, showAuthModal }));
   },
@@ -68,7 +78,9 @@ const store = create<State>((set) => ({
     })),
   setShowReportProfileModal: (showReportProfileModal, reportingProfile) =>
     set(() => ({ reportingProfile, showReportProfileModal })),
-  setShowWrongNetworkModal: (showWrongNetworkModal) =>
+  setShowScoreModal: (showScoreModal, score, scoreViewerProfileId) =>
+    set(() => ({ score, scoreViewerProfileId, showScoreModal })),
+    setShowWrongNetworkModal: (showWrongNetworkModal) =>
     set(() => ({ showWrongNetworkModal })),
   showAuthModal: false,
   showDiscardModal: false,
@@ -79,7 +91,9 @@ const store = create<State>((set) => ({
   showProfileSwitchModal: false,
   showPublicationReportModal: false,
   showReportProfileModal: false,
+  showScoreModal: false,
   showWrongNetworkModal: false
+
 }));
 
 export const useGlobalModalStateStore = createTrackedSelector(store);

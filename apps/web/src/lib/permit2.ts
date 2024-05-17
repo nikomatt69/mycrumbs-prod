@@ -122,9 +122,7 @@ export const getPermit2Allowance = async ({
 }) => {
   const client = createPublicClient({
     chain: IS_MAINNET ? polygon : polygon,
-    transport: IS_MAINNET
-      ? fallback([http(POLYGON_RPC_URL)])
-      : fallback([http(POLYGON_RPC_URL)])
+    transport: http(RPC_URL)
   });
 
   if (hash) {
@@ -155,7 +153,7 @@ export const constructPermit2Sig = ({
   const PERMIT2_DOMAIN_NAME = 'Permit2';
   const permit2Address = PERMIT_2_ADDRESS;
   const domain = {
-    chainId: IS_MAINNET ? 137 : 80001,
+    chainId: IS_MAINNET ? 137 : 137,
     name: PERMIT2_DOMAIN_NAME,
     verifyingContract: permit2Address as `0x${string}`
   };

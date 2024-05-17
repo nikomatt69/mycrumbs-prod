@@ -81,26 +81,27 @@ export const PUBLICATION = {
   },
   OPEN_ACTIONS: {
     DECENT: {
-      OPEN_DECENT: 'Open decent.xyz open action modal',
-      TIP: 'Execute decent.xyz open action'
+      OPEN_DECENT: 'Open decent.xyz open action modal'
     },
-    ZORA_NFT: {
-      OPEN_LINK: 'Open Zora link',
-      OPEN_MINT: 'Open Zora mint modal',
-      MINT: 'Mint Zora NFT'
-    },
-    BASEPAINT_NFT: {
-      OPEN_LINK: 'Open BasePaint link',
-      OPEN_OPENSEA_LINK: 'Open BasePaint OpenSea link',
-      OPEN_MINT: 'Open BasePaint mint modal',
-      MINT: 'Mint BasePaint NFT'
-    },
-    UNLONELY_CHANNEL: {
-      OPEN_LINK: 'Open Unlonely Channel link'
-    },
-    UNLONELY_NFC: {
-      OPEN_LINK: 'Open Unlonely NFC link'
-    }
+    TIP: 'Execute decent.xyz open action',
+    SWAP: { SWAP: 'Swap OA: Swap' }
+  },
+  ZORA_NFT: {
+    OPEN_LINK: 'Open Zora link',
+    OPEN_MINT: 'Open Zora mint modal',
+    MINT: 'Mint Zora NFT'
+  },
+  BASEPAINT_NFT: {
+    OPEN_LINK: 'Open BasePaint link',
+    OPEN_OPENSEA_LINK: 'Open BasePaint OpenSea link',
+    OPEN_MINT: 'Open BasePaint mint modal',
+    MINT: 'Mint BasePaint NFT'
+  },
+  UNLONELY_CHANNEL: {
+    OPEN_LINK: 'Open Unlonely Channel link'
+  },
+  UNLONELY_NFC: {
+    OPEN_LINK: 'Open Unlonely NFC link'
   }
 };
 
@@ -139,8 +140,8 @@ export const SETTINGS = {
   PREFERENCES: {
     TOGGLE_HIGH_SIGNAL_NOTIFICATION_FILTER:
       'Toggle high signal notification filter',
-      TOGGLE_IS_PRIDE: 'Toggle is pride',
-      TOGGLE_PUSH_NOTIFICATIONS: 'Toggle push notifications'
+    TOGGLE_IS_PRIDE: 'Toggle is pride',
+    TOGGLE_PUSH_NOTIFICATIONS: 'Toggle push notifications'
   },
   MANAGER: {
     TOGGLE: 'Toggle lens manager',
@@ -234,6 +235,7 @@ export enum FollowUnfollowSource {
 
 export const ALL_EVENTS = {
   PAGEVIEW,
+  ...PROFILE,
   ...AUTH,
   ...PROFILE,
   ...PUBLICATION,

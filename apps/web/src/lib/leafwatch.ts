@@ -32,7 +32,7 @@ export const Leafwatch = {
     worker.onmessage = (event: MessageEvent) => {
       const response = event.data;
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', `${HEY_API_URL}/leafwatch/events`);
+      xhr.open('POST', `/api/leafwatch/events`);
       xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
       xhr.setRequestHeader('Content-Type', 'application/json');
       xhr.setRequestHeader('x-access-token', response.accessToken);

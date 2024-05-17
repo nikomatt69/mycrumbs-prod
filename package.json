@@ -38,6 +38,7 @@
     "@growthbook/growthbook": "^0.30.0",
     "@huddle01/react": "^0.0.17",
     "@irys/sdk": "^0.1.1",
+    "@lens-protocol/metadata": "^1.2.0",
     "@mui/material": "^5.14.19",
     "@pushprotocol/restapi": "^1.4.44",
     "@radix-ui/react-collapsible": "^1.0.3",

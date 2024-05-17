@@ -14,7 +14,7 @@ const k3lGlobalFeed = async (
         limit,
         offset
       }),
-      { headers: { 'User-Agent': 'Hey.xyz' } }
+      { headers: { 'User-Agent': 'MyCrumbs' } }
     );
     const json: {
       postId: string;

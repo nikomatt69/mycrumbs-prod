@@ -7,10 +7,7 @@ import type { ActionData, UIData } from 'nft-openaction-kit';
 import type { FC } from 'react';
 import type { Address } from 'viem';
 import {Image} from '@lensshare/ui'
-import { useOaCurrency } from 'src/store/persisted/useOaCurrency';
-import cn from '@lensshare/ui/cn';
-import { useAllowedTokensStore } from 'src/store/persisted/useAllowedTokensStore';
-import { useNftOaCurrencyStore } from 'src/store/persisted/useNftOaCurrencyStore';
+
 
 
 interface ActionInfoProps {

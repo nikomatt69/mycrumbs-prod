@@ -6162,11 +6162,12 @@
   resolved "https://registry.yarnpkg.com/@layerzerolabs/scan-client/-/scan-client-0.0.8.tgz#38316cde50c06556bb81b74f18d10a36b637eefb"
   integrity sha512-V9vvt9GW0+AHoWXfOSNmZ9WUa28fVBmC93J/f9RLeDMEy5VR8srW2Du5pf1mMAg6ncEL0kQ1xkVCu+X6ARFBtQ==
 
-"@lens-protocol/metadata@1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@lens-protocol/metadata/-/metadata-1.0.3.tgz#61d169ceaa445eef62f00d132c6f294406d95972"
-  integrity sha512-8Ql91urT1Anvrndu+QpNm7nMueJIHXQTilH50LjSbfLr1v6LMAeFpa55ZWMxNofvlAMdiJt/bUVjWaXoRP6FfQ==
+"@lens-protocol/metadata@1.2.0", "@lens-protocol/metadata@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@lens-protocol/metadata/-/metadata-1.2.0.tgz#bb5ee5b9e01237e939c019de5c972931869b576e"
+  integrity sha512-fUB8+GvYiVt1uMqYJi/iN/aw/lzE+oEfpTjraTI87MqWPgYubbx0vFySjJs7uAdI7oftczvlwhthmMUl5DDuGA==
   dependencies:
+    json-stable-stringify "^1.1.1"
     uuid "^9.0.1"
 
 "@lexical/clipboard@0.12.2":
@@ -22112,6 +22113,16 @@ json-stable-stringify@^1.0.1:
   dependencies:
     jsonify "^0.0.1"
 
+json-stable-stringify@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/json-stable-stringify/-/json-stable-stringify-1.1.1.tgz#52d4361b47d49168bcc4e564189a42e5a7439454"
+  integrity sha512-SU/971Kt5qVQfJpyDveVhQ/vya+5hvrjClFOcr8c0Fq5aODJjMwutrOfCU+eCnVD5gpx1Q3fEqkyom77zH1iIg==
+  dependencies:
+    call-bind "^1.0.5"
+    isarray "^2.0.5"
+    jsonify "^0.0.1"
+    object-keys "^1.1.1"
+
 json-stringify-safe@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
@@ -24006,10 +24017,10 @@ next@^14.0.3:
     "@next/swc-win32-ia32-msvc" "14.1.4"
     "@next/swc-win32-x64-msvc" "14.1.4"
 
-nft-openaction-kit@^1.0.24:
-  version "1.0.27"
-  resolved "https://registry.yarnpkg.com/nft-openaction-kit/-/nft-openaction-kit-1.0.27.tgz#ab7da2b3448de486a64145c13035c0c4ac7082b7"
-  integrity sha512-wk30kPNQM0Kx3z80s74/ZuPvyaVKT1NT/VGsizrubZQc5zJxcG6xGTwX/XKwzzl7N3casdlpTsr8NRZCtKLqWQ==
+nft-openaction-kit@^1.0.28:
+  version "1.0.28"
+  resolved "https://registry.yarnpkg.com/nft-openaction-kit/-/nft-openaction-kit-1.0.28.tgz#a35dcd660b95a0239ef5e0f7ef0a79d8a8a99a3e"
+  integrity sha512-j1FeSGHxBRd+3HITQYFweC/Bnn65oSLfIe9TrnE82q8FyDieBB2O0hMn2W0za9iEraAe8w/qgCXY6zjDwLiX5Q==
   dependencies:
     axios "^1.6.7"
     viem "^2.1.1"

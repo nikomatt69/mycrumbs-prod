@@ -24,8 +24,8 @@ import { Button, Card, Spinner, Tooltip, Image } from '@lensshare/ui';
 import { PUBLICATION } from '@lensshare/data/tracking';
 import DecentOpenActionShimmer from './Decent Open Action Shimmer';
 import stopEventPropagation from '@lensshare/lib/stopEventPropagation';
-import { useOaCurrency } from 'src/store/persisted/useOaCurrency';
-import { CHAIN } from '@lib/costantChain';
+
+
 import { useNftOaCurrencyStore } from 'src/store/persisted/useNftOaCurrencyStore';
 import getNftOpenActionKit from 'src/hooks/getNftOpenActionKit';
 import { useQuery } from '@tanstack/react-query';
@@ -148,7 +148,7 @@ const FeedEmbed: FC<FeedEmbedProps> = ({
         quantity: selectedQuantity,
         senderAddress: address || ZERO_ADDRESS,
         sourceUrl: og.url,
-        srcChainId: CHAIN.id.toString()
+        srcChainId: CHAIN_ID.toString()
       })
       .then((actionData) => {
         setNft((prevNft) => ({

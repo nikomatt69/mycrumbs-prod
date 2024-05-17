@@ -9,20 +9,8 @@ const withPlugins = require('next-compose-plugins');
 const allowedBots =
   '.*(bot|telegram|baidu|bing|yandex|iframely|whatsapp|facebook|twitterbot|linkedinbot|whatsapp|slackbot|telegrambot|discordbot|facebookbot|googlebot|bot).*';
 
-const withPWA = require('@ducanh2912/next-pwa').default({
-  dest: 'public',
-  cacheOnFrontEndNav: true,
-  aggressiveFrontEndNavCaching: true,
-  reloadOnOnline: true,
-  disable: process.env.NODE_ENV === 'development',
-  swcMinify: true,
-  workboxOptions: {
-    disableDevLogs: true
-    
-  }
-  // ... other options you like
-})
-const nextConfig = withPlugins([withExpo,withPWA], {
+
+const nextConfig = withPlugins([withExpo], {
   eslint: {
     // Warning: This allows production builds to successfully complete even if
     // your project has ESLint errors.
@@ -37,6 +25,7 @@ const nextConfig = withPlugins([withExpo,withPWA], {
   ],
   experimental: {
     scrollRestoration: true,
+  
   },
   async rewrites() {
     return [

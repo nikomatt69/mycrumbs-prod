@@ -16,19 +16,26 @@ import SettingsSidebar from '../Sidebar';
 
 import Custom404 from 'src/pages/404';
 import { usePushChatStore } from 'src/store/persisted/usePushChatStore';
+import NotLoggedIn from '@components/Shared/NotLoggedIn';
+import { PAGEVIEW } from '@lensshare/data/tracking';
+import { Leafwatch } from '@lib/leafwatch';
+import { useEffect } from 'react';
+import { useTransactionStore } from 'src/store/persisted/useTransactionStore';
 const CleanupSettings: NextPage = () => {
   const { currentProfile } = useAppStore();
 
-  const resetPushChatStore = usePushChatStore(
-    (state) => state.resetPushChatStore
-  );
+  const { reset } = useTransactionStore();
+
+  useEffect(() => {
+    Leafwatch.track(PAGEVIEW, { page: 'settings', subpage: 'cleanup' });
+  }, []);
+
   if (!currentProfile) {
-    return <Custom404 />;
+    return <NotLoggedIn />;
   }
 
   const cleanup = (key: string) => {
     localStorage.removeItem(key);
-    indexedDB.deleteDatabase(key);
     toast.success(`Cleared ${key}`);
   };
 
@@ -49,17 +56,17 @@ const CleanupSettings: NextPage = () => {
             </p>
           </div>
           <div className="divider my-5" />
-          <div className="space-y-6">
+         
+          
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <b>Optimistic publications</b>
-                <div className="lt-text-gray-500 text-xs font-bold">
-                  Clean your posts or comments that are not indexed
+                <b>Optimistic actions</b>
+                <div className="ld-text-gray-500 text-xs font-bold">
+                  Clean your posts, comments, follows, and other actions that
+                  are still in the queue
                 </div>
               </div>
-              <Button onClick={() => cleanup(Localstorage.TransactionStore)}>
-                Cleanup
-              </Button>
+              <Button onClick={reset}>Cleanup</Button>
             </div>
             <div className="flex items-center justify-between">
               <div className="space-y-1">
@@ -82,7 +89,7 @@ const CleanupSettings: NextPage = () => {
               <Button
                 onClick={() => {
                   cleanup(Localstorage.MessagesStore),
-                    resetPushChatStore(),
+                   
                     toast.success(`Cleared DM keys`);
                 }}
               >
@@ -102,16 +109,17 @@ const CleanupSettings: NextPage = () => {
             </div>
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <b className="text-red-500">App settings</b>
+                <b>Leafwatch store</b>
                 <div className="lt-text-gray-500 text-xs font-bold">
-                  Note: Cleaning will log you out
+                  Clean your leafwatch store
                 </div>
               </div>
-              <Button onClick={() => cleanup(Localstorage.LensshareStore)}>
+              <Button onClick={() => cleanup(Localstorage.LeafwatchStore)}>
                 Cleanup
               </Button>
-            </div>
+
           </div>
+
         </Card>
       </GridItemEight>
     </GridLayout>

@@ -45,7 +45,7 @@ import getProfile from '@lensshare/lib/getProfile';
 import sanitizeDStorageUrl from '@lensshare/lib/sanitizeDStorageUrl';
 import truncateByWords from '@lensshare/lib/truncateByWords';
 import { CHAIN } from '@lib/costantChain';
-import { useOaCurrency } from 'src/store/persisted/useOaCurrency';
+
 import useHandleWrongNetwork from 'src/hooks/useHandleWrongNetwork';
 import getNftChainInfo from '@lensshare/lib/getNftChainInfo';
 import getNftChainId from '@lensshare/lib/nft/getNftChainId';
@@ -309,7 +309,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
   const act = async () => {
     if (actionData && permit2Data) {
       try {
-        const updatedCalldata = await updateWrapperParams({
+        const updatedCalldata = updateWrapperParams({
           chainId: actionData.uiData.dstChainId,
           data: actionData.actArguments.actionModuleData,
           deadline: BigInt(permit2Data.deadline),
