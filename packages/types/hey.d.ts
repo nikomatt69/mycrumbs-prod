@@ -54,6 +54,7 @@ export type AllowedToken = {
   symbol: string;
 };
 
+
 export type MembershipNft =
   Database['public']['Tables']['membership-nft']['Row'];
 

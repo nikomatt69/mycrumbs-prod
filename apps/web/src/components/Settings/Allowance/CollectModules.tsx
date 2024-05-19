@@ -14,9 +14,8 @@ import { useState } from 'react';
 import Allowance from './Allowance';
 import allowedOpenActionModules from '@lib/allowedOpen (1)';
 import type { AllowedToken } from '@lensshare/types/hey';
-
+import { useEnabledCurrenciesQuery } from '@lensshare/lens/generated5';
 import { useAppStore } from 'src/store/persisted/useAppStore';
-import { useAllowedTokensStore } from 'src/store/persisted/useAllowedTokensStore';
 
 const getAllowancePayload = (currency: string) => {
   return {
@@ -28,16 +27,19 @@ const getAllowancePayload = (currency: string) => {
 
 const CollectModules: FC = () => {
   const { currentProfile } = useAppStore();
-  const { allowedTokens } = useAllowedTokensStore();
-  const [selectedCurrency, setSelectedCurrency] = useState(
-    DEFAULT_COLLECT_TOKEN
-  );
   const [currencyLoading, setCurrencyLoading] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState<AllowedToken | null>(
+    null
+  );
+  const { data: allowedTokens, loading: loadingAllowedTokens } =
+    useEnabledCurrenciesQuery({
+      variables: { request: { limit: LimitType.TwentyFive } }
+    });
 
   const { data, error, loading, refetch } =
     useApprovedModuleAllowanceAmountQuery({
       fetchPolicy: 'no-cache',
-      skip: !currentProfile?.id ,
+      skip: !currentProfile?.id || loadingAllowedTokens,
       variables: { request: getAllowancePayload(DEFAULT_COLLECT_TOKEN) }
     });
 
@@ -65,24 +67,26 @@ const CollectModules: FC = () => {
       <div className="divider my-5" />
       <div className="label mt-6">Select currency</div>
       <Select
-          
-          onChange={(event) => {
-            const value = event.target.value as string;
-            setCurrencyLoading(true);
-            setSelectedCurrency(value);
-            refetch({
-              request: getAllowancePayload(value)
-            }).finally(() => setCurrencyLoading(false));
-          }}
-          options={
-            allowedTokens?.map((token) => ({
-              icon: `${STATIC_ASSETS_URL}/images/tokens/${token.symbol}.svg`,
-              label: token.name,
-              selected: token.contractAddress === selectedCurrency,
-              value: token.contractAddress
-            })) || [{ label: 'Loading...', value: 'Loading...' }]
+        defaultValue={DEFAULT_COLLECT_TOKEN}
+        onChange={(e) => {
+          const selectedToken = allowedTokens?.currencies.items.find(
+            (currencies) => currencies?.contract.address === e.target.value
+          );
+          if (selectedToken) {
+            setSelectedCurrency(
+              allowedTokens?.currencies.items.find(
+                (currencies) => currencies?.contract.address === e.target.value
+              ) as unknown as AllowedToken
+            );
           }
-        />
+        }}
+        options={allowedTokens?.currencies.items.map((token) => ({
+          label: token.name,
+          icon: `${STATIC_ASSETS_URL}/images/tokens/${token.symbol}.svg`,
+          selected: token.contract.address === selectedCurrency,
+          value: token.contract.address
+        }))}
+      />
       {loading || currencyLoading ? (
         <div className="py-5">
           <Loader />

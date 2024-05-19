@@ -121,7 +121,7 @@ export const getPermit2Allowance = async ({
   token: Address;
 }) => {
   const client = createPublicClient({
-    chain: IS_MAINNET ? polygon : polygon,
+    chain: IS_MAINNET ? polygon : polygonMumbai,
     transport: http(RPC_URL)
   });
 
@@ -132,15 +132,14 @@ export const getPermit2Allowance = async ({
   }
 
   const allowanceData = await client.readContract({
-    abi: parseAbi(['function allowance(address, address) view returns (uint256)']),
+    abi: parseAbi(['function allowance(address, address) returns (uint256)']),
     address: token,
-    functionName: 'allowance',
-    args: [owner, spender]
+    functionName: 'allowance' as never,
+    args: [owner as Address, spender as Address], // Explicit casting if necessary
   });
 
   return allowanceData;
 };
-
 export const constructPermit2Sig = ({
   amount,
   token
@@ -187,7 +186,7 @@ export const constructPermit2Sig = ({
 };
 
 export const signPermitSignature = async (
-  walletClient: WalletClient,
+  walletClient: any,
   amount: bigint,
   token: `0x${string}`
 ) => {

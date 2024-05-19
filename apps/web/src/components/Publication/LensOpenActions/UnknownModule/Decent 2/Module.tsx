@@ -54,12 +54,13 @@ import FeesDisclosure from './FeesDisclosure';
 import { useTransactionStore } from 'src/store/persisted/useTransactionStore';
 import { useAllowedTokensStore } from 'src/store/persisted/useAllowedTokensStore';
 import { useRatesStore } from 'src/store/persisted/useRatesStore';
-import { useNftOaCurrencyStore } from 'src/store/persisted/useNftOaCurrencyStore';
+
 import { OptmisticPublicationType } from '@lensshare/types/enums';
 import cn from '@lensshare/ui/cn';
 import { useQuery } from '@tanstack/react-query';
 import { useNftOpenActionStore } from './FeedEmbed';
 import QuantityConfig from './QuantityConfig';
+import { useNftOaCurrencyStore } from 'src/store/persisted/useNftOaCurrencyStore';
 
 const generateOptimisticNftMintOA = ({
   txId
@@ -77,7 +78,15 @@ interface Permit2Data {
   nonce: number;
   signature: string;
 }
-
+const getTokenSymbol = (symbol: string): string => {
+  if (symbol === 'WMATIC') {
+    return 'MATIC';
+  } else if (symbol === 'WETH') {
+    return 'ETH';
+  } else {
+    return symbol;
+  }
+};
 interface DecentOpenActionModuleProps {
   actionData?: ActionData;
   module: UnknownOpenActionModuleSettings;
@@ -86,6 +95,7 @@ interface DecentOpenActionModuleProps {
 }
 
 const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
+  module,
   actionData,
   nft,
   publication
@@ -126,7 +136,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
         setIsApproved(false);
         setShowOpenActionModal(false);
       },
-      signlessApproved: true,
+      signlessApproved: false,
       successToast: 'NFT has been minted successfully!'
     }
   );
@@ -154,15 +164,28 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nft]);
+  const [usdPrice, setUsdPrice] = useState(0);
+  const [maticUsdPrice, setMaticUsdPrice] = useState(0);
 
-  const usdPrice =
-    fiatRates.find(
-      (rate) => rate.address === selectedNftOaCurrency?.toLowerCase()
-    )?.fiat || 0;
+  const getUsdPrice = async () => {
+    const usdPrice = await getRedstonePrice(
+      getTokenSymbol(selectedNftOaCurrency.symbol)
+    );
+    setUsdPrice(usdPrice);
+  };
+  const getMaticUsdPrice = async () => {
+    const maticPrice = await getRedstonePrice('MATIC');
+    setMaticUsdPrice(maticPrice);
+  };
+  useEffect(() => {
+    getUsdPrice();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedNftOaCurrency]);
 
-  // fees are always priced in MATIC
-  const maticUsdPrice =
-    fiatRates.find((rate) => rate.symbol === 'WMATIC')?.fiat || 0;
+  useEffect(() => {
+    getMaticUsdPrice();
+  }, []);
+
 
   const creatorProfileExists =
     creatorProfileData && creatorProfileData.defaultProfile;
@@ -174,13 +197,8 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
     : BigInt(0);
 
   // Convert totalAmount to a number with decimals
-  const getTokenDetails = (currencyAddress: Address) => {
-    return (
-      allowedTokens?.find((t) => t.contractAddress === currencyAddress) ||
-      (DEFAULT_DECENT_OA_TOKEN as AllowedToken)
-    );
-  };
-  const { decimals } = getTokenDetails(selectedNftOaCurrency);
+  
+  const { decimals } = selectedNftOaCurrency;
   const formattedTotalAmount = Number(totalAmount) / Math.pow(10, decimals);
 
   const bridgeFee = actionData
@@ -192,7 +210,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
   const formattedNftSchema = nft.schema === 'erc1155' ? 'ERC-1155' : 'ERC-721';
 
   const amount = formattedTotalAmount || 0;
-  const assetAddress = selectedNftOaCurrency;
+  const assetAddress = selectedNftOaCurrency.contractAddress;
 
   useEffect(() => {
     if (actionData?.uiData.dstChainId && nftChainInfo === null) {
@@ -309,7 +327,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
   const act = async () => {
     if (actionData && permit2Data) {
       try {
-        const updatedCalldata = updateWrapperParams({
+        const updatedCalldata = await updateWrapperParams({
           chainId: actionData.uiData.dstChainId,
           data: actionData.actArguments.actionModuleData,
           deadline: BigInt(permit2Data.deadline),
@@ -393,7 +411,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
             schema: formattedNftSchema,
             uri: sanitizeDStorageUrl(actionData?.uiData.nftUri)
           }}
-          selectedCurrencySymbol={getTokenDetails(selectedNftOaCurrency).symbol}
+          selectedCurrencySymbol={selectedNftOaCurrency.symbol}
           step={!permit2Allowed ? 'Permit2' : 'Allowance'}
         />
       ) : (
@@ -506,7 +524,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
                 <span className="space-x-1">Price</span>
                 <div>
                   {(formattedTotalAmount - formattedTotalFees).toFixed(4)}{' '}
-                  {getTokenDetails(selectedNftOaCurrency).symbol}
+                  {selectedNftOaCurrency.symbol}
                 </div>
               </div>
               <FeesDisclosure
@@ -514,7 +532,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
                 bridgeFee={bridgeFee}
                 formattedTotalAmount={formattedTotalAmount}
                 formattedTotalFees={formattedTotalFees}
-                tokenSymbol={getTokenDetails(selectedNftOaCurrency).symbol}
+                tokenSymbol={selectedNftOaCurrency.symbol}
               />
               <div className="mt-4 flex items-start justify-between space-y-0.5 text-xl text-gray-600 dark:text-gray-100">
                 <span className="flex items-baseline justify-start space-x-1">
@@ -523,7 +541,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
                 <div className="flex flex-col items-end">
                   <p>
                     {formattedTotalAmount.toFixed(4)}{' '}
-                    {getTokenDetails(selectedNftOaCurrency).symbol}
+                    {selectedNftOaCurrency.symbol}
                   </p>
                   <div className="ld-text-gray-500 mt-1 text-sm">
                     ~$
@@ -546,11 +564,11 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
                   asset: {
                     contract: {
                       address: selectedNftOaCurrency,
-                      chainId: CHAIN.id
+                      chainId: CHAIN_ID
                     },
-                    decimals: getTokenDetails(selectedNftOaCurrency).decimals,
-                    name: getTokenDetails(selectedNftOaCurrency).name,
-                    symbol: getTokenDetails(selectedNftOaCurrency).symbol
+                    decimals: selectedNftOaCurrency.decimals,
+                    name: selectedNftOaCurrency.name,
+                    symbol: selectedNftOaCurrency.symbol
                   },
                   value: formattedTotalAmount.toFixed(4)
                 }}

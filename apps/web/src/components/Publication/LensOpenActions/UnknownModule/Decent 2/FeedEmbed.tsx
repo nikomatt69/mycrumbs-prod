@@ -78,17 +78,11 @@ const formatPublicationData = (
 };
 
 interface FeedEmbedProps {
-  isFullPublication?: boolean;
-  mirrorPublication?: AnyPublication;
   og: OG;
-  publication: AnyPublication;
+  publication: MirrorablePublication;
 }
 
-const FeedEmbed: FC<FeedEmbedProps> = ({
-  mirrorPublication,
-  og,
-  publication
-}) => {
+const FeedEmbed: FC<FeedEmbedProps> = ({ og, publication }) => {
   const { address } = useAccount();
   const { selectedNftOaCurrency } = useNftOaCurrencyStore();
   const { selectedQuantity, setShowOpenActionModal } = useNftOpenActionStore();
@@ -109,10 +103,7 @@ const FeedEmbed: FC<FeedEmbedProps> = ({
   });
   const [isNftCoverLoaded, setIsNftCoverLoaded] = useState(false);
 
-  const targetPublication = isMirrorPublication(publication)
-    ? publication?.mirrorOn
-    : publication;
-  const module = targetPublication.openActionModules.find(
+  const module = publication.openActionModules.find(
     (module) => module.contract.address === VerifiedOpenActionModules.DecentNFT
   );
 
@@ -134,17 +125,15 @@ const FeedEmbed: FC<FeedEmbedProps> = ({
     type: ActionDataResponseType;
   }> => {
     const nftOpenActionKit = getNftOpenActionKit();
-    const pubInfo = formatPublicationData(targetPublication);
+    const pubInfo = formatPublicationData(publication);
 
     return await nftOpenActionKit
       .actionDataFromPost({
         executingClientProfileId: HEY_REFERRAL_PROFILE_ID,
-        mirrorerProfileId: mirrorPublication?.by.id,
-        mirrorPubId: mirrorPublication?.id,
-        paymentToken: selectedNftOaCurrency,
+        paymentToken: selectedNftOaCurrency.contractAddress,
         post: pubInfo,
-        profileId: targetPublication.by.id,
-        profileOwnerAddress: targetPublication.by.ownedBy.address,
+        profileId: publication.by.id,
+        profileOwnerAddress: publication.by.ownedBy.address,
         quantity: selectedQuantity,
         senderAddress: address || ZERO_ADDRESS,
         sourceUrl: og.url,
@@ -190,14 +179,14 @@ const FeedEmbed: FC<FeedEmbedProps> = ({
       Boolean(module) &&
       Boolean(selectedNftOaCurrency) &&
       Boolean(address) &&
-      Boolean(targetPublication),
+      Boolean(publication),
     queryFn: getActionData,
     queryKey: [
       'getActionData',
       selectedNftOaCurrency,
       selectedQuantity,
       address,
-      targetPublication?.id
+      publication?.id
     ]
   });
 
@@ -256,7 +245,7 @@ const FeedEmbed: FC<FeedEmbedProps> = ({
             {dataType === ActionDataResponseType.FULL ? (
               <Button
                 className="px-4 py-1"
-                icon={<CursorArrowRaysIcon className="w-4 h-4" />}
+                icon={<CursorArrowRaysIcon className="size-4" />}
                 onClick={() => {
                   setShowOpenActionModal(true);
                   Leafwatch.track(PUBLICATION.OPEN_ACTIONS.DECENT.OPEN_DECENT, {
@@ -275,7 +264,7 @@ const FeedEmbed: FC<FeedEmbedProps> = ({
                 <Button
                   className="px-4 py-1"
                   disabled
-                  icon={<CursorArrowRaysIcon className="w-4 h-4" />}
+                  icon={<CursorArrowRaysIcon className="size-4" />}
                   size="sm"
                 >
                   Mint
@@ -292,7 +281,7 @@ const FeedEmbed: FC<FeedEmbedProps> = ({
           actionData={actionData as ActionData}
           module={module as UnknownOpenActionModuleSettings}
           nft={nft}
-          publication={targetPublication}
+          publication={publication}
         />
       ) : null}
     </>
