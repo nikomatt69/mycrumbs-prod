@@ -2,7 +2,7 @@ import { HttpLink } from '@apollo/client';
 import { API_URL, APP_NAME } from '@lensshare/data/constants';
 import { setContext } from '@apollo/client/link/context';
 
-const httpLink = new HttpLink({
+const httpLinkWithCSRF = new HttpLink({
   uri: API_URL,
   fetchOptions: 'no-cors',
   fetch,
@@ -22,6 +22,6 @@ const csrfLink = setContext((_, { headers }) => {
   };
 });
 
-export default const httpLink = csrfLink.concat(httpLinkWithCSRF);
+const httpLink = csrfLink.concat(httpLinkWithCSRF);
 
-
+export default httpLink;
