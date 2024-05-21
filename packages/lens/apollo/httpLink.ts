@@ -22,6 +22,6 @@ const csrfLink = setContext((_, { headers }) => {
   };
 });
 
-export default httpLink = csrfLink.concat(httpLinkWithCSRF);
+export default const httpLink = csrfLink.concat(httpLinkWithCSRF);
 
 
