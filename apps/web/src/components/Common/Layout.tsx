@@ -34,7 +34,7 @@ import { usePreferencesStore } from 'src/store/non-persisted/usePreferencesStore
 import { useNonceStore } from 'src/store/non-persisted/useNonceStore';
 import { hydrateAuthTokens, signOut } from 'src/store/persisted/useAuthStore';
 
-import OaTransactionToaster from './OaTransactionToaster';
+
 import { CachedConversation, useStreamMessages } from '@xmtp/react-sdk';
 import { useMessagesStore } from 'src/store/non-persisted/useMessagesStore';
 import { useIsClient } from '@uidotdev/usehooks';
