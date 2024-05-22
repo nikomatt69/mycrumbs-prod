@@ -132,10 +132,10 @@ export const getPermit2Allowance = async ({
   }
 
   const allowanceData = await client.readContract({
-    abi: parseAbi(['function allowance(address, address) returns (uint256)']),
+    abi: parseAbi(['function allowance(address, address) view returns (uint256)']),
     address: token,
-    functionName: 'allowance' as never,
-    args: [owner as Address, spender as Address], // Explicit casting if necessary
+    functionName: 'allowance',
+    args: [owner, spender]
   });
 
   return allowanceData;

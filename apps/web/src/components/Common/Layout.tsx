@@ -33,8 +33,7 @@ import getCurrentSession from '@lib/getCurrentSession';
 import { usePreferencesStore } from 'src/store/non-persisted/usePreferencesStore';
 import { useNonceStore } from 'src/store/non-persisted/useNonceStore';
 import { hydrateAuthTokens, signOut } from 'src/store/persisted/useAuthStore';
-import useNotifictionSubscriptions from './Providers/useNotifictionSubscriptions';
-import { useOaTransactionStore } from 'src/store/persisted/useOaTransactionStore';
+
 import OaTransactionToaster from './OaTransactionToaster';
 import { CachedConversation, useStreamMessages } from '@xmtp/react-sdk';
 import { useMessagesStore } from 'src/store/non-persisted/useMessagesStore';
@@ -49,8 +48,6 @@ const Layout: FC<LayoutProps> = ({ children }) => {
   const { currentProfile, setCurrentProfile, setFallbackToCuratedFeed } =
     useAppStore();
   const { setLensHubOnchainSigNonce } = useNonceStore();
-  const [refreshing, setRefreshing] = React.useState(false);
-  const transactions = useOaTransactionStore((state) => state.transactions);
   const isMounted = useIsClient();
   const { disconnect } = useDisconnect();
 
@@ -134,14 +131,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
       <div className="flex min-h-screen  flex-col pb-14 md:pb-0">
         <SafeAreaView style={styles.container}>
           <Navbar />
-          {transactions.map((tx) => (
-          <OaTransactionToaster
-          key={tx.txHash}
-          onClose={() => {}}
-          platformName={tx.platformName}
-          txHash={tx.txHash}
-          />
-          ))}
+        
           {children}
          
           {isRoomJoined ? <SpacesWindow /> : null}

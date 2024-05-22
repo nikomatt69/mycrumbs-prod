@@ -1,16 +1,22 @@
 import { APP_NAME, DESCRIPTION, IMAGE_OG } from '@lensshare/data/constants';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import type { FC } from 'react';
 
 interface MetaTagsProps {
   title?: string;
+  creator?: string;
   description?: string;
 }
 
 const MetaTags: FC<MetaTagsProps> = ({
+  creator,
   title = APP_NAME,
   description = DESCRIPTION
 }) => {
+
+  const { asPath } = useRouter();
+  const url = `https://mycrumbs.xyz${asPath}`;
   return (
     <Head>
       <title>{title}</title>
@@ -19,8 +25,13 @@ const MetaTags: FC<MetaTagsProps> = ({
         name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover"
       />
-      <link href="https://mycrumbs.xyz" rel="canonical" />
-      <meta content="https://mycrumbs.xyz" property="og:url" />
+       <meta
+        content="mycrumbs,mycrumbs.xyz,social media profile,social media,lenster,user profile,lens,lens protocol,decentralized,web3,Yoginth,@yoginth"
+        name="keywords"
+      />
+     <link href={url} rel="canonical" />
+
+      <meta content={url} property="og:url" />
       <meta property="og:site_name" content={APP_NAME} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
@@ -36,6 +47,14 @@ const MetaTags: FC<MetaTagsProps> = ({
       <meta property="twitter:image:width" content="400" />
       <meta property="twitter:image:height" content="400" />
       <meta property="twitter:creator" content="@lenshareappxyz" />
+      
+
+      {creator ? (
+        <>
+          <meta content={creator} property="creator" />
+          <meta content={creator} property="publisher" />
+        </>
+      ) : null}
 
       <link
         rel="search"

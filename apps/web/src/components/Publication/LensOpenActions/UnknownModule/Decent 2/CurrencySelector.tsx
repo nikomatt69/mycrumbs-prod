@@ -5,7 +5,7 @@ import getAssetSymbol from '@lensshare/lib/getAssetSymbol';
 import getRedstonePrice from '@lib/getRedstonePrice';
 import getTokenImage from '@lensshare/lib/getTokenImage';
 
-import { STATIC_ASSETS_URL } from '@lensshare/data/constants';
+import { DEFAULT_COLLECT_TOKEN, STATIC_ASSETS_URL } from '@lensshare/data/constants';
 import { TokenContracts } from '@lensshare/data/contracts';
 
 import { useQuery } from '@tanstack/react-query';
@@ -200,9 +200,10 @@ const CurrencySelector: FC<CurrencySelectorProps> = ({ onSelectCurrency }) => {
           <div
             className="hover:bg-brand-500/10 flex w-full cursor-pointer items-center justify-between rounded-lg p-2"
             key={currency.symbol}
+            defaultValue={DEFAULT_COLLECT_TOKEN}
             onClick={(e) => {
               e.stopPropagation();
-              onSelectCurrency(currency);
+              onSelectCurrency(currency as AllowedToken);
             }}
           >
             <div className="flex items-center gap-2">

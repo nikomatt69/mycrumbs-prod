@@ -5,22 +5,17 @@ import { createTrackedSelector } from 'react-tracked';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Dispatch, SetStateAction } from 'react';
+import type { Address } from 'viem';
 
 interface NftOaCurrencyState {
-  selectedNftOaCurrency: AllowedToken;
-  setSelectedNftOaCurrency: (currency: AllowedToken) => void;
+  selectedNftOaCurrency: Address;
+  setSelectedNftOaCurrency: (currency: Address) => void;
 }
 
 const store = create(
   persist<NftOaCurrencyState>(
     (set) => ({
-      selectedNftOaCurrency: {
-        contractAddress: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
-        decimals: 18,
-        id: 'WMATIC',
-        name: 'Wrapped MATIC',
-        symbol: 'WMATIC'
-      },
+      selectedNftOaCurrency:'0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
       setSelectedNftOaCurrency: (currency) => set({ selectedNftOaCurrency: currency })
     }),
     { name: Localstorage.NftOaCurrencyStore }

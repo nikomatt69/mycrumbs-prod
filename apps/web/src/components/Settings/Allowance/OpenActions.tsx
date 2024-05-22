@@ -4,16 +4,15 @@ import Loader from '@components/Shared/Loader';
 import { DEFAULT_COLLECT_TOKEN, STATIC_ASSETS_URL } from '@lensshare/data/constants';
 import {
   LimitType,
-  useApprovedModuleAllowanceAmountQuery,
-
+  useApprovedModuleAllowanceAmountQuery
 } from '@lensshare/lens';
 import allowedUnknownOpenActionModules from '@lensshare/lib/allowedUnknownOpenActionModules';
-import {useEnabledCurrenciesQuery} from '@lensshare/lens/generated5'
+
 import { ErrorMessage, Select } from '@lensshare/ui';
 import { useState } from 'react';
 
 import Allowance from './Allowance';
-
+import { useEnabledCurrenciesQuery } from '@lensshare/lens/generated5';
 import type { AllowedToken } from '@lensshare/types/hey';
 import { useAppStore } from 'src/store/persisted/useAppStore';
 
@@ -80,10 +79,10 @@ const OpenActions: FC = () => {
         }}
         options={allowedTokens?.currencies.items.map((token) => ({
           label: token.name,
-         
-              selected: token.contract.address === selectedCurrency,
+          icon: `${STATIC_ASSETS_URL}/images/tokens/${token.symbol}.svg`,
+          selected: token.contract.address === selectedCurrency,
           value: token.contract.address
-        }))}
+        })) || [{ label: 'Loading...', value: 'Loading...' }]}
       />
       {loading || currencyLoading ? (
         <div className="py-5">
