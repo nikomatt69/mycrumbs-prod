@@ -142,7 +142,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
         setSelectedQuantity(1);
         setActiveOpenActionModal(null);
       },
-      signlessApproved: module?.signlessApproved,
+      signlessApproved: true,
       successToast: 'NFT has been minted successfully!'
     }
   );
