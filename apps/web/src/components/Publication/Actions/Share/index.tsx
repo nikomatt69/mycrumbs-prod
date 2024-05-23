@@ -1,5 +1,5 @@
 import MenuTransition from '@components/Shared/MenuTransition';
-import { Menu } from '@headlessui/react';
+import { Menu, MenuButton, MenuItems } from '@headlessui/react';
 import { ArrowsRightLeftIcon } from '@heroicons/react/24/outline';
 import type { AnyPublication } from '@lensshare/lens';
 import humanize from '@lensshare/lib/humanize';
@@ -52,7 +52,7 @@ const ShareMenu: FC<PublicationMenuProps> = ({ publication, showCount }) => {
   return (
     <div className="flex items-center space-x-1">
       <Menu as="div" className="relative">
-        <Menu.Button as={Fragment}>
+        <MenuButton as={Fragment}>
           <button
             className={cn(
               hasQuotedOrMirrored
@@ -83,9 +83,9 @@ const ShareMenu: FC<PublicationMenuProps> = ({ publication, showCount }) => {
               </Tooltip>
             )}
           </button>
-        </Menu.Button>
+        </MenuButton>
         <MenuTransition>
-          <Menu.Items
+          <MenuItems
             className="absolute right-0 z-[5] mt-1 w-max rounded-xl border bg-white shadow-sm focus:outline-none dark:border-gray-700 dark:bg-gray-900"
             static
           >
@@ -95,7 +95,7 @@ const ShareMenu: FC<PublicationMenuProps> = ({ publication, showCount }) => {
               isLoading={isLoading}
             />
             <Quote publication={publication} />
-          </Menu.Items>
+          </MenuItems>
         </MenuTransition>
       </Menu>
       {mirrorOrQuoteCount > 0 && !showCount ? (

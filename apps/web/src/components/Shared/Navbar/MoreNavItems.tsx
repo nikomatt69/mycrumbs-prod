@@ -1,4 +1,4 @@
-import { Menu } from '@headlessui/react';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import cn from '@lensshare/ui/cn';
 import type { FC } from 'react';
 import { useAppStore } from 'src/store/persisted/useAppStore';
@@ -15,7 +15,7 @@ const MoreNavItems: FC = () => {
     <Menu as="div">
       {({ open }) => (
         <>
-          <Menu.Button
+          <MenuButton
             className={cn(
               'w-full cursor-pointer rounded-md px-2 py-1 text-left text-sm font-bold tracking-wide md:px-3',
               {
@@ -26,42 +26,42 @@ const MoreNavItems: FC = () => {
             )}
           >
             More
-          </Menu.Button>
+          </MenuButton>
           <MenuTransition>
-            <Menu.Items
+            <MenuItems
               static
               className="absolute mt-2 rounded-xl border bg-white py-1 shadow-sm focus:outline-none dark:border-gray-700 dark:bg-gray-900"
             >
               {currentProfile ? (
                 <>
-                  <Menu.Item
+                  <MenuItem
                     as="div"
                     className={({ active }: { active: boolean }) =>
                       cn({ 'dropdown-active': active }, 'm-2 rounded-lg')
                     }
                   >
                     <Bookmarks />
-                  </Menu.Item>
+                  </MenuItem>
                   <div className="divider" />
                 </>
               ) : null}
-              <Menu.Item
+              <MenuItem
                 as="div"
                 className={({ active }: { active: boolean }) =>
                   cn({ 'dropdown-active': active }, 'm-2 rounded-lg')
                 }
               >
                 <Contact />
-              </Menu.Item>
-              <Menu.Item
+              </MenuItem>
+              <MenuItem
                 as="div"
                 className={({ active }: { active: boolean }) =>
                   cn({ 'dropdown-active': active }, 'm-2 rounded-lg')
                 }
               >
                 <ReportBug />
-              </Menu.Item>
-            </Menu.Items>
+              </MenuItem>
+            </MenuItems>
           </MenuTransition>
         </>
       )}

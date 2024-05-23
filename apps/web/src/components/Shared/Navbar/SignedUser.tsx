@@ -1,4 +1,4 @@
-import { Menu } from '@headlessui/react';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import type { Profile } from '@lensshare/lens';
 import getAvatar from '@lensshare/lib/getAvatar';
 import getProfile from '@lensshare/lib/getProfile';
@@ -54,15 +54,15 @@ const SignedUser: FC = () => {
         <Avatar />
       </button>
       <Menu as="div" className="hidden md:block">
-        <Menu.Button className="flex self-center">
+        <MenuButton className="flex self-center">
           <Avatar />
-        </Menu.Button>
+        </MenuButton>
         <MenuTransition>
-          <Menu.Items
+          <MenuItems
             static
             className="absolute right-0 mt-2 w-48 rounded-xl border bg-white py-1 shadow-sm focus:outline-none dark:border-gray-700 dark:bg-black"
           >
-            <Menu.Item
+            <MenuItem
               as={NextLink}
               href={getProfile(currentProfile).link}
               className="m-2 flex items-center rounded-lg px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
@@ -76,9 +76,9 @@ const SignedUser: FC = () => {
                   />
                 </div>
               </div>
-            </Menu.Item>
+            </MenuItem>
             <div className="divider" />
-            <Menu.Item
+            <MenuItem
               as="div"
               className={({ active }: { active: boolean }) =>
                 cn(
@@ -88,9 +88,9 @@ const SignedUser: FC = () => {
               }
             >
               <SwitchProfile />
-            </Menu.Item>
+            </MenuItem>
             <div className="divider" />
-            <Menu.Item
+            <MenuItem
               as={NextLink}
               href={getProfile(currentProfile).link}
               className={({ active }: { active: boolean }) =>
@@ -98,8 +98,8 @@ const SignedUser: FC = () => {
               }
             >
               <YourProfile />
-            </Menu.Item>
-            <Menu.Item
+            </MenuItem>
+            <MenuItem
               as={NextLink}
               href="/settings"
               className={({ active }: { active: boolean }) =>
@@ -107,11 +107,11 @@ const SignedUser: FC = () => {
               }
             >
               <Settings />
-            </Menu.Item>
+            </MenuItem>
             {currentProfile?.ownedBy.address === ADMIN_ADDRESS ||
             ADMIN_ADDRESS2 ||
             ADMIN_ADDRESS3 ? (
-              <Menu.Item
+              <MenuItem
                 as={NextLink}
                 href="/mod"
                 className={({ active }: { active: boolean }) =>
@@ -119,30 +119,30 @@ const SignedUser: FC = () => {
                 }
               >
                 <Mod />
-              </Menu.Item>
+              </MenuItem>
             ) : null}
            
-            <Menu.Item
+            <MenuItem
               as="div"
               className={({ active }) =>
                 cn({ 'dropdown-active': active }, 'm-2 rounded-lg')
               }
             >
               <Logout />
-            </Menu.Item>
+            </MenuItem>
             <div className="divider" />
-            <Menu.Item
+            <MenuItem
               as="div"
               className={({ active }) =>
                 cn({ 'dropdown-active': active }, 'm-2 rounded-lg')
               }
             >
               <ThemeSwitch />
-            </Menu.Item>
+            </MenuItem>
 
             <div className="divider" />
             <AppVersion />
-          </Menu.Items>
+          </MenuItems>
         </MenuTransition>
       </Menu>
     </>

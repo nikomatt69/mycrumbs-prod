@@ -1,4 +1,4 @@
-import { Menu } from '@headlessui/react';
+import { Menu, MenuItem } from '@headlessui/react';
 import { ArrowsRightLeftIcon } from '@heroicons/react/24/outline';
 import { LensHub } from '@lensshare/abis';
 import { LENSHUB_PROXY } from '@lensshare/data/constants';
@@ -238,7 +238,7 @@ const Mirror: FC<MirrorProps> = ({ publication, setIsLoading, isLoading }) => {
   };
 
   return (
-    <Menu.Item
+    <MenuItem
       as="div"
       className={({ active }) =>
         cn(
@@ -254,7 +254,7 @@ const Mirror: FC<MirrorProps> = ({ publication, setIsLoading, isLoading }) => {
         <ArrowsRightLeftIcon className="h-4 w-4" />
         <div>{hasQuotedOrMirrored ? 'Mirrored' : 'Mirror'}</div>
       </div>
-    </Menu.Item>
+    </MenuItem>
   );
 };
 

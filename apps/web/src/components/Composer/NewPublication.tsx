@@ -322,6 +322,10 @@ const handleWrongNetwork = useHandleWrongNetwork();
     const fallback =
       'ipfs://bafkreiaoua5s4iyg4gkfjzl6mzgenw4qw7mwgxj7zf7ev7gga72o5d3lf4';
 
+    const headers = {
+      'Access-Control-Allow-Origin': '*',
+    };
+
     if (attachments.length > 0 || hasAudio || hasVideo) {
       return attachments[0]?.uri || fallback;
     }

@@ -1,5 +1,5 @@
 import MenuTransition from '@components/Shared/MenuTransition';
-import { Menu } from '@headlessui/react';
+import { Menu, MenuButton, MenuItems } from '@headlessui/react';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import type { AnyPublication, MirrorablePublication } from '@lensshare/lens';
 import stopEventPropagation from '@lensshare/lib/stopEventPropagation';
@@ -27,7 +27,7 @@ const PublicationMenu: FC<PublicationMenuProps> = ({ publication }) => {
 
   return (
     <Menu as="div" className="relative">
-      <Menu.Button as={Fragment}>
+      <MenuButton as={Fragment}>
         <button
           className="rounded-full p-1.5 hover:bg-gray-300/20"
           onClick={stopEventPropagation}
@@ -37,9 +37,9 @@ const PublicationMenu: FC<PublicationMenuProps> = ({ publication }) => {
             className={cn('lt-text-gray-500', iconClassName)}
           />
         </button>
-      </Menu.Button>
+      </MenuButton>
       <MenuTransition>
-        <Menu.Items
+        <MenuItems
           static
           className="absolute right-0 z-[5] mt-1 w-max rounded-xl border bg-white shadow-sm focus:outline-none dark:border-gray-700 dark:bg-gray-900"
         >
@@ -58,7 +58,7 @@ const PublicationMenu: FC<PublicationMenuProps> = ({ publication }) => {
           <Translate publication={publication} />
           <CopyPostText publication={publication} />
 
-        </Menu.Items>
+        </MenuItems>
       </MenuTransition>
     </Menu>
   );

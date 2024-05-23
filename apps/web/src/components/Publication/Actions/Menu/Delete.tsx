@@ -1,4 +1,4 @@
-import { Menu } from '@headlessui/react';
+import { Menu, MenuItem } from '@headlessui/react';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import type { AnyPublication } from '@lensshare/lens';
 import stopEventPropagation from '@lensshare/lib/stopEventPropagation';
@@ -16,7 +16,7 @@ const Delete: FC<DeleteProps> = ({ publication }) => {
   );
 
   return (
-    <Menu.Item
+    <MenuItem
       as="div"
       className={({ active }) =>
         cn(
@@ -33,7 +33,7 @@ const Delete: FC<DeleteProps> = ({ publication }) => {
         <TrashIcon className="h-4 w-4" />
         <div>Delete</div>
       </div>
-    </Menu.Item>
+    </MenuItem>
   );
 };
 

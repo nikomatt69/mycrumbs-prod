@@ -1,4 +1,4 @@
-import { Menu } from '@headlessui/react';
+import { Menu, MenuItem } from '@headlessui/react';
 import { BookmarkIcon as BookmarkIconOutline } from '@heroicons/react/24/outline';
 import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
 import { PUBLICATION } from '@lensshare/data/tracking';
@@ -124,7 +124,7 @@ const Bookmark: FC<BookmarkProps> = ({ publication }) => {
   };
 
   return (
-    <Menu.Item
+    <MenuItem
       as="div"
       className={({ active }) =>
         cn(
@@ -150,7 +150,7 @@ const Bookmark: FC<BookmarkProps> = ({ publication }) => {
           </>
         )}
       </div>
-    </Menu.Item>
+    </MenuItem>
   );
 };
 

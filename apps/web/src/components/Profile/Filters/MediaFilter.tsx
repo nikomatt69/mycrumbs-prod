@@ -1,5 +1,5 @@
 import MenuTransition from '@components/Shared/MenuTransition';
-import { Menu } from '@headlessui/react';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { AdjustmentsVerticalIcon } from '@heroicons/react/24/outline';
 import { Checkbox, Tooltip } from '@lensshare/ui';
 import cn from '@lensshare/ui/cn';
@@ -18,17 +18,17 @@ const MediaFilter = () => {
 
   return (
     <Menu as="div" className="relative">
-      <Menu.Button className="rounded-md hover:bg-gray-300/20">
+      <MenuButton className="rounded-md hover:bg-gray-300/20">
         <Tooltip placement="top" content="Filter">
           <AdjustmentsVerticalIcon className="text-brand h-5 w-5" />
         </Tooltip>
-      </Menu.Button>
+      </MenuButton>
       <MenuTransition>
-        <Menu.Items
+        <MenuItems
           static
           className="absolute right-0 z-[5] mt-1 rounded-xl border bg-white py-1 shadow-sm focus:outline-none dark:border-gray-700 dark:bg-gray-900"
         >
-          <Menu.Item
+          <MenuItem
             as="label"
             className={({ active }) =>
               cn(
@@ -43,8 +43,8 @@ const MediaFilter = () => {
               name="images"
               label="Images"
             />
-          </Menu.Item>
-          <Menu.Item
+          </MenuItem>
+          <MenuItem
             as="label"
             className={({ active }) =>
               cn(
@@ -59,8 +59,8 @@ const MediaFilter = () => {
               name="video"
               label="Video"
             />
-          </Menu.Item>
-          <Menu.Item
+          </MenuItem>
+          <MenuItem
             as="label"
             className={({ active }) =>
               cn(
@@ -75,8 +75,8 @@ const MediaFilter = () => {
               name="audio"
               label="Audio"
             />
-          </Menu.Item>
-        </Menu.Items>
+          </MenuItem>
+        </MenuItems>
       </MenuTransition>
     </Menu>
   );

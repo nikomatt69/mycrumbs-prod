@@ -2,7 +2,7 @@ import MetaTags from '@components/Common/MetaTags';
 
 import FeedFocusType from '@components/Shared/FeedFocusType';
 import Footer from '@components/Shared/Footer';
-import { Tab } from '@headlessui/react';
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react';
 import { APP_NAME } from '@lensshare/data/constants';
 import type { PublicationMetadataMainFocusType } from '@lensshare/lens';
 import { ExplorePublicationsOrderByType } from '@lensshare/lens';
@@ -72,7 +72,7 @@ const Explore: NextPage = () => {
           </div>
         </div>
 
-        <Tab.Group
+        <TabGroup
           defaultIndex={Number(router.query.tab)}
           onChange={(index) => {
             router.replace(
@@ -82,7 +82,7 @@ const Explore: NextPage = () => {
             );
           }}
         >
-          <Tab.List className="divider mx-auto  space-x-3">
+          <TabList className="divider mx-auto  space-x-3">
             {tabs.map((tab, index) => (
               <Tab
                 key={tab.type}
@@ -100,16 +100,16 @@ const Explore: NextPage = () => {
                 {tab.icon}
               </Tab>
             ))}
-          </Tab.List>
+          </TabList>
           <FeedFocusType focus={focus} setFocus={setFocus} />
-          <Tab.Panels>
+          <TabPanels>
             {tabs.map((tab) => (
-              <Tab.Panel key={tab.type}>
+              <TabPanel key={tab.type}>
                 <Feed focus={focus} feedType={tab.type} />
-              </Tab.Panel>
+              </TabPanel>
             ))}
-          </Tab.Panels>
-        </Tab.Group>
+          </TabPanels>
+        </TabGroup>
       </GridItemEight>
       <GridItemFour>
         {currentProfile ? isRoomJoined && <SpacesWindow /> : null}

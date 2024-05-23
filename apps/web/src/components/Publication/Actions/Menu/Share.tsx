@@ -1,4 +1,4 @@
-import { Menu } from '@headlessui/react';
+import { Menu, MenuItem } from '@headlessui/react';
 import { ClipboardDocumentIcon } from '@heroicons/react/24/outline';
 import { PUBLICATION } from '@lensshare/data/tracking';
 import type { AnyPublication } from '@lensshare/lens';
@@ -14,7 +14,7 @@ interface ShareProps {
 
 const Share: FC<ShareProps> = ({ publication }) => {
   return (
-    <Menu.Item
+    <MenuItem
       as="div"
       className={({ active }) =>
         cn(
@@ -35,7 +35,7 @@ const Share: FC<ShareProps> = ({ publication }) => {
         <ClipboardDocumentIcon className="h-4 w-4" />
         <div>Share</div>
       </div>
-    </Menu.Item>
+    </MenuItem>
   );
 };
 

@@ -1,4 +1,4 @@
-import { Menu } from '@headlessui/react';
+import { Menu, MenuItem } from '@headlessui/react';
 import { ChatBubbleBottomCenterTextIcon } from '@heroicons/react/24/outline';
 import { type AnyPublication, TriStateValue } from '@lensshare/lens';
 import { isMirrorPublication } from '@lensshare/lib/publicationHelpers';
@@ -25,7 +25,7 @@ const Quote: FC<QuoteProps> = ({ publication }) => {
   }
 
   return (
-    <Menu.Item
+    <MenuItem
       as="div"
       className={({ active }) =>
         cn(
@@ -44,7 +44,7 @@ const Quote: FC<QuoteProps> = ({ publication }) => {
           {publicationType === 'Comment' ? 'Quote comment' : 'Quote post'}
         </div>
       </div>
-    </Menu.Item>
+    </MenuItem>
   );
 };
 

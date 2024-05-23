@@ -24,7 +24,7 @@
     "@ducanh2912/next-pwa": "9.7.2",
     "@expo/metro-runtime": "~3.1.1",
     "@expo/next-adapter": "^6.0.0",
-    "@headlessui/react": "^1.7.17",
+    "@headlessui/react": "2.0.3",
     "@heroicons/react": "^2.0.18",
     "@layerzerolabs/scan-client": "^0.0.8",
     "@lens-protocol/metadata": "1.2.0",

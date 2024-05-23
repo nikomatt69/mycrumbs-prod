@@ -18,7 +18,7 @@ import { Nft, OG } from '@lensshare/types/misc';
 import { AllowedToken } from '@lensshare/types/hey';
 import { isMirrorPublication } from '@lensshare/lib/publicationHelpers';
 import { VerifiedOpenActionModules } from '@lensshare/data/verified-openaction-modules';
-import { CHAIN_ID,  HEY_REFERRAL_PROFILE_ID, ZERO_ADDRESS } from '@lensshare/data/constants';
+import { CHAIN_ID,  HEY_REFERRAL_PROFILE_ID, POLYGON_CHAIN_ID, ZERO_ADDRESS } from '@lensshare/data/constants';
 import sanitizeDStorageUrl from '@lensshare/lib/sanitizeDStorageUrl';
 import { Button, Card, Spinner, Tooltip, Image } from '@lensshare/ui';
 import { PUBLICATION } from '@lensshare/data/tracking';
@@ -140,7 +140,7 @@ const FeedEmbed: FC<FeedEmbedProps> = ({ og, publication }) => {
         quantity: selectedQuantity,
         senderAddress: address || ZERO_ADDRESS,
         sourceUrl: og.url,
-        srcChainId: CHAIN.id.toString()
+        srcChainId: POLYGON_CHAIN_ID.toString()
       })
       .then((actionData) => {
         setNft((prevNft) => ({
@@ -191,6 +191,12 @@ const FeedEmbed: FC<FeedEmbedProps> = ({ og, publication }) => {
       address,
       publication?.id
     ]
+  });
+
+  const { data: uiData } = useQuery({
+    queryFn: getUiData,
+    queryKey: ['uiData', publication.id],
+    staleTime: Infinity
   });
 
   const actionData = actionDataResponse?.data;
@@ -273,6 +279,7 @@ const FeedEmbed: FC<FeedEmbedProps> = ({ og, publication }) => {
         module={module as UnknownOpenActionModuleSettings}
         nft={nft}
         publication={publication}
+        uiData={uiData}
       />
     </>
   );

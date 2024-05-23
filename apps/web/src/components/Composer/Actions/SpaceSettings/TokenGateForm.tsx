@@ -1,5 +1,5 @@
 
-import { Menu } from '@headlessui/react';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { CheckCircleIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 
 import SearchProfile from './SeachProfile';
@@ -42,7 +42,7 @@ const Module: FC<ModuleProps> = ({
   conditionToShow,
   selectedCondition
 }) => (
-  <Menu.Item
+  <MenuItem
     as="button"
     className={cn(
       { 'dropdown-active': selectedCondition === conditionToShow },
@@ -56,7 +56,7 @@ const Module: FC<ModuleProps> = ({
         <CheckCircleIcon className="h-5 w-5 text-green-500" />
       ) : null}
     </div>
-  </Menu.Item>
+  </MenuItem>
 );
 
 const TokenGateForm: FC = () => {
@@ -105,16 +105,16 @@ const TokenGateForm: FC = () => {
             Token gate with
           </span>
           <Menu as="div" className="relative">
-            <Menu.Button>
+            <MenuButton>
               <div className="flex items-center gap-1 text-gray-400 dark:text-gray-500">
                 <span>
                   {getTokenGateConditionDescription(tokenGateConditionType)}
                 </span>
                 <ChevronDownIcon className="h-4 w-4" />
               </div>
-            </Menu.Button>
+            </MenuButton>
             <MenuTransition>
-              <Menu.Items className="absolute right-0 w-48 rounded-lg border bg-white text-sm shadow-lg focus:outline-none dark:border-gray-700 dark:bg-gray-900">
+              <MenuItems className="absolute right-0 w-48 rounded-lg border bg-white text-sm shadow-lg focus:outline-none dark:border-gray-700 dark:bg-gray-900">
                 <Module
                   title={`have a lens profile`}
                   onClick={() =>
@@ -151,7 +151,7 @@ const TokenGateForm: FC = () => {
                   conditionToShow={TokenGateCondition.MIRROR_A_POST}
                   selectedCondition={tokenGateConditionType}
                 />
-              </Menu.Items>
+              </MenuItems>
             </MenuTransition>
           </Menu>
         </div>

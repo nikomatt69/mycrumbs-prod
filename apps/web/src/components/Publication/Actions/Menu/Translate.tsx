@@ -1,4 +1,4 @@
-import { Menu } from '@headlessui/react';
+import { Menu, MenuItem } from '@headlessui/react';
 import { LanguageIcon } from '@heroicons/react/24/outline';
 import { PUBLICATION } from '@lensshare/data/tracking';
 import type { AnyPublication } from '@lensshare/lens';
@@ -28,7 +28,7 @@ const Translate: FC<TranslateProps> = ({ publication }) => {
   };
 
   return (
-    <Menu.Item
+    <MenuItem
       as={Link}
       className={({ active }) =>
         cn(
@@ -47,7 +47,7 @@ const Translate: FC<TranslateProps> = ({ publication }) => {
         <LanguageIcon className="h-4 w-4" />
         <div>Translate</div>
       </div>
-    </Menu.Item>
+    </MenuItem>
   );
 };
 

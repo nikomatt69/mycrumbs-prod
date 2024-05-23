@@ -1,5 +1,5 @@
 
-import type { ActionData } from 'nft-openaction-kit';
+import type { ActionData , UIData} from 'nft-openaction-kit';
 import type { Dispatch, FC, SetStateAction } from 'react';
 
 import {
@@ -61,6 +61,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useNftOpenActionStore } from './FeedEmbed';
 import QuantityConfig from './QuantityConfig';
 import { useNftOaCurrencyStore } from 'src/store/persisted/useNftOaCurrencyStore';
+import formatAddress from '@lensshare/lib/formatAddress';
 
 const generateOptimisticNftMintOA = ({
   txId
@@ -85,13 +86,17 @@ interface DecentOpenActionModuleProps {
   module: UnknownOpenActionModuleSettings;
   nft: Nft;
   publication: MirrorablePublication;
+  uiData?: null | UIData;
+  
 }
 
 const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
   actionData,
   loadingActionData,
   nft,
-  publication
+  module,
+  publication,
+  uiData
 }) => {
   const {
     activeOpenActionModal,
@@ -116,12 +121,14 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
   const [currentImageUrl, setCurrentImageUrl] = useState('');
   const [prevImageUrl, setPrevImageUrl] = useState('');
   const [isImageLoading, setImageLoading] = useState(false);
-  const [nftChainInfo, setNftChainInfo] = useState<{
-    logo: string;
-    name: string;
-  } | null>(null);
-  const [platformName, setPlatformName] = useState('');
-  const [nftName, setNftName] = useState('');
+  const chainIdStr = uiData?.dstChainId.toString();
+  const chainInfo = getNftChainInfo(getNftChainId(chainIdStr ?? ''));
+  const nftChainInfo = {
+    logo: chainInfo.logo,
+    name: chainInfo.name
+  };
+  const platformName = uiData?.platformName || '';
+  const nftName = uiData?.nftName || '';
 
   const { data: walletClient } = useWalletClient();
   const { address } = useAccount();
@@ -135,15 +142,15 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
         setSelectedQuantity(1);
         setActiveOpenActionModal(null);
       },
-      signlessApproved: true,
+      signlessApproved: module?.signlessApproved,
       successToast: 'NFT has been minted successfully!'
     }
   );
 
   const { data: creatorProfileData } = useDefaultProfileQuery({
-    skip: !actionData?.uiData?.nftCreatorAddress,
+    skip: !uiData?.nftCreatorAddress,
     variables: {
-      request: { for: actionData?.uiData?.nftCreatorAddress }
+      request: { for: uiData?.nftCreatorAddress }
     }
   });
 
@@ -177,7 +184,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
 
   const creatorProfileExists =
     creatorProfileData && creatorProfileData.defaultProfile;
-  const creatorAddress = actionData?.uiData?.nftCreatorAddress || ZERO_ADDRESS;
+  const creatorAddress = uiData?.nftCreatorAddress || ZERO_ADDRESS;
 
   const totalAmount = !!actionData?.actArgumentsFormatted?.paymentToken?.amount
     ? BigInt(actionData?.actArgumentsFormatted?.paymentToken?.amount) *
@@ -204,32 +211,6 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
 
   const amount = formattedTotalAmount || 0;
   const assetAddress = selectedNftOaCurrency;
-
-  useEffect(() => {
-    if (actionData?.uiData?.dstChainId && nftChainInfo === null) {
-      const chainIdStr = actionData.uiData?.dstChainId.toString();
-      const chainInfo = getNftChainInfo(getNftChainId(chainIdStr));
-      setNftChainInfo({
-        logo: chainInfo.logo,
-        name: chainInfo.name
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [actionData?.uiData?.dstChainId]);
-
-  useEffect(() => {
-    if (actionData?.uiData?.platformName && !platformName.length) {
-      setPlatformName(actionData?.uiData?.platformName);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [actionData?.uiData?.dstChainId]);
-
-  useEffect(() => {
-    if (actionData?.uiData?.nftName && !nftName.length) {
-      setNftName(actionData.uiData.nftName);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [actionData?.uiData?.nftName]);
 
   const fetchPermit2Allowance = async () => {
     setPermit2Data(undefined);
@@ -386,15 +367,15 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
       title={
         showCurrencySelector
           ? 'Select token'
-          : actionData?.uiData?.platformName
-            ? `Mint on ${actionData?.uiData?.platformName}`
+          : uiData?.platformName
+            ? `Mint on ${uiData?.platformName}`
             : 'Mint NFT'
       }
     >
       {showCurrencySelector ? (
         <CurrencySelector
-          onSelectCurrency={( currency :AllowedToken) => {
-            setSelectedNftOaCurrency(currency.contractAddress as Address);
+          onSelectCurrency={( currency) => {
+            setSelectedNftOaCurrency(currency);
             setShowCurrencySelector(false);
           }}
         />
@@ -407,10 +388,10 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
           nftDetails={{
             creator: getProfile(creatorProfileData?.defaultProfile as Profile)
               .slug,
-            name: actionData?.uiData?.nftName || '',
-            price: formattedTotalAmount.toFixed(4),
-            schema: formattedNftSchema,
-            uri: sanitizeDStorageUrl(actionData?.uiData?.nftUri)
+              name: uiData?.nftName || '',
+              price: formattedTotalAmount.toFixed(4),
+              schema: formattedNftSchema,
+              uri: sanitizeDStorageUrl(uiData?.nftUri)
           }}
           selectedCurrencySymbol={getTokenDetails(selectedNftOaCurrency).symbol}
           step={!permit2Allowed ? 'Permit2' : 'Allowance'}
@@ -426,12 +407,12 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
                   {creatorProfileExists
                     ? getProfile(creatorProfileData.defaultProfile as Profile)
                         .slug
-                    : !creatorAddress
-                      ? `${creatorAddress.slice(0, 6)}...${creatorAddress.slice(-4)}`
+                    : creatorAddress
+                    ? formatAddress(creatorAddress)
                       : '...'}
                 </p>
               ) : (
-                <p className="ld-text-gray-500">{'by ...'}</p>
+                <p className="ld-text-gray-500">{`By ${formatAddress(creatorAddress)}`}</p>
               )}
             </div>
             <div className="pt-2">
@@ -578,7 +559,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
                   },
                   value: formattedTotalAmount.toFixed(4)
                 }}
-                uiData={actionData?.uiData}
+                uiData={uiData}
               />
             ) : null}
             <div className="flex w-full items-center justify-center">

@@ -15,7 +15,7 @@
     "chromatic": "npx chromatic --project-token=chpt_5c2c8d5cb406c80"
   },
   "dependencies": {
-    "@headlessui/react": "^1.7.17",
+    "@headlessui/react": "2.0.3",
     "@heroicons/react": "^2.0.18",
     "@hookform/resolvers": "^3.3.2",
     "@lensshare/data": "*",

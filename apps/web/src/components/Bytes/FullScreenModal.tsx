@@ -1,4 +1,4 @@
-import { Dialog, Transition } from '@headlessui/react';
+import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
 import cn from '@lensshare/ui/cn';
 
 import type { FC } from 'react';
@@ -31,7 +31,7 @@ const FullScreenModal: FC<Props> = ({
       >
         <div className="fixed inset-0 ">
           <div className="flex h-full min-h-full items-center justify-center text-center">
-            <Transition.Child
+            <TransitionChild
               as={Fragment}
               enter="ease-out duration-300"
               enterFrom="opacity-0 scale-95"
@@ -40,15 +40,15 @@ const FullScreenModal: FC<Props> = ({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel
+              <DialogPanel
                 className={cn(
                   'bg-secondary h-full w-full transform text-left align-middle shadow-xl transition-all',
                   panelClassName
                 )}
               >
                 {children}
-              </Dialog.Panel>
-            </Transition.Child>
+              </DialogPanel>
+            </TransitionChild>
           </div>
         </div>
       </Dialog>
