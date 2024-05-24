@@ -1,10 +1,9 @@
-import type { Handler } from 'express';
-
-import logger from '@hey/helpers/logger';
-import heyPg from 'src/db/heyPg';
-import catchedError from 'src/helpers/catchedError';
-import validateIsStaff from 'src/helpers/middlewares/validateIsStaff';
-import { invalidBody, noBody, notAllowed } from 'src/helpers/responses';
+import logger from '@lensshare/lib/logger';
+import allowCors from '@utils/allowCors';
+import { Errors } from '@utils/errors';
+import validateIsStaff from '@utils/middlewares/validateIsStaff';
+import prisma from '@utils/prisma';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { object, string } from 'zod';
 
 type ExtensionRequest = {
@@ -15,32 +14,36 @@ const validationSchema = object({
   id: string()
 });
 
-export const post: Handler = async (req, res) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { body } = req;
 
   if (!body) {
-    return noBody(res);
+    return res.status(400).json({ error: 'Request body is missing' });
   }
 
   const validation = validationSchema.safeParse(body);
 
   if (!validation.success) {
-    return invalidBody(res);
+    return res.status(400).json({ error: 'Invalid request body', details: Errors.SomethingWentWrong });
   }
 
-  const validateIsStaffStatus = await validateIsStaff(req);
-  if (validateIsStaffStatus !== 200) {
-    return notAllowed(res, validateIsStaffStatus);
+  if (!(await validateIsStaff(req))) {
+    return res.status(403).json({ error: 'Unauthorized' });
   }
 
   const { id } = body as ExtensionRequest;
 
   try {
-    await heyPg.query(`DELETE FROM "AllowedToken" WHERE id = $1`, [id]);
+    await prisma.allowedToken.delete({
+      where: { id }
+    });
     logger.info(`Deleted a token ${id}`);
 
     return res.status(200).json({ success: true });
   } catch (error) {
-    return catchedError(res, error);
+    logger.error('Error deleting token');
+    return res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+export default allowCors(handler);
