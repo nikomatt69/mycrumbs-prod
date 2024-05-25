@@ -1,5 +1,6 @@
 import React from 'react';
-import { usePolymarketData } from '../hooks/usePolymarketData';
+import { usePolymarketData } from 'src/hooks/usePolymarketData';
+
 
 const PolymarketEmbed: React.FC<{ marketId: string }> = ({ marketId }) => {
   const { marketData, loading, error } = usePolymarketData(marketId);
