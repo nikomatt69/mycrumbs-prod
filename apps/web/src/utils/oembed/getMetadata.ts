@@ -34,6 +34,7 @@ const getMetadata = async (url: string): Promise<OG> => {
     lastIndexedAt: new Date().toISOString(),
     nft: getNft(document, url),
     site: getSite(document),
+    polymarket: getPolymarket(document, url),
     title: getTitle(document),
     url
   };

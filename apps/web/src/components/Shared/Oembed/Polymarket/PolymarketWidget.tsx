@@ -1,21 +1,17 @@
 
-import React, { FC, useState } from 'react';
+import React, { useState } from 'react';
 
+import MarketDetails from './MarketDetails';
+import OutcomeList from './OutcomeList';
+import LoadingSpinner from './LoadingSpinner';
+import ErrorMessage from './ErrorMessage';
+import Input from './Input';
+import Button from './Button';
 import { validateMarketId } from '@lib/validateMarketId';
 import { useMarketData } from '@lib/useMarketData';
-import { Button, ErrorMessage, Input } from '@lensshare/ui';
-import LoadingSpinner from './Polymarket/LoadingSpinner';
-import MarketDetails from './Polymarket/MarketDetails';
-import OutcomeList from './Polymarket/OutcomeList';
-import { MirrorablePublication } from '@lensshare/lens';
-import { PolymarketMarketData } from '@lensshare/types/polymarket';
 
-interface PolymarketWidgetProps {
-  
-  publicationId?: string;
-}
 
-const PolymarketWidget: FC<PolymarketWidgetProps> = ({ publicationId }) => {
+const PolymarketWidget: React.FC = () => {
   const [inputMarketId, setInputMarketId] = useState<string>('');
   const [currentMarketId, setCurrentMarketId] = useState<string>('');
   const { marketData, loading, error } = useMarketData(currentMarketId);
@@ -39,7 +35,7 @@ const PolymarketWidget: FC<PolymarketWidgetProps> = ({ publicationId }) => {
         <Button onClick={handleSearch}>Search</Button>
       </div>
       {loading && <LoadingSpinner />}
-      {error && <ErrorMessage  />}
+      {error && <ErrorMessage message={error} />}
       {marketData && (
         <>
           <MarketDetails marketData={marketData} />

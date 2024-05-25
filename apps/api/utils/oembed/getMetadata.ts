@@ -35,6 +35,7 @@ const getMetadata = async (url: string): Promise<OG> => {
     nft: getNft(document, url),
     site: getSite(document),
     title: getTitle(document),
+    polymarket: getPolymarket(document, url),
     url
   };
 

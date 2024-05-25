@@ -1,6 +1,7 @@
 // src/utils/getPolymarket.ts
+import { PolymarketMarketData } from '@lensshare/types/polymarket';
 import type { Document } from 'linkedom';
-import type { PolymarketMarketData } from '@lensshare/types/polymarket';
+
 
 /**
  * Parses a Document object to extract metadata relevant to a Polymarket market.
@@ -9,7 +10,7 @@ import type { PolymarketMarketData } from '@lensshare/types/polymarket';
  * @returns A PolymarketMarketData object or null if essential data can't be extracted.
  */
 const getPolymarket = (document: Document, url?: string): PolymarketMarketData | null => {
-  const getMeta = (key: string) => {
+  const getMeta = (key: string): string | null => {
     const selector = `meta[name="${key}"], meta[property="${key}"]`;
     const metaTag = document.querySelector(selector);
     return metaTag ? metaTag.getAttribute('content') : null;
@@ -22,7 +23,7 @@ const getPolymarket = (document: Document, url?: string): PolymarketMarketData |
   const outcomes = parseMetaContentToList(getMeta('pm:outcomes'));
   const marketId = getMeta('pm:market_id');
   const imageUrl = getMeta('pm:image_url');
-  const currentPrices = parseMetaContentToList(getMeta('pm:current_prices')).map(Number);
+  const currentPrices = parseMetaContentToList(getMeta('pm:current_prices')).map(price => parseFloat(price));
   const totalVolume = parseFloat(getMeta('pm:total_volume') || '0');
 
   if (!marketId || !title || outcomes.length === 0 || currentPrices.length === 0) {
@@ -32,7 +33,7 @@ const getPolymarket = (document: Document, url?: string): PolymarketMarketData |
   return {
     title,
     description: description ?? '',
-    outcomes,
+    outcomes : outcomes.map((name, index) => ({ name, price: currentPrices[index] })),
     marketId,
     imageUrl: imageUrl ?? '',
     currentPrices,

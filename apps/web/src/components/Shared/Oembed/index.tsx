@@ -76,13 +76,17 @@ const Oembed: FC<OembedProps> = ({ onLoad, publication, url }) => {
     nft: data?.nft,
     site: data?.site,
     title: data?.title,
-    url: url as string
+    url: url as string,
+    polymarket: data?.polymarket
   };
 
   if (!og.title && !og.html) {
     return null;
   }
-
+  const isPolymarket = og.site?.toLowerCase().includes('polymarket');
+  if (isPolymarket) {
+    return <PolymarketOembed og={og} publicationId={currentPublication?.id} />;
+  }
 
   if (og.html) {
     return <Player og={og} />;

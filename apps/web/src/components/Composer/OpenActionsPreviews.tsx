@@ -107,13 +107,14 @@ const OpenActionsPreviews: FC<OpenActionsPreviewsProps> = ({
 
   const og: OG = {
     description: data?.description,
-    favicon: data?.url ? getFavicon(data.url) : '',
+    favicon: getFavicon(data.url),
     html: data?.html,
     image: data?.image,
     nft: data?.nft,
     site: data?.site,
     title: data?.title,
-    url: url as string
+    url: url as string,
+    polymarket: data?.polymarket
   };
 
   if (

@@ -102,6 +102,7 @@ export interface OG {
   site: null | string;
   title: null | string;
   url: string;
+  polymarket: PolymarketMarketData | null;
 }
 export interface ProfileInterest {
   category: { label: string; id: string };
