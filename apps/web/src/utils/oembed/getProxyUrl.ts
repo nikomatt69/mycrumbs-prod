@@ -1,7 +1,8 @@
 const directUrls = [
   'zora.co/api/thumbnail', // Zora
   'social-images.lu.ma', // Lu.ma
-  'drips.network' // Drips
+  'drips.network',
+  'poly-prod-6m862b8v2.polymarket.dev/api/og/'  // Drips
 ];
 const IMAGEKIT_URL = 'https://ik.imagekit.io/seasgram';
 

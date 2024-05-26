@@ -9,13 +9,14 @@ import MarketDetails from './Polymarket/MarketDetails';
 import OutcomeList from './Polymarket/OutcomeList';
 import { MirrorablePublication } from '@lensshare/lens';
 import { PolymarketMarketData } from '@lensshare/types/polymarket';
+import { OG } from '@lensshare/types/misc';
 
 interface PolymarketWidgetProps {
-  
+  og: OG;
   publicationId?: string;
 }
 
-const PolymarketWidget: FC<PolymarketWidgetProps> = ({ publicationId }) => {
+const PolymarketWidget: FC<PolymarketWidgetProps> = ({ publicationId ,og}) => {
   const [inputMarketId, setInputMarketId] = useState<string>('');
   const [currentMarketId, setCurrentMarketId] = useState<string>('');
   const { marketData, loading, error } = useMarketData(currentMarketId);
@@ -40,10 +41,14 @@ const PolymarketWidget: FC<PolymarketWidgetProps> = ({ publicationId }) => {
       </div>
       {loading && <LoadingSpinner />}
       {error && <ErrorMessage  />}
-      {marketData && (
+      {og.polymarket && (
         <>
-          <MarketDetails marketData={marketData} />
-          <OutcomeList outcomes={marketData.outcomes} />
+        <img 
+           src={og.polymarket.imageUrl}
+           className='h-20 w-20'
+           />
+          <MarketDetails marketData={og.polymarket} />
+          <OutcomeList outcomes={og.polymarket.outcomes} />
         </>
       )}
     </div>

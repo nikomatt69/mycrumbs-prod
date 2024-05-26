@@ -191,7 +191,7 @@ const OpenActionsPreviews: FC<OpenActionsPreviewsProps> = ({
   }
   const isPolymarket = og.site?.toLowerCase().includes('polymarket');
   if (isPolymarket) {
-    return <PolymarketOembed og={og} publicationId={currentMarketId} />;
+    return <PolymarketOembed module={module as unknown as UnknownOpenActionModuleSettings} conditionId={og.url} publication={nftOpenActionEmbed} />;
   }
   return null;
 };

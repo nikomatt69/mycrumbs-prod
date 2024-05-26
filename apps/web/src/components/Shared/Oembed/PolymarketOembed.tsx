@@ -1,65 +1,40 @@
-import React, { FC, useState, useEffect } from 'react';
-import { OG } from '@lensshare/types/misc';
+import React, { useEffect } from 'react';
+import { useMarketStore} from 'src/store/persisted/useMarketStore'
 
-import { MirrorablePublication } from '@lensshare/lens';
-import PolymarketEmbed from './Polymarket/PolymarketEmbed';
-import { Outcome } from '@lensshare/types/polymarket';
-import { useMarketData } from '@lib/useMarketData';
+import { usePolymarket } from 'src/hooks/usePolymarketHook';
+import { AnyPublication, MirrorablePublication, UnknownOpenActionModuleSettings } from '@lensshare/lens';
+import MarketCard from '@components/Publication/LensOpenActions/UnknownModule/Polymarket/MarketCard';
 
-interface PolymarketOembedProps {
-  og: OG;
-  publicationId?: string;
+
+
+interface MarketEmbedProps {
+  conditionId: string;
+  module: UnknownOpenActionModuleSettings;
+  publication?: AnyPublication | MirrorablePublication;
 }
 
-const PolymarketOembed: FC<PolymarketOembedProps> = ({ og, publicationId }) => {
-  const [inputMarketId, setInputMarketId] = useState<string>('');
-  const [currentMarketId, setCurrentMarketId] = useState<string>('');
-
-  const { marketData, loading, error } = useMarketData(currentMarketId);
-
+const MarketEmbed: React.FC<MarketEmbedProps> = ({ conditionId ,publication }) => {
+  const { market, loading, error, setMarket, setLoading, setError } = useMarketStore();
+const {market :SessionPoly} = usePolymarket(conditionId)
   useEffect(() => {
-    if (inputMarketId) {
-      setCurrentMarketId(inputMarketId);
-    }
-  }, [inputMarketId]);
+    const fetchMarket = async () => {
+      try {
+        setLoading(true);
+        const marketData = SessionPoly();
+        setMarket(marketData);
+      } catch (error_) {
+        setError('Failed to load market data.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMarket();
+  }, [conditionId, setMarket, setLoading, setError]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputMarketId(e.target.value);
-  };
+  if (loading) {return <p>Loading market data...</p>;}
+  if (error) {return <p className="text-red-500">{error}</p>;}
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setCurrentMarketId(inputMarketId);
-  };
-
-  return (
-    <div className="polymarket-oembed">
-      <h2>{og.title}</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={inputMarketId}
-          onChange={handleInputChange}
-          placeholder="Enter Market ID"
-        />
-        <button type="submit">Load Market</button>
-      </form>
-      {loading && <p>Loading...</p>}
-      {error && <p>Error: {error}</p>}
-      {marketData && (
-        <div>
-          <h3>{marketData.title}</h3>
-          <p>{marketData.description}</p>
-          <ul>
-            {marketData.outcomes.map((outcome: Outcome) => (
-              <li key={outcome.name}>{outcome.name}: {outcome.price}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-      {currentMarketId && <PolymarketEmbed marketId={currentMarketId} />}
-    </div>
-  );
+  return <MarketCard market={market} />;
 };
 
-export default PolymarketOembed;
+export default MarketEmbed;

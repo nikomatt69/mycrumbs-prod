@@ -6,7 +6,10 @@ export const ALLOWED_HTML_HOSTS = [
   'kick.com',
   'open.spotify.com',
   'soundcloud.com',
-  'oohlala.xyz'
+  'oohlala.xyz',
+  'vimeo.com',
+  'dailymotion.com',
+  ''
 ];
 
 export const IGNORED_NFT_HOSTS = ['hey.xyz' , 'mycrumbs.xyz'];

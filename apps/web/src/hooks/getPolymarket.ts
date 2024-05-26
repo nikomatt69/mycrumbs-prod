@@ -3,7 +3,7 @@ import { PolymarketMarketData } from '@lensshare/types/polymarket';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-const POLYMARKET_API_URL = 'https://clob-staging.polymarket.com/';
+const POLYMARKET_API_URL = 'https://poly-prod-6m862b8v2.polymarket.dev/api/markets/';
 
 /**
  * Extracts the market ID from a Polymarket URL.
@@ -11,7 +11,7 @@ const POLYMARKET_API_URL = 'https://clob-staging.polymarket.com/';
  * @returns {string | null} - The market ID or null if not found.
  */
 export function extractMarketId(url: string) {
-  const regex = /polymarket\.com\/market\/([^\/]+)/;
+  const regex = /polymarket\.com\/event\/([^\/]+)/;
   const match = url.match(regex);
   return match ? match[1] : null;
 }
@@ -23,7 +23,7 @@ export function extractMarketId(url: string) {
  */
 export async function fetchMarketData(marketId: string) {
   try {
-    const response = await axios.get(`${POLYMARKET_API_URL}/${marketId}`);
+    const response = await axios.get(`${marketId}`);
     return response.data;
   } catch (error) {
     console.error('Failed to fetch market data:', error);
