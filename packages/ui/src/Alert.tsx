@@ -1,6 +1,6 @@
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
-import type { FC, ReactNode } from 'react';
-import { Fragment } from 'react';
+
+import { FC, Fragment, ReactNode } from 'react';
 
 import { Button } from './Button';
 

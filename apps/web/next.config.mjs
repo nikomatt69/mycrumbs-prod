@@ -1,22 +1,24 @@
-/** @type {import('next').NextConfig} */
 
-const { withExpo } = require('@expo/next-adapter');
 
-const withPlugins = require('next-compose-plugins');
+import { withExpo } from '@expo/next-adapter';
+import  MillionLint  from "@million/lint";
+import  million  from "million/compiler";
+
 
 
 
 const allowedBots =
   '.*(bot|telegram|baidu|bing|yandex|iframely|whatsapp|facebook|twitterbot|linkedinbot|whatsapp|slackbot|telegrambot|discordbot|facebookbot|googlebot|bot).*';
 
-
-const nextConfig = withPlugins([withExpo], {
+/** @type {import('next').NextConfig} */
+const nextConfig = withExpo( {
   eslint: {
     // Warning: This allows production builds to successfully complete even if
     // your project has ESLint errors.
     ignoreDuringBuilds: true
   },
-  reactStrictMode: false,
+  
+  reactStrictMode: true,
   transpilePackages: [
     'data',
     'react-native-reanimated',
@@ -77,6 +79,11 @@ const nextConfig = withPlugins([withExpo], {
       }
     ];
   }
+  
 });
 
-module.exports = nextConfig;
+const millionConfig = {
+  auto: true,
+};
+
+export default million.next(MillionLint.next({ rsc: true })(nextConfig), millionConfig);
