@@ -22,12 +22,7 @@ import { useRouter } from 'next/router';
 
 import { useSpacesStore } from 'src/store/persisted/spaces';
 import React from 'react';
-import {
-  RefreshControl,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet
-} from 'react-native';
+
 import getCurrentSession from '@lib/getCurrentSession';
 
 import { usePreferencesStore } from 'src/store/non-persisted/usePreferencesStore';
@@ -85,14 +80,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
     }
   };
   const { isRoomJoined } = useRoom();
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1
-    },
-    scrollView: {
-      flex: 1
-    }
-  });
+ 
   useSpacesStore();
 
   useEffect(() => {
@@ -129,14 +117,14 @@ const Layout: FC<LayoutProps> = ({ children }) => {
       <GlobalBanners />
       <GlobalAlerts />
       <div className="flex min-h-screen  flex-col pb-14 md:pb-0">
-        <SafeAreaView style={styles.container}>
+      
           <Navbar />
         
           {children}
          
           {isRoomJoined ? <SpacesWindow /> : null}
           <BottomNavigation />
-        </SafeAreaView>
+        
       </div>
     </>
   );

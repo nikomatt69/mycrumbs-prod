@@ -12,11 +12,11 @@ import { NotificationProfileAvatar } from '../Profile';
 import { useEffectOnce } from 'usehooks-ts';
 import pushToImpressions from '@lib/pushToImpressions';
 import usePushToImpressions from 'src/hooks/usePushToImpressions';
-// million-ignore
+
 interface MirrorNotificationProps {
   notification: MirrorNotification;
 }
-// million-ignore
+
 const MirrorNotification: FC<MirrorNotificationProps> = ({ notification }) => {
   const metadata = notification?.publication.metadata;
   const filteredContent = getPublicationData(metadata)?.content || '';

@@ -12,11 +12,11 @@ import { NotificationProfileAvatar } from '../Profile';
 import { useEffectOnce } from 'usehooks-ts';
 import pushToImpressions from '@lib/pushToImpressions';
 import usePushToImpressions from 'src/hooks/usePushToImpressions';
-// million-ignore
+
 interface ReactionNotificationProps {
   notification: ReactionNotification;
 }
-// million-ignore
+
 const ReactionNotification: FC<ReactionNotificationProps> = ({
   notification
 }) => {

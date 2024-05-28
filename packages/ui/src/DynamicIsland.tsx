@@ -1,24 +1,17 @@
-import * as React from 'react';
 
-import { useTheme } from 'next-themes';
-import { useAudio, useHuddle01, usePeers } from '@huddle01/react/hooks';
-import { useState } from 'react';
+import { useEffect, useState} from 'react';
 import Link from 'next/link';
-export const DynamicIsland = (): JSX.Element => {
+
+
+
+export const DynamicIsland = () => {
+
   const [meetingUrl, setMeetingUrl] = useState('');
-  const { peers } = usePeers();
-  const { me } = useHuddle01();
-  const { resolvedTheme } = useTheme();
-  const {
-    produceAudio,
-    stopProducingAudio,
-    stream: micStream,
-    fetchAudioStream,
-    stopAudioStream
-  } = useAudio();
+ 
 
   const currentUrl = window.location.href;
-  React.useEffect(() => {
+  // eslint-disable-next-line no-use-before-define
+  useEffect(() => {
     setMeetingUrl(currentUrl);
   }, [meetingUrl]);
   return (
@@ -35,3 +28,5 @@ export const DynamicIsland = (): JSX.Element => {
     </div>
   );
 };
+
+

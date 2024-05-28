@@ -11,11 +11,11 @@ import { NotificationProfileAvatar } from '../Profile';
 import { useEffectOnce } from 'usehooks-ts';
 import pushToImpressions from '@lib/pushToImpressions';
 import usePushToImpressions from 'src/hooks/usePushToImpressions';
-// million-ignore
+
 interface QuoteNotificationProps {
   notification: QuoteNotification;
 }
-// million-ignore
+
 const QuoteNotification: FC<QuoteNotificationProps> = ({ notification }) => {
   const metadata = notification?.quote.metadata;
   const filteredContent = getPublicationData(metadata)?.content || '';

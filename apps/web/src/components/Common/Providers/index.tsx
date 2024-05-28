@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/rules-of-hooks */
+
 import { apolloClient, ApolloProvider } from '@lensshare/lens/apollo';
 import authLink from '@lib/authLink';
 import { Analytics } from '@vercel/analytics/react';
@@ -45,7 +45,6 @@ const Providers = ({ children }: { children: ReactNode }) => {
         <ApolloProvider client={lensApolloClient}>
           <LensAuthProvider/>
           <LensSubscriptionsProvider />
-          <NotificationsProvider >
           <OptimisticTransactionsProvider />
           <QueryClientProvider client={queryClient}>
             <PreferencesProvider />
@@ -57,7 +56,6 @@ const Providers = ({ children }: { children: ReactNode }) => {
               <Analytics />
             </LivepeerConfig>
           </QueryClientProvider>
-          </NotificationsProvider>
         </ApolloProvider>
       </Web3Provider>
     </ErrorBoundary>

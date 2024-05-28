@@ -1,5 +1,4 @@
-/* eslint-disable react/no-children-prop */
-/* eslint-disable react/jsx-no-useless-fragment */
+
 import MetaTags from '@components/Common/MetaTags';
 import NewPost from '@components/Composer/Post/New';
 import ExploreFeed from '@components/Explore/Feed';
@@ -56,6 +55,7 @@ const Home: NextPage = () => {
       return;
     }
 
+    // eslint-disable-next-line no-use-before-define
     return await initialize({
       keys,
       options: { env: 'production' },
