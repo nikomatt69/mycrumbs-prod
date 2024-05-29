@@ -31,6 +31,7 @@ import ProfileBytes from './ProfileBytes';
 import { createTrackedSelector } from 'react-tracked';
 import { create } from 'zustand';
 import getProfileTheme from '@lib/getProfileTheme';
+import Stats from './Stats';
 
 export interface ProfileTheme {
   backgroundColour: string;
@@ -185,9 +186,9 @@ const ViewProfile: NextPage = (publication) => {
             <Feed profile={profile as Profile} type={feedType} />
           ) : null}
 
-          {feedType === ProfileFeedType.Stats && IS_MAINNET ? (
-            <Achievements profile={profile as Profile} />
-          ) : null}
+          {feedType === ProfileFeedType.Stats &&  (
+            <Stats profileId={profile.id} />
+          )}
           {feedType === ProfileFeedType.Bytes && (
             <ProfileBytes profileId={profile.id} />
           )}
