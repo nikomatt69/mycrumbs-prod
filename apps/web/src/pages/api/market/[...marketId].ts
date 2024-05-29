@@ -7,20 +7,18 @@ import validateLensAccount from 'src/utils/middlewares/validateLensAccount';
 import parseJwt from '@lensshare/lib/parseJwt';
 import { parseHTML } from 'linkedom';
 import getPolymarket from 'src/utils/oembed/meta/getPolymarket';
+import { getMarket } from '@lib/polymarket';
 
 // Define the shape of the request body using zod
 const validationSchema = object({
-  
   buttons :array(number()),
-    title: string(),
-    description: string(),
-    outcomes: array(string()),
-    marketId: string(),
-    imageUrl: string(),
-    currentPrices: array(number()),
-    totalVolume: number(),
-  
-    
+  title: string(),
+  description: string(),
+  outcomes: array(string()),
+  marketId: string(),
+  imageUrl: string(),
+  currentPrices: array(number()),
+  totalVolume: number(),
 });
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -50,7 +48,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     // Attempt to fetch the Polymarket data from the URL
     const response = await axios.get(marketId);
     const { document } = parseHTML(response.data);
-    const polymarketData = getPolymarket(document);
+    const polymarketData = getMarket(marketId);
 
     // Log success for debugging purposes
     console.info(`Processed request for market ${marketId} by user ${evmAddress}`);

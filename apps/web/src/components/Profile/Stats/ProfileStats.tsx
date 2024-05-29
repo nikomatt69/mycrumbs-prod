@@ -19,7 +19,7 @@ const ProfileStats: FC<ProfileStatsProps> = ({ profileId }) => {
   const getProfileStats = async (): Promise<GlobalProfileStats | null> => {
     try {
       const response = await axios.get(
-        `${HEY_API_URL}/lens/stats/profile/all`,
+        `/api/stats/stats/profile/all`,
         { params: { id: profileId } }
       );
 
