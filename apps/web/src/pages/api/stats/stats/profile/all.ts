@@ -51,6 +51,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     return res
       .status(200)
+      .setHeader('Access-Control-Allow-Origin', '*')
       .setHeader('Cache-Control', SWR_CACHE_AGE_10_MINS_30_DAYS)
       .json({ result, success: true });
   } catch (error) {
