@@ -22,10 +22,13 @@ interface PublicationState {
     streamKey: string;
   };
   pollConfig: {
-   
     length: number;
     options: string[];
   };
+  resetPollConfig: () => void;
+  setPollConfig: (pollConfig: { length: number; options: string[] }) => void;
+  setShowPollEditor: (showPollEditor: boolean) => void;
+  showPollEditor: boolean;
   marketConfig: {
     creator : string;
     question: string;
@@ -36,7 +39,7 @@ interface PublicationState {
   quotedPublication: AnyPublication | null;
   removeAttachments: (ids: string[]) => void;
   resetLiveVideoConfig: () => void;
-  resetPollConfig: () => void;
+
   resetMarketConfig: () => void;
   setAttachments: (attachments: NewAttachment[]) => void;
   setAudioPublication: (audioPublication: {
@@ -58,11 +61,11 @@ interface PublicationState {
     outcomes: string[];
     endTime: number; // Assuming UNIX timestamp
   }) => void;
-  setPollConfig: (pollConfig: { length: number; options: string[] }) => void;
+
   setPublicationContent: (publicationContent: string) => void;
   setQuotedPublication: (quotedPublication: AnyPublication | null) => void;
   setShowLiveVideoEditor: (showLiveVideoEditor: boolean) => void;
-  setShowPollEditor: (showPollEditor: boolean) => void;
+
   setShowMarketEditor: (showMarketEditor: boolean) => void;
   setUploadedPercentage: (uploadedPercentage: number) => void;
   setVideoDurationInSeconds: (videoDurationInSeconds: string) => void;
@@ -72,7 +75,7 @@ interface PublicationState {
     url?: string;
   }) => void;
   showLiveVideoEditor: boolean;
-  showPollEditor: boolean;
+
   showMarketEditor: boolean;
   updateAttachments: (attachments: NewAttachment[]) => void;
   uploadedPercentage: number;
@@ -100,6 +103,11 @@ const store = create<PublicationState>((set) => ({
   license: null,
   liveVideoConfig: { id: '', playbackId: '', streamKey: '' },
   pollConfig: { length: 7, options: ['', ''] },
+  resetPollConfig: () =>
+    set(() => ({ pollConfig: { length: 1, options: ['', ''] } })),
+  setPollConfig: (pollConfig) => set(() => ({ pollConfig })),
+  setShowPollEditor: (showPollEditor) => set(() => ({ showPollEditor })),
+  showPollEditor: false,
   publicationContent: '',
   quotedPublication: null,
   marketConfig: {creator: '', question: '', outcomes: [], endTime: Date.now() / 1000 }, // Default values
@@ -116,8 +124,6 @@ const store = create<PublicationState>((set) => ({
     }),
   resetLiveVideoConfig: () =>
     set(() => ({ liveVideoConfig: { id: '', playbackId: '', streamKey: '' } })),
-  resetPollConfig: () =>
-    set(() => ({ pollConfig: { length: 1, options: ['', ''] } })),
   resetMarketConfig: () =>
     set(() => ({
       marketConfig: {
@@ -133,14 +139,12 @@ const store = create<PublicationState>((set) => ({
   setLicense: (license) => set(() => ({ license })),
   setLiveVideoConfig: (liveVideoConfig) => set(() => ({ liveVideoConfig })),
   setMarketConfig: (marketConfig) => set(() => ({ marketConfig })),
-  setPollConfig: (pollConfig) => set(() => ({ pollConfig })),
   setPublicationContent: (publicationContent) =>
     set(() => ({ publicationContent })),
   setQuotedPublication: (quotedPublication) =>
     set(() => ({ quotedPublication })),
   setShowLiveVideoEditor: (showLiveVideoEditor) =>
     set(() => ({ showLiveVideoEditor })),
-  setShowPollEditor: (showPollEditor) => set(() => ({ showPollEditor })),
   setShowMarketEditor: (showMarketEditor) => set(() => ({ showMarketEditor })),
   setUploadedPercentage: (uploadedPercentage) =>
     set(() => ({ uploadedPercentage })),
@@ -148,7 +152,6 @@ const store = create<PublicationState>((set) => ({
     set(() => ({ videoDurationInSeconds })),
   setVideoThumbnail: (videoThumbnail) => set(() => ({ videoThumbnail })),
   showLiveVideoEditor: false,
-  showPollEditor: false,
   showMarketEditor: false,
   updateAttachments: (updateAttachments) =>
     set((state) => {

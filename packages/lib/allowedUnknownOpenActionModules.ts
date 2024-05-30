@@ -6,6 +6,7 @@ const allowedUnknownOpenActionModules = [
   VerifiedOpenActionModules.Swap,
   VerifiedOpenActionModules.Polymarket,
   VerifiedOpenActionModules.RentableBillboard,
+  VerifiedOpenActionModules.Poll
 ];
 
 export default allowedUnknownOpenActionModules;

@@ -31,6 +31,10 @@ export type ProfileFlags = {
 export type UniswapQuote = {
   amountOut: string;
   maxSlippage: string;
+  route: {
+    tokenIn: UniswapToken;
+    tokenOut: UniswapToken;
+  };
   routeString: string;
 };
 
@@ -95,4 +99,62 @@ export type GlobalProfileStats = {
   total_quotes: number;
   total_reacted: number;
   total_reactions: number;
+};
+
+
+export type PollOption = {
+  id: string;
+  option: string;
+  percentage: number;
+  responses: number;
+  voted: boolean;
+};
+
+export type Poll = {
+  endsAt: Date;
+  id: string;
+  options: PollOption[];
+};
+
+export type SnapshotPollOption = {
+  id: string;
+  option: string;
+  percentage: number;
+  responses: number;
+  voted: boolean;
+};
+
+export type SnapshotPoll = {
+  endsAt: Date;
+  id: string;
+  options: SnapshotPollOption[];
+};
+
+export type EasPollOption = {
+  index: number;
+  option: string;
+  percentage: number;
+  responses: number;
+  voted: boolean;
+};
+
+export type EasPoll = {
+  endsAt?: Date;
+  followersOnly: boolean;
+  gateParams?: {
+    minThreshold: string;
+    tokenAddress: string;
+  };
+  options: EasPollOption[];
+  publicationId: string;
+  signatureRequired: boolean;
+};
+
+export type EasVote = {
+  actorProfileId: string;
+  actorProfileOwner: string;
+  optionIndex: number;
+  publicationId: string;
+  timestamp?: number;
+  transactionExecutor?: string;
 };

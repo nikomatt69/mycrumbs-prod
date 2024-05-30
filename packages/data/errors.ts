@@ -16,5 +16,6 @@ export enum Errors {
   AppNotAllowed = 'This app is not allowed to perform this action!',
   InvalidBody = 'Invalid body!',
   InvalidSecret = 'Invalid secret!',
-  Suspended = 'Your profile has been suspended!'
+  Suspended = 'Your profile has been suspended!',
+  UnsupportedAction = 'This action is unsupported!'
 }

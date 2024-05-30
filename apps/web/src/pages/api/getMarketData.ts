@@ -1,50 +1,64 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { ClobClient } from '@polymarket/clob-client';
-import { Address, useAccount, useWalletClient } from 'wagmi';
-import { CHAIN_ID } from '@lensshare/data/constants';
-import { useAppStore } from 'src/store/persisted/useAppStore';
-import walletClient from '@lib/walletClient';
-import getCurrentSession from '@lib/getCurrentSession';
+// src/pages/api/poly/post.ts
+import type { NextApiRequest, NextApiResponse } from 'next';
+import axios from 'axios';
+import { object, string, number, array } from 'zod';
+import allowCors from 'src/utils/allowCors';
+import validateLensAccount from 'src/utils/middlewares/validateLensAccount';
+import parseJwt from '@lensshare/lib/parseJwt';
+import { parseHTML } from 'linkedom';
+import getPolymarket from 'src/utils/oembed/meta/getPolymarket';
+import { getMarket } from '@lib/polymarket';
+import { usePolymarket } from 'src/hooks/usePolymarketHook';
 
-const API_URL = 'https://poly-prod-6m862b8v2.polymarket.dev/api/markets/';
+// Define the shape of the request body using zod
+const validationSchema = object({
+  buttons :array(number()),
+  title: string(),
+  description: string(),
+  outcomes: array(string()),
+  marketId: string(),
+  imageUrl: string(),
+  currentPrices: array(number()),
+  totalVolume: number(),
+});
 
-const getMarketData = async (marketId: string, walletAddress: string) => {
-  const clobClient = new ClobClient(API_URL, CHAIN_ID, walletClient(walletAddress));
-  const market = await clobClient.getMarket(marketId);
-  
-  return {
-    title: market?.question,
-    description: market?.description,
-    outcomes: market?.outcomes.map((o: any) => ({ name: o?.name, price: o?.price })),
-    marketId,
-    imageUrl: market?.imageUrl,
-    currentPrices: market?.currentPrices,
-    totalVolume: market?.totalVolume,
-  };
-};
-
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { marketId } = req.query;
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  
-
-  if (!marketId || typeof marketId !== 'string') {
-    res.status(400).json({ error: 'Invalid market ID' });
-    return;
+async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', ['POST']);
+    return res.status(405).end('Method Not Allowed');  // Clearly specify allowed method
   }
 
-  if (!walletClient as any) {
-    res.status(401).json({ error: 'User profile not found' });
-    return;
+  // Validate request body against schema
+  const validation = validationSchema.safeParse(req.body);
+  if (!validation.success) {
+    return res.status(400).json({ error: 'Invalid request body', details: validation.error });
   }
+
+  const { marketId, outcomes, title,totalVolume,description,imageUrl, currentPrices } = validation.data;
 
   try {
-    const walletAddress = getCurrentSession().id as string;
-    const marketData = await getMarketData(marketId, walletAddress);
-    res.status(200).json(marketData);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch market data', details: error });
-  }
-};
+    // Validate Lens account token
+    const accessToken = req.headers['authorization']?.split(' ')[1] || '';
+    if (!accessToken || !(await validateLensAccount(req))) {
+      return res.status(403).json({ error: 'Unauthorized - Invalid Lens account or missing token' });
+    }
 
-export default handler;
+    const decodedToken = parseJwt(accessToken);
+    const { evmAddress } = decodedToken;
+
+    // Attempt to fetch the Polymarket data from the URL
+    const response = await axios.get(validation.data.marketId);
+    const { document } = parseHTML(response.data);
+    const polymarketData = getMarket(response.data);
+
+    // Log success for debugging purposes
+    console.info(`Processed request for market ${marketId} by user ${evmAddress}`);
+
+    return res.status(200).json({ polymarket: polymarketData, success: true });
+  } catch (error) {
+    console.error('Failed to process Polymarket data:', error);
+    return res.status(500).json({ error: 'Internal Server Error', details: error });
+  }
+}
+
+export default allowCors(handler);

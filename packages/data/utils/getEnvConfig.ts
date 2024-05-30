@@ -7,6 +7,8 @@ const getEnvConfig = (): {
   apiEndpoint: string;
   lensHubProxyAddress: `0x${string}`;
   defaultCollectToken: string;
+  permissionlessCreator?: `0x${string}`;
+  tokenHandleRegistry: `0x${string}`;
   litProtocolEnvironment: string;
   heyLensSignup: `0x${string}`;
 } => {
@@ -19,6 +21,8 @@ const getEnvConfig = (): {
         litProtocolEnvironment: 'polygon',
         publicActProxyAddress: MainnetContracts.PublicActProxy,
         heyLensSignup: TestnetContracts.HeyLensSignup,
+        permissionlessCreator: TestnetContracts.PermissionlessCreator,
+        tokenHandleRegistry: TestnetContracts.TokenHandleRegistry
         
       };
     default:
@@ -29,6 +33,8 @@ const getEnvConfig = (): {
         litProtocolEnvironment: 'polygon',
         publicActProxyAddress: MainnetContracts.PublicActProxy,
         heyLensSignup: TestnetContracts.HeyLensSignup,
+        permissionlessCreator: MainnetContracts.PermissionlessCreator,
+        tokenHandleRegistry: MainnetContracts.TokenHandleRegistry
       };
   }
 };

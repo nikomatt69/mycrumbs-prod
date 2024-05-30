@@ -16,6 +16,8 @@ import DecentOpenAction from './UnknownModule/Decent 2';
 import RentableBillboardOpenAction from './UnknownModule/RentableBillboard';
 import MarketEmbed from './UnknownModule/Polymarket/MarketEmbed';
 import Market from './UnknownModule/Polymarket';
+import EasPoll from '../Poll/eas';
+
 
 interface OpenActionOnBodyProps {
   publication: MirrorablePublication;
@@ -28,13 +30,15 @@ const OpenActionOnBody: FC<OpenActionOnBodyProps> = ({ publication }) => {
         module.contract.address === VerifiedOpenActionModules.Swap ||
         module.contract.address === VerifiedOpenActionModules.RentableBillboard ||
         module.contract.address === VerifiedOpenActionModules.DecentNFT ||
-        module.contract.address === VerifiedOpenActionModules.Polymarket
+        module.contract.address === VerifiedOpenActionModules.Polymarket ||
+        module.contract.address === VerifiedOpenActionModules.Poll
     );
   
     if (!module) {
       return null;
     }
-
+    
+    
     return (
       <div className="mt-3">
         {module.contract.address === VerifiedOpenActionModules.Swap && (
@@ -57,7 +61,12 @@ const OpenActionOnBody: FC<OpenActionOnBodyProps> = ({ publication }) => {
         {module.contract.address === VerifiedOpenActionModules.Polymarket && (
           <Market conditionId={publication.metadata.id as  string } module={module as UnknownOpenActionModuleSettings} publication={publication} />
         )}
-
+        {module.contract.address === VerifiedOpenActionModules.Poll && (
+        <EasPoll
+          module={module as UnknownOpenActionModuleSettings}
+          publicationId={publication.id}
+        />
+      )}
       </div>
     );
   };

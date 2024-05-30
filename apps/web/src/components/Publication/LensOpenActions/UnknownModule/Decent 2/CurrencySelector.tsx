@@ -30,21 +30,21 @@ const CurrencySelector: FC<CurrencySelectorProps> = ({ onSelectCurrency }) => {
     useBalance({
       address,
       chainId: 137,
-      staleTime: 1000 * 60 * 5,
+      staleTime: Infinity,
       token: SUPPORTED_DECENT_OA_TOKENS.WMATIC.address
     });
 
   const { data: wethBalanceData, isLoading: wethBalanceLoading } = useBalance({
     address,
     chainId: 137,
-    staleTime: 1000 * 60 * 5,
+    staleTime: Infinity,
     token: SUPPORTED_DECENT_OA_TOKENS.WETH.address
   });
 
   const { data: usdcBalanceData, isLoading: usdcBalanceLoading } = useBalance({
     address,
     chainId: 137,
-    staleTime: 1000 * 60 * 5,
+    staleTime: Infinity,
     token: SUPPORTED_DECENT_OA_TOKENS.USDC.address
   });
 

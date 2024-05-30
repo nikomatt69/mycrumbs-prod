@@ -8,6 +8,7 @@ import parseJwt from '@lensshare/lib/parseJwt';
 import { parseHTML } from 'linkedom';
 import getPolymarket from 'src/utils/oembed/meta/getPolymarket';
 import { getMarket } from '@lib/polymarket';
+import { usePolymarket } from 'src/hooks/usePolymarketHook';
 
 // Define the shape of the request body using zod
 const validationSchema = object({
@@ -46,9 +47,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { evmAddress } = decodedToken;
 
     // Attempt to fetch the Polymarket data from the URL
-    const response = await axios.get(marketId);
+    const response = await axios.get(validation.data.marketId);
     const { document } = parseHTML(response.data);
-    const polymarketData = getMarket(marketId);
+    const polymarketData = getMarket(response.data);
 
     // Log success for debugging purposes
     console.info(`Processed request for market ${marketId} by user ${evmAddress}`);

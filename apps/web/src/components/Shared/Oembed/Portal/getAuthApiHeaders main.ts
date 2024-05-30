@@ -9,6 +9,7 @@ const getAuthApiHeaders = () => {
   return {
     'X-Access-Token': hydrateAuthTokens().accessToken,
     'X-Lens-Network': IS_MAINNET ? 'mainnet' : 'mainnet',
+    
  // This is a broad setting, consider specifying your domain
   };
 };

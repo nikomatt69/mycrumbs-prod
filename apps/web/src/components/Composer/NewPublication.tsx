@@ -70,6 +70,7 @@ import OpenActionsPreviews from './OpenActionsPreviews';
 import { useAppStore } from 'src/store/persisted/useAppStore';
 import { MetadataAttributeType } from '@lens-protocol/metadata';
 import getMentions from '@lensshare/lib/getMentions';
+import buildEncodedPollData from '@lib/buildEncodedPollData';
 
 const Attachment = dynamic(
   () => import('@components/Composer/Actions/Attachment'),
@@ -194,7 +195,7 @@ const handleWrongNetwork = useHandleWrongNetwork();
   const hasVideo = attachments[0]?.type === 'Video';
 
   const noCollect = !collectModule.type;
-  const noOpenAction = !openAction;
+  const noOpenAction = !openAction && !showPollEditor;
   // Use Momoka if the profile the comment or quote has momoka proof and also check collect module has been disabled
   const useMomoka = isComment
     ? publication?.momoka?.proof
@@ -384,31 +385,19 @@ if (handleWrongNetwork()) {
       const title = hasAudio
         ? audioPublication.title
         : `${getTitlePrefix()} by ${getProfile(currentProfile).slugWithPrefix}`;
-      const hasAttributes = Boolean(pollId);
+      
 
       const baseMetadata = {
         content: processedPublicationContent,
-        title,
-        ...(hasAttributes && {
-          attributes: [
-            ...(pollId
-              ? [
-                  {
-                    key: KNOWN_ATTRIBUTES.POLL_ID,
-                    type: MetadataAttributeType.STRING,
-                    value: pollId
-                  }
-                ]
-              : [])
-          ]
-        }),
         marketplace: {
           animation_url: getAnimationUrl(),
           description: processedPublicationContent,
           external_url: `https://mycrumbs.xyz${getProfile(currentProfile).link}`,
           name: title
-        }
+        },
+        title
       };
+     
 
       const metadata = getMetadata({ baseMetadata });
       const arweaveId = await uploadToArweave(metadata);
@@ -418,6 +407,15 @@ if (handleWrongNetwork()) {
 
       if (nftOpenActionEmbed) {
         openActionModules.push(nftOpenActionEmbed);
+      }
+
+      if (showPollEditor) {
+        openActionModules.push({
+          unknownOpenAction: {
+            address: VerifiedOpenActionModules.Poll,
+            data: buildEncodedPollData(pollConfig)
+          }
+        });
       }
 
       if (Boolean(collectModule.type)) {
@@ -498,6 +496,7 @@ if (handleWrongNetwork()) {
                 }
         })
       };
+      console.log('onChainRequest', onChainRequest);
 
       if (canUseLensManager) {
         if (isComment) {
@@ -540,6 +539,7 @@ if (handleWrongNetwork()) {
         }
       });
     } catch (error) {
+      console.log('createPublication: error', error);
       onError(error);
     }
   };
@@ -575,6 +575,7 @@ if (handleWrongNetwork()) {
       })}
       onClick={() => setShowEmojiPicker(false)}
     >
+      
       {error ? (
         <ErrorMessage
           className="!rounded-none"
