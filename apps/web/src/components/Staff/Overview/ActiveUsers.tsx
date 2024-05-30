@@ -4,7 +4,7 @@ import formatDate from '@lensshare/lib/datetime/formatDate';
 
 
 import type { StatsType } from './LeafwatchStats';
-import { CardHeader } from '@nextui-org/react';
+
 
 interface ActiveUsersProps {
   activeUsers: StatsType['dau'];
@@ -14,7 +14,7 @@ const ActiveUsers: FC<ActiveUsersProps> = ({ activeUsers }) => {
   return (
     <>
       <div className="divider" />
-      <CardHeader title="Daily Active Users" />
+      <div title="Daily Active Users" />
       <div className="m-5">
         <table className="w-full border-x border-t">
           <thead>

@@ -61,12 +61,7 @@ const OpenActionOnBody: FC<OpenActionOnBodyProps> = ({ publication }) => {
         {module.contract.address === VerifiedOpenActionModules.Polymarket && (
           <Market conditionId={publication.metadata.id as  string } module={module as UnknownOpenActionModuleSettings} publication={publication} />
         )}
-        {module.contract.address === VerifiedOpenActionModules.Poll && (
-        <EasPoll
-          module={module as UnknownOpenActionModuleSettings}
-          publicationId={publication.id}
-        />
-      )}
+        
       </div>
     );
   };

@@ -42,7 +42,7 @@ import { useProfileRestriction } from '../../../../store/non-persisted/useProfil
 
 import getAuthApiHeaders from '@components/Shared/Oembed/Portal/getAuthApiHeaders main';
 import { useAppStore } from 'src/store/persisted/useAppStore';
-import { CardHeader } from '@nextui-org/react';
+
 
 interface ChoicesProps {
   module: UnknownOpenActionModuleSettings;
@@ -316,7 +316,7 @@ const Choices: FC<ChoicesProps> = ({ module, poll, refetch }) => {
             placement="top"
             withDelay={true}
           >
-            <CardHeader title={'Smart Poll'} />
+            <div title={'Smart Poll'} />
           </Tooltip>
         </div>
       </div>

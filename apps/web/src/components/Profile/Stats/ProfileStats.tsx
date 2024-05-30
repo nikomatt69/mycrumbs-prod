@@ -9,7 +9,6 @@ import { HEY_API_URL, IS_MAINNET } from '@lensshare/data/constants';
 import { GlobalProfileStats } from '@lensshare/types/hey';
 import { Card, ErrorMessage } from '@lensshare/ui';
 import NumberedStat from '@components/Staff/UI/NumberedStat';
-import { CardHeader } from '@nextui-org/react';
 
 interface ProfileStatsProps {
   profileId: string;
@@ -53,7 +52,7 @@ const ProfileStats: FC<ProfileStatsProps> = ({ profileId }) => {
 
   return (
     <Card>
-      <CardHeader title="Global Profile Stats" />
+      <div title="Global Profile Stats" />
       <div className="m-5 grid grid-cols-2 gap-2 sm:grid-cols-3">
         <NumberedStat
           count={data.total_publications.toString()}

@@ -18,7 +18,7 @@ import { Line } from 'react-chartjs-2';
 import colors from 'tailwindcss/colors';
 
 import type { StatsType } from './LeafwatchStats';
-import { CardHeader } from '@nextui-org/react';
+
 
 ChartJS.register(
   CategoryScale,
@@ -41,7 +41,7 @@ const ImpressionsToday: FC<ImpressionsTodayProps> = ({ impressionsToday }) => {
   return (
     <>
       <div className="divider" />
-      <CardHeader title="Impressions Today" />
+      <div title="Impressions Today" />
       <div className="m-5">
         <Line
           data={{

@@ -375,10 +375,7 @@ if (handleWrongNetwork()) {
 
       setPublicationContentError('');
 
-      let pollId;
-      if (showPollEditor) {
-        pollId = await createPoll();
-      }
+      
 
       const processedPublicationContent =
         publicationContent.length > 0 ? publicationContent : undefined;
