@@ -18,12 +18,16 @@ import { useAppStore } from 'src/store/persisted/useAppStore';
 
 interface CreatePublicationProps {
   onSuccess?: () => void;
+  errorCallback?: (error?: any) => void;
   signlessApproved?: boolean;
+  successCallback?: () => void;
   successToast?: string;
 }
 
 const useActOnUnknownOpenAction = ({
   onSuccess,
+  successCallback,
+  errorCallback,
   signlessApproved = false,
   successToast
 }: CreatePublicationProps) => {
@@ -44,6 +48,7 @@ const useActOnUnknownOpenAction = ({
   const onError = (error?: any) => {
     setIsLoading(false);
     errorToast(error);
+    errorCallback?.(error);
   };
 
   const onCompleted = (
@@ -58,6 +63,7 @@ const useActOnUnknownOpenAction = ({
 
     onSuccess?.();
     setIsLoading(false);
+    successCallback?.();
     toast.success(successToast || 'Success!', { duration: 5000 });
   };
 
@@ -109,6 +115,7 @@ const useActOnUnknownOpenAction = ({
 
             return;
           }
+          
 
           const txResult = await write({ args: [typedData.value] });
           setTxHash(txResult as `0x${string}` | undefined);

@@ -18,7 +18,7 @@ import getProfileTheme from '@lib/getProfileTheme';
 
 import getPublicationAttribute from '@lensshare/lib/getPublicationAttribute';
 import { isIOS, isMobile } from 'react-device-detect';
-import Snapshot from './HeyOpenActions/Snapshot';
+
 import NotSupportedPublication from './NotSupportedPublication';
 import getSnapshotProposalId from '@lib/getSnapshotProposalId';
 import EncryptedPublication from './EncryptedPublication';
@@ -59,7 +59,7 @@ const PublicationBody: FC<PublicationBodyProps> = ({
   const canShowMore = filteredContent?.length > 450 && showMore;
   const urls = getURLs(filteredContent);
   const hasURLs = urls.length > 0;
-  const snapshotProposalId = getSnapshotProposalId(urls);
+
   let content = filteredContent;
 
   if (isIOS && isMobile && canShowMore) {
@@ -79,7 +79,7 @@ const PublicationBody: FC<PublicationBodyProps> = ({
     return <NotSupportedPublication type={metadata?.__typename} />;
   }
 
-  const showEmbed = metadata?.__typename === 'EmbedMetadataV3';
+
   // Show live if it's there
   const showLive = metadata?.__typename === 'LiveStreamMetadataV3';
   // Show attachments if it's there
@@ -105,6 +105,8 @@ const PublicationBody: FC<PublicationBodyProps> = ({
   );
   const showOembed =
     !hasDecentOpenAction &&
+    !showOpenActionPoll
+    !showSnapshotPoll
     !hideOembed &&
     !showSharingLink &&
     hasURLs &&

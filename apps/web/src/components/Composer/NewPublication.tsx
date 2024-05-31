@@ -182,7 +182,7 @@ const NewPublication: FC<NewPublicationProps> = ({ publication }) => {
 
   const [editor] = useLexicalComposerContext();
 
-  const createPoll = useCreatePoll();
+
   const getMetadata = usePublicationMetadata();
 const handleWrongNetwork = useHandleWrongNetwork();
  ;
@@ -347,7 +347,7 @@ const handleWrongNetwork = useHandleWrongNetwork();
       return toast.error(Errors.SignWallet);
     }
 
-if (handleWrongNetwork()) {
+    if (handleWrongNetwork()) {
       return;
     }
     

@@ -56,7 +56,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     const client = createPublicClient({
-      chain: isMainnet ? polygon : polygonMumbai,
+      chain: isMainnet ? polygon : polygon,
       transport: http(RPC_URL)
     });
 
