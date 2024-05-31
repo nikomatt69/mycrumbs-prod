@@ -16,11 +16,11 @@ const nextConfig = withBundleAnalyzer({
     ignoreDuringBuilds: true,
   },
   reactStrictMode: true,
-  swcMinify: true,
+
   transpilePackages: ['data', 'react-native-reanimated', 'react-native', 'expo'],
   experimental: {
     scrollRestoration: true,
-    turbo: true,
+  
   },
   async rewrites() {
     return [

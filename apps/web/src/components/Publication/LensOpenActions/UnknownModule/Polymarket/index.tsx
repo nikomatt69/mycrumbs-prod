@@ -20,7 +20,7 @@ const Market: React.FC<MarketEmbedProps> = ({ conditionId ,publication }) => {
       <main className="container mx-auto p-4">
         <h1 className="text-xl font-bold">Polymarket Integration</h1>
         <MarketEmbed 
-        module={module as unknown as UnknownOpenActionModuleSettings} publication={publication} conditionId={'' as string} />
+        module={module as unknown as UnknownOpenActionModuleSettings} publication={publication} conditionId={"0xdd22472e552920b8438158ea7238bfadfa4f736aa4cee91a6b86c39ead110917" as string} />
       </main>
     </div>
   );

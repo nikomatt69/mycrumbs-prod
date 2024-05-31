@@ -9,7 +9,7 @@ import axios from 'axios';
  */
 const getAllTokens = async (): Promise<AllowedToken[]> => {
   try {
-    const response = await axios.get(`${HEY_API_URL}/tokens/all`, {
+    const response = await axios.get(`/api/tokens/all`, {
       headers: { 'Access-Control-Allow-Origin': '*' }
     });
     const { data} = response;

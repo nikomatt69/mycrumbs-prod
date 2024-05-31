@@ -7,18 +7,18 @@ import { usePublicationStore } from 'src/store/non-persisted/usePublicationStore
 import { Tooltip } from '@lensshare/ui';
 
 
-const PollSettings: FC = () => {
-  const { resetPollConfig, setShowPollEditor, showPollEditor } =
+const PolymarketSettings: FC = () => {
+  const { resetMarketConfig, setShowMarketEditor, showMarketEditor } =
     usePublicationStore();
 
   return (
-    <Tooltip content="Poll" placement="top">
+    <Tooltip content="Market" placement="top">
       <motion.button
-        aria-label="Poll"
+        aria-label="Market"
         className="rounded-full outline-offset-8"
         onClick={() => {
-          resetPollConfig();
-          setShowPollEditor(!showPollEditor);
+          resetMarketConfig();
+          setShowMarketEditor(!showMarketEditor);
         }}
         type="button"
         whileTap={{ scale: 0.9 }}
@@ -29,4 +29,4 @@ const PollSettings: FC = () => {
   );
 };
 
-export default PollSettings;
+export default PolymarketSettings;

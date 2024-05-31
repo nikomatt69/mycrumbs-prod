@@ -12,14 +12,15 @@ interface MarketEmbedProps {
   publication?: AnyPublication | MirrorablePublication;
 }
 
-const MarketEmbed: React.FC<MarketEmbedProps> = ({ conditionId ,publication }) => {
+const MarketEmbed: React.FC<MarketEmbedProps> = ({ conditionId, publication }) => {
   const { market, loading, error, setMarket, setLoading, setError } = useMarketStore();
-const {market :SessionPoly} = usePolymarket(conditionId)
+  const { market: SessionPoly, loading: polyLoading, error: polyError } = usePolymarket(conditionId);
+
   useEffect(() => {
     const fetchMarket = async () => {
       try {
         setLoading(true);
-        const marketData = SessionPoly();
+        const marketData = await SessionPoly();
         setMarket(marketData);
       } catch (error_) {
         setError('Failed to load market data.');
@@ -30,10 +31,10 @@ const {market :SessionPoly} = usePolymarket(conditionId)
     fetchMarket();
   }, [conditionId, setMarket, setLoading, setError]);
 
-  if (loading) {return <p>Loading market data...</p>;}
-  if (error) {return <p className="text-red-500">{error}</p>;}
+  if (loading || polyLoading) {return <p>Loading market data...</p>;}
+  if (error || polyError) {return <p className="text-red-500">{error || polyError}</p>;}
 
-  return <MarketCard market={SessionPoly} />;
+  return <MarketCard market={market} />;
 };
 
 export default MarketEmbed;

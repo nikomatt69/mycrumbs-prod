@@ -1,6 +1,5 @@
+import type { UniswapQuote } from '@lensshare/types/hey';
 
-
-import { UniswapQuote } from '@lensshare/types/hey';
 import axios from 'axios';
 import { parseUnits } from 'viem';
 
@@ -10,18 +9,10 @@ const getUniswapQuote = async (
   amount: number,
   chainId: number
 ): Promise<UniswapQuote> => {
-  const payload = {
+  const uniswapData = {
     amount: parseUnits(amount.toString(), 18).toString(),
-    configs: [
-      {
-        enableFeeOnTransferFeeFetching: true,
-        enableUniversalRouter: true,
-        protocols: ['V2', 'V3', 'MIXED'],
-        routingType: 'CLASSIC'
-      }
-    ],
+    configs: [{ protocols: ['V3'], routingType: 'CLASSIC' }],
     intent: 'quote',
-    sendPortionEnabled: true,
     tokenIn,
     tokenInChainId: chainId,
     tokenOut,
@@ -31,24 +22,15 @@ const getUniswapQuote = async (
 
   const { data } = await axios.post(
     'https://quote.heyxyz.workers.dev',
-    payload
+    uniswapData,
+   
   );
   const { quote } = data;
-
-  const lastRoute = quote.route[quote.route.length - 1];
-  const lastPool = lastRoute[lastRoute.length - 1];
-  const { tokenOut: outToken } = lastPool;
+  
 
   const output = {
-    amountOut: (
-      Number(quote.quoteGasAndPortionAdjustedDecimals) +
-      Number(quote.gasUseEstimateQuoteDecimals)
-    ).toFixed(4),
+    amountOut: Number(quote.quoteDecimals).toFixed(4),
     maxSlippage: quote.slippage.toString(),
-    route: {
-      tokenIn: quote.route[0][0]['tokenIn'],
-      tokenOut: outToken
-    },
     routeString: quote.routeString
   };
 

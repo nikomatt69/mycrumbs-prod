@@ -27,7 +27,7 @@ const getAllowancePayload = (currency: string) => {
 const OpenActions: FC = () => {
   const {currentProfile} = useAppStore();
   const [currencyLoading, setCurrencyLoading] = useState(false);
-  const [selectedCurrency, setSelectedCurrency] = useState<AllowedToken[] | null>(
+  const [selectedCurrency, setSelectedCurrency] = useState<AllowedToken | null>(
     null
   );
   const { data: allowedTokens, loading: loadingAllowedTokens } =
@@ -73,7 +73,7 @@ const OpenActions: FC = () => {
             setSelectedCurrency(
               allowedTokens?.currencies.items.find(
                 (currencies) => currencies?.contract.address === e.target.value
-              ) as unknown as AllowedToken[]
+              ) as unknown as AllowedToken
             );
           }
         }}

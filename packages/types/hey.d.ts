@@ -31,10 +31,6 @@ export type ProfileFlags = {
 export type UniswapQuote = {
   amountOut: string;
   maxSlippage: string;
-  route: {
-    tokenIn: UniswapToken;
-    tokenOut: UniswapToken;
-  };
   routeString: string;
 };
 

@@ -8,6 +8,7 @@ import WalletUser from './WalletUser';
 import { isAddress } from 'viem';
 import getCurrentSession from '@lib/getCurrentSession';
 
+
 export const NextLink = ({ children, href, ...rest }: Record<string, any>) => (
   <Link href={href} {...rest}>
     {children}

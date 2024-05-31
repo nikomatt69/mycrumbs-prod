@@ -16,7 +16,7 @@ const store = create(
   persist<MarketState>(
     (set) => ({
       market: null,
-      loading: true,
+      loading: false,
       error: null,
       setMarket: (market) => set({ market }),
       setLoading: (loading) => set({ loading }),

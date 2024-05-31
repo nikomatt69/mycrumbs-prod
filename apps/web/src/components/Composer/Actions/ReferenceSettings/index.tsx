@@ -61,7 +61,7 @@ const ReferenceSettings: FC = () => {
           {icon}
           <div>{title}</div>
         </div>
-        {selected ? <CheckCircleIcon className="w-5 h-5" /> : null}
+        {selected ? <CheckCircleIcon className="w-5 h-5 text-brand" /> : null}
       </div>
     </MenuItem>
   );

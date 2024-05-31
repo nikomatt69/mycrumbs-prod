@@ -187,7 +187,7 @@ const ViewProfile: NextPage = (publication) => {
           ) : null}
 
           {feedType === ProfileFeedType.Stats &&  (
-            <Stats profileId={profile.id} />
+            <Stats profileId={profile?.id.stats} />
           )}
           {feedType === ProfileFeedType.Bytes && (
             <ProfileBytes profileId={profile.id} />

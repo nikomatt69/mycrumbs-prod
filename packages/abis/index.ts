@@ -10,3 +10,4 @@ export * from './Permit2';
 export * from './Bridge';
 export * from './Swap';
 export * from './EasPollActionModule';
+export * from './PolymarketAbi';

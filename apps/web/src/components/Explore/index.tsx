@@ -82,7 +82,7 @@ const Explore: NextPage = () => {
             );
           }}
         >
-          <TabList className="divider mx-auto  space-x-3">
+          <TabList className="divider mx-auto py-2 space-x-3">
             {tabs.map((tab, index) => (
               <Tab
                 key={tab.type}
@@ -102,7 +102,7 @@ const Explore: NextPage = () => {
             ))}
           </TabList>
           <FeedFocusType focus={focus} setFocus={setFocus} />
-          <TabPanels>
+          <TabPanels className={'py-2'}>
             {tabs.map((tab) => (
               <TabPanel key={tab.type}>
                 <Feed focus={focus} feedType={tab.type} />

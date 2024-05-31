@@ -1,19 +1,19 @@
 import { useState, useEffect } from 'react';
-import { getMarket } from '../lib/polymarket';
+import { PolymarketClient } from 'src/components/Publication/LensOpenActions/UnknownModule/Polymarket/PolymarketClient';
 
 export const usePolymarket = (conditionId: string) => {
   const [market, setMarket] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchMarket = async () => {
       try {
-        setLoading(true);
-        const marketData = await getMarket(conditionId);
+        const client = new PolymarketClient();
+        const marketData = await client.getMarketBySlug(conditionId);
         setMarket(marketData);
-      } catch (err) {
-        setError('Failed to load market data.');
+      } catch (error_) {
+        setError(error);
       } finally {
         setLoading(false);
       }
@@ -21,5 +21,5 @@ export const usePolymarket = (conditionId: string) => {
     fetchMarket();
   }, [conditionId]);
 
-  return { market, loading, error , conditionId };
+  return { market, loading, error };
 };

@@ -19,7 +19,7 @@ const MarketCard: React.FC<MarketCardProps> = ({ market }) => {
         await placeOrder(order);
         setSuccess('Order placed successfully!');
       }
-    } catch (err) {
+    } catch (error_) {
       setError('Failed to place order.');
     }
   };
