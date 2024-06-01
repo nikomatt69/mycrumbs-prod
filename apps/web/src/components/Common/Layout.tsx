@@ -79,7 +79,6 @@ const Layout: FC<LayoutProps> = ({ children }) => {
       logout();
     }
   };
-  const { isRoomJoined } = useRoom();
  
   useSpacesStore();
 
@@ -123,7 +122,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
         
           {children}
          
-          {isRoomJoined ? <SpacesWindow /> : null}
+
           <BottomNavigation />
         
       </div>
