@@ -1,4 +1,3 @@
-import { useHuddle01, useRoom } from '@huddle01/react/hooks';
 
 import type { Dispatch, FC, SetStateAction } from 'react';
 import React, { useState } from 'react';
@@ -24,8 +23,7 @@ const SpaceWindowHeader: FC<SpacesWindowProps> = ({
   isExpanded,
   setIsExpanded
 }) => {
-  const { leaveRoom, endRoom } = useRoom();
-  const { me } = useHuddle01();
+  
   const [micDevices, setMicDevices] = useState<MediaDeviceInfo[]>([]);
   const [speakerDevices, setSpeakerDevices] = useState<MediaDeviceInfo[]>([]);
 
@@ -66,16 +64,7 @@ const SpaceWindowHeader: FC<SpacesWindowProps> = ({
             }}
           />
 
-          {isExpanded &&
-            (me.role === 'host' ? (
-              <button className="text-brand-500 text-sm" onClick={endRoom}>
-                End Spaces
-              </button>
-            ) : (
-              <button className="text-brand-500 text-sm" onClick={leaveRoom}>
-                Leave room
-              </button>
-            ))}
+          
         </div>
       </div>
     </div>

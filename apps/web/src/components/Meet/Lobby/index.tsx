@@ -3,8 +3,7 @@ import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { useDisplayName } from '@huddle01/react/app-utils';
 import {
 
-  useHuddle01,
-  useLobby,
+
   useLocalAudio,
   useLocalPeer,
   useLocalScreenShare,

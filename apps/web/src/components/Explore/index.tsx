@@ -28,7 +28,7 @@ const Explore: NextPage = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const { currentProfile } = useAppStore();
   const [focus, setFocus] = useState<PublicationMetadataMainFocusType>();
-  const { isRoomJoined } = useRoom();
+ 
   const tabs = [
     {
       icon: <FireOutline className="h-5 w-5 text-blue-700" />,
@@ -112,7 +112,7 @@ const Explore: NextPage = () => {
         </TabGroup>
       </GridItemEight>
       <GridItemFour>
-        {currentProfile ? isRoomJoined && <SpacesWindow /> : null}
+        
 
         <Footer />
       </GridItemFour>

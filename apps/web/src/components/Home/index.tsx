@@ -81,7 +81,7 @@ const Home: NextPage = () => {
   const loggedIn = Boolean(currentProfile);
   const loggedOut = !loggedIn;
   const { resolvedTheme } = useTheme();
-  const { isRoomJoined } = useRoom();
+
   const [isExpanded, setIsExpanded] = useState(false);
   return (
     <>
@@ -142,7 +142,7 @@ const Home: NextPage = () => {
 
               <>
                 <div className="flex justify-center">
-                  {isRoomJoined ?<Meet />:null}
+                  
                 </div>
               </>
             </>
