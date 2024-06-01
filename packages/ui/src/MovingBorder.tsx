@@ -8,12 +8,12 @@ import {
   useTransform,
 } from "framer-motion";
 import cn from "../cn";
+import { Button } from "./Button";
 
-
-export function Button({
+export function ButtonMoving({
   borderRadius = "1.75rem",
   children,
-  as: Component = "button",
+  as: Component = <Button />,
   containerClassName,
   borderClassName,
   duration,

@@ -118,7 +118,7 @@ const Composer: FC<ComposerProps> = ({ conversation }) => {
               }),
               headers: {
                 'Content-Type': 'application/json',
-                'x-api-key': 'wWUkmfVYqMCcYLKEGA8VE1fZ4hWyo5d0' || ''
+                'x-api-key': "g6m5QybWE0XTq4drXk6k4rHxdCbIedsx" || 'g6m5QybWE0XTq4drXk6k4rHxdCbIedsx'
               }
             });
             const data = (await apiCall.json()) as {

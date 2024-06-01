@@ -111,6 +111,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
         position="bottom-right"
         containerStyle={{ wordBreak: 'break-word' }}
         toastOptions={getToastOptions(resolvedTheme)}
+        
       />
       
       <GlobalModals />

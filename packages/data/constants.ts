@@ -201,7 +201,7 @@ export const COVER = 'tr:w-1500,h-500';
 export const ATTACHMENT = 'tr:w-1000';
 
 export const TALLY_VERIFICATION_FORM_URL = 'https://tally.so/r/mY5e80';
-export const HUDDLE_API_KEY = 'wWUkmfVYqMCcYLKEGA8VE1fZ4hWyo5d0';
+export const HUDDLE_API_KEY = 'g6m5QybWE0XTq4drXk6k4rHxdCbIedsx';
 
 export const GROWTHBOOK_KEY = IS_MAINNET
   ? 'sdk-fDLRMwvpyh4Kq3b'

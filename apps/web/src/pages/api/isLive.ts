@@ -17,7 +17,7 @@ const isLive = async (
         method: 'get',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': 'wWUkmfVYqMCcYLKEGA8VE1fZ4hWyo5d0' || '',
+          'x-api-key': 'g6m5QybWE0XTq4drXk6k4rHxdCbIedsx' || '',
           'Access-Control-Allow-Origin': '*'
         }
       }

@@ -1,33 +1,26 @@
-import MetaTags from '@components/Common/MetaTags';
-import { ArrowRightIcon } from '@heroicons/react/24/outline';
-import { useDisplayName } from '@huddle01/react/app-utils';
-import {
 
-  useHuddle01,
-  useLobby,
+import {
   useLocalAudio,
   useLocalPeer,
   useLocalScreenShare,
   useLocalVideo,
   usePeerIds,
   useRoom,
-
-} from '@huddle01/react/hooks';
-import { APP_NAME, STATIC_ASSETS_URL } from '@lensshare/data/constants';
-import cn from '@lensshare/ui/cn';
-import type { NextPage } from 'next';
-import { useRouter } from 'next/router';
-import { useTheme } from 'next-themes';
-import { useEffect, useRef, useState } from 'react';
-
-import { useAppStore } from 'src/store/persisted/useAppStore';
-import { useUpdateEffect } from 'usehooks-ts';
-
-import { BasicIcons } from '../BasicIcons';
-import SwitchDeviceMenu from '../SwitchDeviceMenu';
-import { useMeetPersistStore } from 'src/store/persisted/meet';
-
+} from "@huddle01/react/hooks";
 import { AccessToken, Role } from "@huddle01/server-sdk/auth";
+import { Inter } from "next/font/google";
+import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
+
+import { useTheme } from "next-themes";
+
+import { useAppStore } from "src/store/persisted/useAppStore";
+import MetaTags from "@components/Common/MetaTags";
+import { APP_NAME } from "@lensshare/data/constants";
+import SwitchDeviceMenu from "@components/Meet/SwitchDeviceMenu";
+import RemotePeer from "@components/Meet/RemotePeer/RemotePeer";
+import ChatBox from "@components/Meet/ChatBox/ChatBox";
+
 type Props = {
   token: string;
 };
@@ -45,7 +38,7 @@ export default function Lobby({ token }: Props) {
   const router = useRouter();
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const { resolvedTheme } = useTheme();
-  const { joinRoom, state } = useRoom({
+  const { joinRoom, state, leaveRoom } = useRoom({
     onJoin: (room) => {
       console.log("onJoin", room);
       updateMetadata({ displayName: displayUserName });
@@ -53,6 +46,7 @@ export default function Lobby({ token }: Props) {
     onPeerJoin: (peer) => {
       console.log("onPeerJoin", peer);
     },
+  
   });
   const { enableVideo, isVideoOn, stream, disableVideo } = useLocalVideo();
   const { enableAudio, disableAudio, isAudioOn } = useLocalAudio();
@@ -75,16 +69,14 @@ export default function Lobby({ token }: Props) {
 
 
   return (
-    <main className="bg-lobby flex my-36 flex-col items-center justify-center">
+    <main className="bg-lobby flex my-4 flex-col items-center justify-center">
       <MetaTags title={`${APP_NAME} Meet`} />
-    
+      <div className="flex h-[85vh] w-[85vw] flex-col items-center justify-center gap-4">
         
-          
-        <div className="flex-1 justify-between items-center flex flex-col">
-          <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
+      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
             <div className="relative flex gap-2">
               {isVideoOn && (
-                <div className="w-1/2 mx-auto border-2 rounded-xl border-blue-400">
+                <div className="w-[1/2vw] mx-auto border-2 rounded-xl border-blue-400">
                   <video
                     ref={videoRef}
                     className="aspect-video rounded-xl"
@@ -94,7 +86,7 @@ export default function Lobby({ token }: Props) {
                 </div>
               )}
               {shareStream && (
-                <div className="w-1/2 mx-auto border-2 rounded-xl border-blue-400">
+                <div className="w-[80vw] mx-auto border-2 rounded-xl border-blue-400">
                   <video
                     ref={screenRef}
                     className="aspect-video rounded-xl"
@@ -104,8 +96,29 @@ export default function Lobby({ token }: Props) {
                 </div>
               )}
             </div>
-            <code className="font-mono font-bold">{state}</code>
-          <div className="xs:w-[44vw] flex h-[36vh] items-center justify-center rounded-lg sm:w-[44vw] md:w-[44vw] ">
+          <div className="mt-8 mb-32 grid gap-2 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
+            {peerIds.map((peerId) =>
+              peerId ? <RemotePeer key={peerId} peerId={peerId} /> : null
+            )}
+          </div>
+          
+        </div>
+      
+     
+      </div>
+      <code className="font-mono text-xs font-bold">{state}</code>
+      <button
+            onClick={async () => {
+              await leaveRoom();
+            }}
+            className="bg-blue-500 p-2 mx-2 text-xs rounded-lg"
+          >
+            Leave
+          </button>
+        <div className="flex-1 justify-between items-center flex ">
+          
+          
+         
           {state === "idle" && (
             <>
               <input
@@ -120,7 +133,7 @@ export default function Lobby({ token }: Props) {
               <button
                 disabled={!displayUserName}
                 type="button"
-                className="bg-blue-500 p-2 mx-2 rounded-lg"
+                className="bg-blue-500 text-xs p-2 mx-2 rounded-lg"
                 onClick={async () => {
                   await joinRoom({
                     roomId: router.query.roomId as string,
@@ -136,8 +149,16 @@ export default function Lobby({ token }: Props) {
           {state === "connected" && (
             <>
               <button
+               onClick={async () => {
+                 await leaveRoom();
+               }}
+               className="bg-blue-500 p-2 mx-2 text-xs rounded-lg"
+               >
+               Leave
+              </button>
+              <button
                 type="button"
-                className="bg-blue-500 p-2 mx-2 rounded-lg"
+                className="bg-blue-500 p-2 mx-2 text-xs rounded-lg"
                 onClick={async () => {
                   isVideoOn ? await disableVideo() : await enableVideo();
                 }}
@@ -146,7 +167,7 @@ export default function Lobby({ token }: Props) {
               </button>
               <button
                 type="button"
-                className="bg-blue-500 p-2 mx-2 rounded-lg"
+                className="bg-blue-500 p-2 mx-2 text-xs rounded-lg"
                 onClick={async () => {
                   isAudioOn ? await disableAudio() : await enableAudio();
                 }}
@@ -155,7 +176,7 @@ export default function Lobby({ token }: Props) {
               </button>
               <button
                 type="button"
-                className="bg-blue-500 p-2 mx-2 rounded-lg"
+                className="bg-blue-500 p-2 mx-2 text-xs rounded-lg"
                 onClick={async () => {
                   shareStream
                     ? await stopScreenShare()
@@ -166,7 +187,7 @@ export default function Lobby({ token }: Props) {
               </button>
               <button
                 type="button"
-                className="bg-blue-500 p-2 mx-2 rounded-lg"
+                className="bg-blue-500 p-2 text-xs mx-2 rounded-lg"
                 onClick={async () => {
                   const status = isRecording
                     ? await fetch(
@@ -187,15 +208,8 @@ export default function Lobby({ token }: Props) {
           )}
             <SwitchDeviceMenu />
           </div>
-          </div>
-
-          <div className="mt-8 mb-32 grid gap-2 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-            {peerIds.map((peerId) =>
-              peerId ? <RemotePeer key={peerId} peerId={peerId} /> : null
-            )}
-          </div>
-        </div>
-        {state === "connected" && <ChatBox />}
+         
+          
      
     
     </main>
@@ -204,8 +218,8 @@ export default function Lobby({ token }: Props) {
 
 import { GetServerSidePropsContext } from "next";
 import { TPeerMetadata } from '@lensshare/types/hey';
-import ChatBox from '../ChatBox/ChatBox';
-import RemotePeer from '../RemotePeer/RemotePeer';
+
+
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const accessToken = new AccessToken({

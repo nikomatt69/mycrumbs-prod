@@ -24,6 +24,12 @@ export type Group = {
   x: null | string;
 };
 
+
+export type TPeerMetadata = {
+  displayName: string;
+};
+
+
 export type ProfileFlags = {
   isSuspended: boolean;
 };
