@@ -504,7 +504,7 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
             ) : null}
           </div>
           {nft.schema === 'erc1155' ? <QuantityConfig /> : null}
-          <div className="space-y-5 p-5 pt-2">
+          <div className="space-y-4 p-4 pt-2">
             <div>
               <div className="ld-text-gray-500 flex items-center justify-between space-y-0.5">
                 <span className="space-x-1">Price</span>

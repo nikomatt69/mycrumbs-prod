@@ -1,4 +1,3 @@
-
 import {
   useLocalAudio,
   useLocalPeer,
@@ -32,7 +31,6 @@ export default function Lobby({ token }: Props) {
     currentProfile?.handle?.localName ?? ''
   );
 
-
   const videoRef = useRef<HTMLVideoElement>(null);
   const screenRef = useRef<HTMLVideoElement>(null);
   const router = useRouter();
@@ -46,7 +44,6 @@ export default function Lobby({ token }: Props) {
     onPeerJoin: (peer) => {
       console.log("onPeerJoin", peer);
     },
-  
   });
   const { enableVideo, isVideoOn, stream, disableVideo } = useLocalVideo();
   const { enableAudio, disableAudio, isAudioOn } = useLocalAudio();
@@ -67,159 +64,139 @@ export default function Lobby({ token }: Props) {
     }
   }, [shareStream]);
 
-
   return (
-    <main className="bg-lobby flex my-4 flex-col items-center justify-center">
+    <main className="bg-lobby flex  flex-col items-center ">
       <MetaTags title={`${APP_NAME} Meet`} />
-      <div className="flex h-[85vh] w-[85vw] flex-col items-center justify-center gap-4">
-        
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-            <div className="relative flex gap-2">
-              {isVideoOn && (
-                <div className="w-[1/2vw] mx-auto border-2 rounded-xl border-blue-400">
-                  <video
-                    ref={videoRef}
-                    className="aspect-video rounded-xl"
-                    autoPlay
-                    muted
-                  />
-                </div>
-              )}
-              {shareStream && (
-                <div className="w-[80vw] mx-auto border-2 rounded-xl border-blue-400">
-                  <video
-                    ref={screenRef}
-                    className="aspect-video rounded-xl"
-                    autoPlay
-                    muted
-                  />
-                </div>
-              )}
-            </div>
-          <div className="mt-8 mb-32 grid gap-2 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-            {peerIds.map((peerId) =>
-              peerId ? <RemotePeer key={peerId} peerId={peerId} /> : null
-            )}
-          </div>
-          
+      <div className="flex h-[85vh] w-[85vw] flex-col items-center gap-2 pt-10 relative ">
+        <div className="absolute bottom-4 right-4 w-24 h-36 rounded-lg border-2 border-blue-400 ">
+          {isVideoOn && (
+            <video
+              ref={videoRef}
+              className="w-full h-full rounded-lg"
+              autoPlay
+              playsInline
+              
+              muted
+            />
+          )}
         </div>
-      
-     
+        <div className=" flex items-center pt-6 rounded-xl justify-center">
+          {shareStream && (
+            <video
+              ref={screenRef}
+              className=" rounded-lg"
+              autoPlay
+              playsInline
+              
+              muted
+            />
+          )}
+         
+       
+        </div>
+        <div className="flex items-center rounded-xl h-full w-full justify-center">
+        {peerIds.map((peerId) =>
+            peerId ? <RemotePeer key={peerId} peerId={peerId} /> : null
+          )}
+          </div>
       </div>
       <code className="font-mono text-xs font-bold">{state}</code>
-      <button
-            onClick={async () => {
-              await leaveRoom();
-            }}
-            className="bg-blue-500 p-2 mx-2 text-xs rounded-lg"
-          >
-            Leave
-          </button>
-        <div className="flex-1 justify-between items-center flex ">
-          
-          
-         
-          {state === "idle" && (
-            <>
-              <input
-                disabled={state !== "idle"}
-                placeholder="Display Name"
-                type="text"
-                className="border-2 border-blue-400 rounded-lg p-2 mx-2 bg-black text-white"
-                value={displayUserName}
-                onChange={(event) => setDisplayName(event.target.value)}
-              />
+      <div className="flex-1 justify-between z-[10] mb-10 cursor-pointer items-center flex ">
+        {state === "idle" && (
+          <>
+            <input
+              disabled={state !== "idle"}
+              placeholder="Display Name"
+              type="text"
+              className="border-2 border-blue-400 rounded-lg p-2 mx-2  bg-black text-white"
+              value={displayUserName}
+              onChange={(event) => setDisplayName(event.target.value)}
+            />
+            <button
+              disabled={!displayUserName}
+              type="button"
+              className="bg-blue-500 text-xs cursor-pointer p-2 mx-2 rounded-lg"
+              onClick={async () => {
+                await joinRoom({
+                  roomId: router.query.roomId as string,
+                  token,
+                });
+              }}
+            >
+              Join Room
+            </button>
+          </>
+        )}
 
-              <button
-                disabled={!displayUserName}
-                type="button"
-                className="bg-blue-500 text-xs p-2 mx-2 rounded-lg"
-                onClick={async () => {
-                  await joinRoom({
-                    roomId: router.query.roomId as string,
-                    token,
-                  });
-                }}
-              >
-                Join Room
-              </button>
-            </>
-          )}
+        {state === "connected" && (
+          <>
+            <button
+              onClick={async () => {
+                await leaveRoom();
+              }}
+              className="bg-blue-500 p-2 mx-1 text-xs rounded-lg"
+            >
+              Leave
+            </button>
+            <button
+              type="button"
+              className="bg-blue-500 p-2 mx-1 text-xs rounded-lg"
+              onClick={async () => {
+                isVideoOn ? await disableVideo() : await enableVideo();
+              }}
+            >
+              {isVideoOn ? <VideoCameraSlashIcon className="h-4 w-4" /> : <VideoCameraIcon className="h-4 w-4"/> }
+            </button>
+            <button
+              type="button"
+              className="bg-blue-500 p-2 mx-1 text-xs rounded-lg"
+              onClick={async () => {
+                isAudioOn ? await disableAudio() : await enableAudio();
+              }}
+            >
+              {isAudioOn ? <XCircleIcon className="h-4 w-4"/>: <MicrophoneIcon className="h-4 w-4"/>}
+            </button>
+            <button
+              type="button"
+              className="bg-blue-500 p-2 mx-1 text-xs rounded-lg"
+              onClick={async () => {
+                shareStream ? await stopScreenShare() : await startScreenShare();
+              }}
+            >
+              {shareStream ? "Disable Screen" : <PhotoIcon className="h-4 w-4"/>}
+            </button>
+            <button
+              type="button"
+              className="bg-blue-500 p-2 text-xs mx-1 rounded-lg"
+              onClick={async () => {
+                const status = isRecording
+                  ? await fetch(
+                      `/api/stopRecording?roomId=${router.query.roomId}`
+                    )
+                  : await fetch(
+                      `/api/startRecording?roomId=${router.query.roomId}`
+                    );
 
-          {state === "connected" && (
-            <>
-              <button
-               onClick={async () => {
-                 await leaveRoom();
-               }}
-               className="bg-blue-500 p-2 mx-2 text-xs rounded-lg"
-               >
-               Leave
-              </button>
-              <button
-                type="button"
-                className="bg-blue-500 p-2 mx-2 text-xs rounded-lg"
-                onClick={async () => {
-                  isVideoOn ? await disableVideo() : await enableVideo();
-                }}
-              >
-                {isVideoOn ? "Disable Video" : "Enable Video"}
-              </button>
-              <button
-                type="button"
-                className="bg-blue-500 p-2 mx-2 text-xs rounded-lg"
-                onClick={async () => {
-                  isAudioOn ? await disableAudio() : await enableAudio();
-                }}
-              >
-                {isAudioOn ? "Disable Audio" : "Enable Audio"}
-              </button>
-              <button
-                type="button"
-                className="bg-blue-500 p-2 mx-2 text-xs rounded-lg"
-                onClick={async () => {
-                  shareStream
-                    ? await stopScreenShare()
-                    : await startScreenShare();
-                }}
-              >
-                {shareStream ? "Disable Screen" : "Enable Screen"}
-              </button>
-              <button
-                type="button"
-                className="bg-blue-500 p-2 text-xs mx-2 rounded-lg"
-                onClick={async () => {
-                  const status = isRecording
-                    ? await fetch(
-                        `/api/stopRecording?roomId=${router.query.roomId}`
-                      )
-                    : await fetch(
-                        `/api/startRecording?roomId=${router.query.roomId}`
-                      );
-
-                  const data = await status.json();
-                  console.log({ data });
-                  setIsRecording(!isRecording);
-                }}
-              >
-                {isRecording ? "Stop Recording" : "Start Recording"}
-              </button>
-            </>
-          )}
-            <SwitchDeviceMenu />
-          </div>
-         
-          
-     
-    
+                const data = await status.json();
+                console.log({ data });
+                setIsRecording(!isRecording);
+              }}
+            >
+              {isRecording ? "Stop " : <StreamOutline className="h-4 w-4"/>}
+            </button>
+          </>
+        )}
+        <SwitchDeviceMenu />
+      </div>
     </main>
   );
 };
 
 import { GetServerSidePropsContext } from "next";
 import { TPeerMetadata } from '@lensshare/types/hey';
-
-
+import { MicrophoneIcon, PhotoIcon, RectangleStackIcon, VideoCameraIcon, VideoCameraSlashIcon } from "@heroicons/react/24/outline";
+import { XCircleIcon } from "@heroicons/react/24/solid";
+import StreamOutline from "@components/Icons/StreamOutline";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const accessToken = new AccessToken({
@@ -247,4 +224,3 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     props: { token },
   };
 };
-

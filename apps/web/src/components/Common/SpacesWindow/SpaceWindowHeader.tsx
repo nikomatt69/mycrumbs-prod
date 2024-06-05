@@ -28,9 +28,9 @@ const SpaceWindowHeader: FC<SpacesWindowProps> = ({
   const [speakerDevices, setSpeakerDevices] = useState<MediaDeviceInfo[]>([]);
 
   return (
-    <div className="border-b border-gray-300 pb-3 dark:border-gray-700">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+    <div className="border-0 border-gray-300 border-0 dark:border-gray-700">
+      <div className="flex items-center  border-0 justify-between">
+        <div className="flex items-center border-0 gap-1">
           {isExpanded ? (
             <ChevronDownIcon
               className="h-5 w-5"
@@ -42,15 +42,15 @@ const SpaceWindowHeader: FC<SpacesWindowProps> = ({
               onClick={() => setIsExpanded((prev) => !prev)}
             />
           )}
-          {!isExpanded && (
-            <div className="my-auto flex text-sm font-medium text-gray-900 dark:text-gray-300">
+          {!isExpanded  && (
+            <div className=" flex text-sm font-medium border-0 text-gray-900  dark:text-gray-300">
               <img
                 src={imageKit(`${STATIC_ASSETS_URL}/images/icon.png`)}
                 draggable={false}
-                className="h-8 w-8 md:h-16 md:w-16"
+                className="h-6 w-6 "
                 alt="lensshare"
               />{' '}
-              <p className="my-auto">Space</p>
+              <p className="">Space</p>
             </div>
           )}
         </div>

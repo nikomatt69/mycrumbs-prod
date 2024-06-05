@@ -3,7 +3,7 @@ import {
   useRemoteScreenShare,
   useRemoteVideo,
 } from '@huddle01/react/hooks';
-import React, { useEffect, useRef } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 
 type Props = {
   peerId: string;
@@ -93,21 +93,16 @@ const RemotePeer = ({ peerId }: Props) => {
   }, [screenAudio]);
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex rounded-xl items-center h-full w-full justify-center flex-col gap-1">
       <video
         ref={vidRef}
         autoPlay
+        playsInline
         muted
-        className="border-2 rounded-xl border-white-400 aspect-video"
+        className=" rounded-xl p-3 px-1 h-full w-full "
+        
       />
-      {screenVideo && (
-        <video
-          ref={screenVideoRef}
-          autoPlay
-          muted
-          className="border-2 rounded-xl border-white-400 aspect-video"
-        />
-      )}
+     
       <audio ref={audioRef} autoPlay></audio>
       {screenAudio && <audio ref={screenAudioRef} autoPlay></audio>}
     </div>

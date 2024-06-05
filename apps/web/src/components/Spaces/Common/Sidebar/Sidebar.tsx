@@ -24,7 +24,7 @@ const Sidebar: FC = () => {
       )}
     >
       <div className="overflow-y-auto px-4 py-4">
-        {ViewComponent[sidebarView].component}
+      
       </div>
     </div>
   );

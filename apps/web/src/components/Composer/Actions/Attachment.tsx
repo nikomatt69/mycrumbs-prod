@@ -122,7 +122,7 @@ const Attachment: FC = () => {
               className={({ active }) =>
                 cn(
                   { 'dropdown-active': active },
-                  'menu-item !flex cursor-pointer items-center gap-1 space-x-1 rounded-lg'
+                  'menu-item !flex cursor-pointer items-center gap-1 p-2 space-x-2 rounded-lg'
                 )
               }
               disabled={disableImageUpload()}
@@ -145,7 +145,7 @@ const Attachment: FC = () => {
               className={({ active }) =>
                 cn(
                   { 'dropdown-active': active },
-                  'menu-item !flex cursor-pointer items-center gap-1 space-x-1 rounded-lg'
+                  'menu-item !flex cursor-pointer items-center gap-1 p-2 space-x-2 rounded-lg'
                 )
               }
               disabled={Boolean(attachments.length)}
@@ -167,7 +167,7 @@ const Attachment: FC = () => {
               className={({ active }) =>
                 cn(
                   { 'dropdown-active': active },
-                  'menu-item !flex cursor-pointer items-center gap-1 space-x-1 rounded-lg'
+                  'menu-item !flex cursor-pointer items-center gap-1 p-2 space-x-2 rounded-lg'
                 )
               }
               disabled={Boolean(attachments.length)}

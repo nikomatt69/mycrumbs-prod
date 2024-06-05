@@ -25,6 +25,7 @@ import PreferencesProvider from './PreferencesProvider';
 import LensAuthProvider from './LensAuthProvider';
 import NotificationsProvider from './NotificationsProvider';
 import { HuddleClient, HuddleProvider } from "@huddle01/react";
+
 const lensApolloClient = apolloClient(authLink);
 const livepeerClient = createReactClient({
   provider: studioProvider({
@@ -60,6 +61,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
           <HuddleProvider client={huddleClient}>
           <OptimisticTransactionsProvider />
           <QueryClientProvider client={queryClient}>
+        
             <PreferencesProvider />
             <LivepeerConfig client={livepeerClient} theme={getLivepeerTheme}>
               <ThemeProvider>

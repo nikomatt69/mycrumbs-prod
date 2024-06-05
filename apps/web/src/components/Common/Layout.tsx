@@ -56,7 +56,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
       location.reload();
     }
   };
-
+  const { state } = useRoom();
   const { loading } = useCurrentProfileQuery({
     onCompleted: ({ profile, userSigNonces }) => {
       setCurrentProfile(profile as Profile);
@@ -104,7 +104,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
 
         <link rel="manifest" href="/manifest.json" />
 
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=0.8 , maximum-scale=2" />
       </Head>
       <Toaster
         position="bottom-right"
@@ -122,7 +122,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
         
           {children}
          
-
+          {state === "connected" ? <SpacesWindow /> : null}
           <BottomNavigation />
         
       </div>

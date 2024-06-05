@@ -28,6 +28,8 @@ export const KNOWN_ATTRIBUTES = {
   HIDE_OEMBED : 'HideOembed',
   SWAP_OA_DEFAULT_AMOUNT: 'swapOADefaultAmount'
 };
+
+export const HEY_USER_AGENT = 'MyCrumbs';
 export const DEFAULT_DECENT_OA_TOKEN = {
   contractAddress: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
   decimals: 18,

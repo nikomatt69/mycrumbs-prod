@@ -73,6 +73,7 @@ const Oembed: FC<OembedProps> = ({ onLoad, publication, url }) => {
   const og: OG = {
     description: data?.description,
     favicon: data?.url ? getFavicon(data.url) : '',
+    frame: data?.frame,
     html: data?.html,
     image: data?.image,
     nft: data?.nft,
@@ -82,7 +83,7 @@ const Oembed: FC<OembedProps> = ({ onLoad, publication, url }) => {
     polymarket: data?.polymarket
   };
   const isPolymarket = og.site?.toLowerCase().includes('polymarket');
-  if (!og.title && !og.html && !isPolymarket) {
+  if (!og.title && !og.html && !isPolymarket && !og.frame) {
     return null;
   }
 
@@ -92,6 +93,9 @@ const Oembed: FC<OembedProps> = ({ onLoad, publication, url }) => {
 
   if (og.html) {
     return <Player og={og} />;
+  }
+  if (og.frame) {
+    return <Frame frame={og.frame} publicationId={currentPublication?.id} />;
   }
   if (og.polymarket) {
     return <Polyframe frame={og.polymarket} publicationId={currentPublication?.id} />;

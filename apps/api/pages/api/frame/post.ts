@@ -2,13 +2,14 @@ import { HEY_USER_AGENT, IS_MAINNET } from '@lensshare/data/constants';
 import { Errors } from '@lensshare/data/errors';
 import logger from '@lensshare/lib/logger';
 import parseJwt from '@lensshare/lib/parseJwt';
+import allowCors from '@utils/allowCors';
+import validateLensAccount from '@utils/middlewares/validateLensAccount';
+import getFrame from '@utils/oembed/meta/getFrame';
+import signFrameAction from '@utils/signFrameAction';
 import axios from 'axios';
 import { parseHTML } from 'linkedom';
 import { NextApiRequest, NextApiResponse } from 'next';
-import allowCors from 'src/utils/allowCors';
-import validateLensAccount from 'src/utils/middlewares/validateLensAccount';
-import getFrame from 'src/utils/oembed/meta/getFrame';
-import signFrameAction from 'src/utils/signFrameAction';
+
 import { polygon } from 'viem/chains';
 import { number, object, string } from 'zod';
 

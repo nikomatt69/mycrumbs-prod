@@ -31,7 +31,7 @@ const EmojiPicker: FC<EmojiPickerProps> = ({
     <Tooltip content="Emoji" placement="top">
       <div className="relative" ref={listRef}>
         <motion.button
-          className="rounded-full outline-offset-8"
+          className="rounded-full text-brand outline-offset-8"
           onClick={(e) => {
             e.preventDefault();
             stopEventPropagation(e);

@@ -23,7 +23,7 @@ const MetaTags: FC<MetaTagsProps> = ({
       <meta name="description" content={description} />
       <meta
         name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover"
+        content="width=device-width, initial-scale=0.8, maximum-scale=2, viewport-fit=cover"
       />
        <meta
         content="mycrumbs,mycrumbs.xyz,social media profile,social media,lenster,user profile,lens,lens protocol,decentralized,web3,Yoginth,@yoginth"

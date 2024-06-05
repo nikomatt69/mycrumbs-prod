@@ -64,7 +64,9 @@ const PublicationHeader: FC<PublicationHeaderProps> = ({
       <div className="!-mr-[7px] flex items-center space-x-1">
         {!publication.isHidden && !quoted ? (
           <PublicationMenu publication={targetPublication} />
-        ) : null}
+        ) :  (
+          <div className="w-[30px] h-[30px]" />
+        )}
         {quoted && isNew ? (
           <button
             className="rounded-full border p-1.5 hover:bg-gray-300/20"
@@ -73,6 +75,7 @@ const PublicationHeader: FC<PublicationHeaderProps> = ({
               setQuotedPublication(null);
             }}
             aria-label="Remove Quote"
+            type='reset'
           >
             <XMarkIcon className="lt-text-gray-500 w-[15px] sm:w-[18px]" />
           </button>
