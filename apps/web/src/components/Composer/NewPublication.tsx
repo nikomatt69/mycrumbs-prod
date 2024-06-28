@@ -65,12 +65,13 @@ import { useCollectModuleStore } from 'src/store/non-persisted/useCollectModuleS
 import { useReferenceModuleStore } from 'src/store/non-persisted/useReferenceModuleStore';
 import usePolymarket from 'src/hooks/usePolymarket';
 import MarketEditor from './Actions/OpenActionSettings/Config/Polymarket/MarketEditor';
-import { HEY_REFERRAL_PROFILE_ID, KNOWN_ATTRIBUTES } from '@lensshare/data/constants';
+import { ADMIN_ADDRESS, HEY_REFERRAL_PROFILE_ID, KNOWN_ATTRIBUTES } from '@lensshare/data/constants';
 import OpenActionsPreviews from './OpenActionsPreviews';
 import { useAppStore } from 'src/store/persisted/useAppStore';
 import { MetadataAttributeType } from '@lens-protocol/metadata';
 import getMentions from '@lensshare/lib/getMentions';
 import buildEncodedPollData from '@lib/buildEncodedPollData';
+import PolymarketEditor from './Actions/PolymarketSettings/PolymarketEditor';
 
 const Attachment = dynamic(
   () => import('@components/Composer/Actions/Attachment'),
@@ -99,8 +100,8 @@ const PollSettings = dynamic(
     loading: () => <div className="shimmer mb-1 h-5 w-5 rounded-lg" />
   }
 );
-const MarketSettings = dynamic(
-  () => import('@components/Composer/Actions/OpenActionSettings/Config/Polymarket/Composer'),
+const PolymarketSettings = dynamic(
+  () => import('@components/Composer/Actions/PolymarketSettings'),
   {
     loading: () => <div className="shimmer mb-1 h-5 w-5 rounded-lg" />
   }
@@ -587,6 +588,7 @@ if (handleWrongNetwork()) {
         </div>
       ) : null}
       {showPollEditor ? <PollEditor /> : null}
+      {showMarketEditor && ADMIN_ADDRESS ? <PolymarketEditor /> : null}
       {showLiveVideoEditor ? <LivestreamEditor /> : null}
       <OpenActionsPreviews setNftOpenActionEmbed={setNftOpenActionEmbed} />
       {!nftOpenActionEmbed ? <LinkPreviews /> : null}
@@ -631,6 +633,7 @@ if (handleWrongNetwork()) {
             </>
           ) : null}
           <PollSettings />
+          <PolymarketSettings />
           {!isComment && <LivestreamSettings />}
           
         </div>

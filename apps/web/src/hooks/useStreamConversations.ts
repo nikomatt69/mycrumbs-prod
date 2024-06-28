@@ -1,9 +1,7 @@
-import { useClient } from '@xmtp/react-sdk';
 import type { Conversation, Stream } from '@xmtp/xmtp-js';
 import { useEffect, useRef } from 'react';
+
 import useXmtpClient from './useXmtpClient';
-
-
 
 type ConversationStream = Promise<Stream<Conversation>>;
 
@@ -52,10 +50,8 @@ export const useStreamConversations = (
         streamRef.current = client.conversations.stream();
         stream = streamRef.current;
 
-        if (stream) {
-          for await (const conversation of await stream) {
-            onConversation(conversation);
-          }
+        for await (const conversation of await stream) {
+          onConversation(conversation);
         }
       } catch (error_) {
         endStream(stream);

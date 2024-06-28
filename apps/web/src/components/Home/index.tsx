@@ -89,23 +89,6 @@ const Home: NextPage = () => {
       {!currentProfile ? <Hero /> : null}
 
       <GridLayout>
-        <GridItemEight>
-          <>
-            {resolvedTheme === 'dark' ? (
-              <Image
-                className="cursor-pointer"
-                src={`${STATIC_ASSETS_URL}/images/Lenstoknewlogo3.png`}
-                alt="logo"
-              />
-            ) : (
-              <Image
-                className="cursor-pointer"
-                src={`${STATIC_ASSETS_URL}/images/Lenstoknewlogo.png`}
-                alt="logo"
-              />
-            )}
-          </>
-        </GridItemEight>
         <GridItemEight className="space-y-5">
           {currentProfile ? (
             <>

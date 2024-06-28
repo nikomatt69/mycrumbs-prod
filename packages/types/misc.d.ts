@@ -27,7 +27,7 @@ export type FiatRate = {
 export type ButtonType = 'link' | 'mint' | 'post_redirect' | 'post' | 'tx';
 
 export interface Frame {
-  authenticated: boolean;
+
   buttons: {
     action: ButtonType;
     button: string;
@@ -35,7 +35,6 @@ export interface Frame {
     postUrl?: string;
   }[];
   frameUrl: string;
-  imageAspectRatio: '1:1' | '1.91:1';
   image: string;
   postUrl: string;
   version: string;

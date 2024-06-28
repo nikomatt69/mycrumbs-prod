@@ -35,11 +35,9 @@ const Overview: NextPage = () => {
         <StaffSidebar />
       </GridItemFour>
       <GridItemEight className="space-y-5">
-        <Card>
-          <LeafwatchStats />
-        </Card>
+        
         <Card className="p-5">
-          <Links />
+          <iframe src="https://663a6564311e0ec20c42bab9-ztzpmzmcwy.chromatic.com/" width="100%" height="700px"></iframe>
         </Card>
       </GridItemEight>
     </GridLayout>

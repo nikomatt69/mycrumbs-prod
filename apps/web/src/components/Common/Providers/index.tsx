@@ -41,9 +41,10 @@ const queryClient = new QueryClient({
 const huddleClient = new HuddleClient({
   projectId: 'VsUyt6exV91LFUKiQ1kF89kOU0rL7i9a',
   options: {
+    
     // `activeSpeakers` will be most active `n` number of peers, by default it's 8
     activeSpeakers: {
-      size: 12,
+      size: 20,
     },
   },
 });
@@ -61,7 +62,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
           <HuddleProvider client={huddleClient}>
           <OptimisticTransactionsProvider />
           <QueryClientProvider client={queryClient}>
-        
+         
             <PreferencesProvider />
             <LivepeerConfig client={livepeerClient} theme={getLivepeerTheme}>
               <ThemeProvider>

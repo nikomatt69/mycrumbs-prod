@@ -67,7 +67,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const signature = await signFrameAction(
       request,
       accessToken,
-      IS_MAINNET ? 'mainnet' : 'testnet'
+      IS_MAINNET ? 'mainnet' : 'mainnet'
     );
 
     const trustedData = { messageBytes: signature?.signature };
@@ -80,7 +80,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { data } = await axios.post(
       postUrl,
       {clientProtocol: 'lens@1.0.0', trustedData, untrustedData },
-      { headers: { 'User-Agent': HEY_USER_AGENT } }
+      { headers: { 'User-Agent': 'MyCrumbs/0.1 (like TwitterBot)' } }
     );
 
     const { document } = parseHTML(data);

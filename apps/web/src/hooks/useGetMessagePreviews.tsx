@@ -30,7 +30,7 @@ const useGetMessagePreviews = () => {
   const conversations = useMessageStore((state) => state.conversations);
   const previewMessages = useMessageStore((state) => state.previewMessages);
   const client = useMessageStore((state) => state.client);
-  const { currentProfile } = useAppStore();
+  const {currentProfile }= useAppStore();
   const { batchPersistPreviewMessages } = useMessageDb();
   const hasSyncedMessages = useMessageStore((state) => state.hasSyncedMessages);
   const setHasSyncedMessages = useMessageStore(
