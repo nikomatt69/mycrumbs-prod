@@ -11,3 +11,6 @@ export * from './Bridge';
 export * from './Swap';
 export * from './EasPollActionModule';
 export * from './PolymarketAbi';
+export * from './usdcAbi';
+export * from './conditionalTokenAbi';
+export * from './ctfExchangeAbi';

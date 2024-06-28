@@ -3,18 +3,18 @@ import type { FC } from 'react';
 
 import { LinkIcon } from '@heroicons/react/24/outline';
 
-import { Leafwatch } from '@lib/leafwatch';
+import { HEY_API_URL } from '@lensshare/data/constants';
+
+import { Button, Card } from '@lensshare/ui';
+import cn from '@lensshare/ui/cn';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-
+import { useAppStore } from 'src/store/persisted/useAppStore';
 import { Errors } from '@lensshare/data/errors';
 import getAuthApiHeaders from '../Portal/getAuthApiHeaders main';
 import stopEventPropagation from '@lensshare/lib/stopEventPropagation';
-import { Button, Card } from '@lensshare/ui';
-import { PUBLICATION } from '@lensshare/data/tracking';
-import cn from '@lensshare/ui/cn';
-import { useAppStore } from 'src/store/persisted/useAppStore';
+
 
 interface FrameProps {
   frame: IFrame;
@@ -48,7 +48,12 @@ const Frame: FC<FrameProps> = ({ frame, publicationId }) => {
 
       const { data }: { data: { frame: IFrame } } = await axios.post(
         `/api/frame/post`,
-        { buttonIndex: index + 1, postUrl, publicationId },
+        {
+          buttonIndex: index + 1,
+         
+          postUrl: buttons[index].target || buttons[index].postUrl || postUrl,
+          pubId: publicationId
+        },
         { headers: getAuthApiHeaders() }
       );
 
@@ -87,14 +92,14 @@ const Frame: FC<FrameProps> = ({ frame, publicationId }) => {
             icon={
               (action === 'link' ||
                 action === 'post_redirect' ||
-                action === 'mint') && <LinkIcon className="h-4 w-4" />
+                action === 'mint') && <LinkIcon className="size-4" />
             }
             key={index}
             onClick={() => {
-              Leafwatch.track(PUBLICATION.CLICK_OEMBED, {
-                action,
-                publication_id: publicationId
-              });
+              // Leafwatch.track(PUBLICATION.CLICK_PORTAL_BUTTON, {
+              //   action,
+              //   publication_id: publicationId
+              // });
 
               if (
                 action === 'link' ||

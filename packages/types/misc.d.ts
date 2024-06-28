@@ -27,17 +27,18 @@ export type FiatRate = {
 export type ButtonType = 'link' | 'mint' | 'post_redirect' | 'post' | 'tx';
 
 export interface Frame {
+
   buttons: {
     action: ButtonType;
     button: string;
     target?: string;
+    postUrl?: string;
   }[];
   frameUrl: string;
   image: string;
   postUrl: string;
   version: string;
 }
-
 export interface MarketInfo {
   buttons: {
     action: ButtonType;
@@ -57,6 +58,7 @@ export interface Portal {
     target?: string;
   }[];
   image: string;
+  
   portalUrl: string;
   postUrl: string;
   version: string;
@@ -95,6 +97,7 @@ export interface InflowType {
 export interface OG {
   description: null | string;
   favicon: null | string;
+  frame: Frame | null;
   html: null | string;
   image: null | string;
   lastIndexedAt?: string;

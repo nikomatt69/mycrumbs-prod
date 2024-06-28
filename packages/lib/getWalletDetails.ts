@@ -18,6 +18,10 @@ const getWalletDetails = (name: string): WalletDetails => {
       name: 'Coinbase Wallet',
       logo: `${STATIC_ASSETS_URL}/coinbase.svg`
     },
+    'Coinbase Wallet (Smart Wallet)': {
+      name: 'Coinbase Wallet (Smart Wallet)',
+      logo: `${STATIC_ASSETS_URL}/coinbase.svg`
+    },
     'Wallet Connect': {
       name: 'Wallet Connect',
       logo: `${STATIC_ASSETS_URL}/walletconnect.svg`

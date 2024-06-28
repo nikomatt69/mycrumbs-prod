@@ -12,14 +12,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
+
+    const oembed = await getMetadata(url as string);
+    const skipCache = oembed.frame !== null;
     logger.info(`Oembed generated for ${url}`);
     return res
       .status(200)
-      .setHeader('Cache-Control', SWR_CACHE_AGE_10_MINS_30_DAYS)
-      .json({
-        oembed: await getMetadata(url as string),
-        success: true
-      });
+      .setHeader(
+        'Cache-Control',
+        skipCache ? 'no-cache' : SWR_CACHE_AGE_10_MINS_30_DAYS
+      )
+      .json({ oembed, success: true });
   } catch (error) {
     logger.error(Errors.NoBody);
     return res.status(500).json({ error: 'Internal Server Error' });

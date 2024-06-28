@@ -14,98 +14,94 @@ import { useMirrorOrQuoteOptimisticStore } from 'src/store/OptimisticActions/use
 
 import Mirror from './Mirror';
 import Quote from './Quote';
+import hasOptimisticallyMirrored from 'src/hooks/optimistic/hasOptimisticallyMirrored';
+import { motion } from 'framer-motion';
+import UndoMirror from './UndoMirror';
 
-interface PublicationMenuProps {
+interface ShareMenuProps {
   publication: AnyPublication;
   showCount: boolean;
 }
 
-const ShareMenu: FC<PublicationMenuProps> = ({ publication, showCount }) => {
-  const {
-    getMirrorOrQuoteCountByPublicationId,
-    hasQuotedOrMirroredByMe,
-    setMirrorOrQuoteConfig
-  } = useMirrorOrQuoteOptimisticStore();
+const ShareMenu: FC<ShareMenuProps> = ({ publication, showCount }) => {
   const [isLoading, setIsLoading] = useState(false);
-
   const targetPublication = isMirrorPublication(publication)
     ? publication?.mirrorOn
     : publication;
-  const hasQuotedOrMirrored = hasQuotedOrMirroredByMe(targetPublication.id);
-  const mirrorOrQuoteCount = getMirrorOrQuoteCountByPublicationId(
-    targetPublication.id
-  );
-
-  useEffect(() => {
-    setMirrorOrQuoteConfig(targetPublication.id, {
-      countMirrorOrQuote:
-        targetPublication.stats.mirrors + targetPublication.stats.quotes,
-      mirroredOrQuoted:
-        targetPublication.operations.hasMirrored ||
-        targetPublication.operations.hasQuoted
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [publication]);
+  const hasShared =
+    targetPublication.operations.hasMirrored ||
+    targetPublication.operations.hasQuoted ||
+    hasOptimisticallyMirrored(publication.id);
+  const shares =
+    targetPublication.stats.mirrors + targetPublication.stats.quotes;
 
   const iconClassName = 'w-[15px] sm:w-[18px]';
 
   return (
     <div className="flex items-center space-x-1">
       <Menu as="div" className="relative">
-        <MenuButton as={Fragment}>
-          <button
-            className={cn(
-              hasQuotedOrMirrored
-                ? 'text-brand hover:bg-brand-300/20'
-                : 'lt-text-gray-500 hover:bg-gray-300/20',
-              'rounded-full p-1.5'
-            )}
-            onClick={stopEventPropagation}
-            aria-label="Mirror"
-          >
-            {isLoading ? (
-              <Spinner
-                variant={hasQuotedOrMirrored ? 'success' : 'primary'}
-                size="xs"
-                className="mr-0.5"
-              />
-            ) : (
-              <Tooltip
-                placement="top"
-                content={
-                  mirrorOrQuoteCount > 0
-                    ? `${humanize(mirrorOrQuoteCount)} Mirrors`
-                    : 'Mirror'
-                }
-                withDelay
-              >
-                <ArrowsRightLeftIcon className={iconClassName} />
-              </Tooltip>
-            )}
-          </button>
+        <MenuButton
+          aria-label="Mirror"
+          as={motion.button}
+          className={cn(
+            hasShared
+              ? 'text-brand-500 hover:bg-brand-300/20'
+              : 'ld-text-gray-500 hover:bg-gray-300/20',
+            'rounded-full p-1.5 outline-offset-2'
+          )}
+          onClick={stopEventPropagation}
+          whileTap={{ scale: 0.9 }}
+        >
+          {isLoading ? (
+            <Spinner
+              className="mr-0.5"
+              size="xs"
+              variant={hasShared ? 'danger' : 'primary'}
+            />
+          ) : (
+            <Tooltip
+              content={
+                shares > 0
+                  ? `${humanize(shares)} Mirrors and Quotes`
+                  : 'Mirror or Quote'
+              }
+              placement="top"
+              withDelay
+            >
+              <ArrowsRightLeftIcon className={iconClassName} />
+            </Tooltip>
+          )}
         </MenuButton>
         <MenuTransition>
           <MenuItems
-            className="absolute right-0 z-[5] mt-1 w-max rounded-xl border bg-white shadow-sm focus:outline-none dark:border-gray-700 dark:bg-gray-900"
+            className="absolute z-[5] mt-1 w-max rounded-xl border bg-white shadow-sm focus:outline-none dark:border-gray-700 dark:bg-gray-900"
             static
           >
             <Mirror
-              publication={publication}
-              setIsLoading={setIsLoading}
               isLoading={isLoading}
+              publication={targetPublication}
+              setIsLoading={setIsLoading}
             />
-            <Quote publication={publication} />
+            {targetPublication.operations.hasMirrored &&
+              targetPublication.id !== publication.id && (
+                <UndoMirror
+                  isLoading={isLoading}
+                  publication={publication}
+                  setIsLoading={setIsLoading}
+                />
+              )}
+            <Quote publication={targetPublication} />
           </MenuItems>
         </MenuTransition>
       </Menu>
-      {mirrorOrQuoteCount > 0 && !showCount ? (
+      {shares > 0 && !showCount ? (
         <span
           className={cn(
-            hasQuotedOrMirrored ? 'text-brand' : 'lt-text-gray-500',
+            hasShared ? 'text-brand-500' : 'ld-text-gray-500',
             'text-[11px] sm:text-xs'
           )}
         >
-          {nFormatter(mirrorOrQuoteCount)}
+          {nFormatter(shares)}
         </span>
       ) : null}
     </div>

@@ -3,6 +3,7 @@ const withPlugins = require('next-compose-plugins');
 const withMillion = require('./million.js');
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
+
 });
 const allowedBots =
   '.*(bot|telegram|baidu|bing|yandex|iframely|whatsapp|facebook|twitterbot|linkedinbot|whatsapp|slackbot|telegrambot|discordbot|facebookbot|googlebot|bot).*';
@@ -77,7 +78,7 @@ const nextConfig = withBundleAnalyzer({
 module.exports = withPlugins(
   [
     [withExpo],
-    [withMillion]
+
   ],
   nextConfig
 );

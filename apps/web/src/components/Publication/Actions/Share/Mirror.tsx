@@ -6,6 +6,7 @@ import { Errors } from '@lensshare/data/errors';
 import { PUBLICATION } from '@lensshare/data/tracking';
 import type {
   AnyPublication,
+  MirrorablePublication,
   MomokaMirrorRequest,
   OnchainMirrorRequest
 } from '@lensshare/lens';
@@ -18,23 +19,29 @@ import {
   useMirrorOnchainMutation,
   useMirrorOnMomokaMutation
 } from '@lensshare/lens';
+import { useApolloClient } from '@lensshare/lens/apollo';
 import checkDispatcherPermissions from '@lensshare/lib/checkDispatcherPermissions';
 import getSignature from '@lensshare/lib/getSignature';
 import { isMirrorPublication } from '@lensshare/lib/publicationHelpers';
+import { OptmisticPublicationType } from '@lensshare/types/enums';
+import { OptimisticTransaction } from '@lensshare/types/misc';
 import cn from '@lensshare/ui/cn';
 import errorToast from '@lib/errorToast';
 import { Leafwatch } from '@lib/leafwatch';
+import { useCounter } from '@uidotdev/usehooks';
 import type { FC } from 'react';
 import { toast } from 'react-hot-toast';
+import hasOptimisticallyMirrored from 'src/hooks/optimistic/hasOptimisticallyMirrored';
 import useHandleWrongNetwork from 'src/hooks/useHandleWrongNetwork';
 import { useMirrorOrQuoteOptimisticStore } from 'src/store/OptimisticActions/useMirrorOrQuoteOptimisticStore';
 import { useNonceStore } from 'src/store/non-persisted/useNonceStore';
 import { useAppStore } from 'src/store/persisted/useAppStore';
+import { useTransactionStore } from 'src/store/persisted/useTransactionStore';
 
 import { useContractWrite, useSignTypedData } from 'wagmi';
 
 interface MirrorProps {
-  publication: AnyPublication;
+  publication: MirrorablePublication;
   setIsLoading: (isLoading: boolean) => void;
   isLoading: boolean;
 }
@@ -42,24 +49,54 @@ interface MirrorProps {
 const Mirror: FC<MirrorProps> = ({ publication, setIsLoading, isLoading }) => {
   const { currentProfile } = useAppStore();
   const {
-    getMirrorOrQuoteCountByPublicationId,
-    hasQuotedOrMirroredByMe,
-    setMirrorOrQuoteConfig
-  } = useMirrorOrQuoteOptimisticStore();
-  const { lensHubOnchainSigNonce, setLensHubOnchainSigNonce } = useNonceStore();
-  const targetPublication = isMirrorPublication(publication)
-    ? publication?.mirrorOn
-    : publication;
+    decrementLensHubOnchainSigNonce,
+    incrementLensHubOnchainSigNonce,
+    lensHubOnchainSigNonce
+  } = useNonceStore();
+  const { addTransaction } = useTransactionStore();
+  const hasMirrored =
+    publication.operations.hasMirrored ||
+    hasOptimisticallyMirrored(publication.id);
+
+  const [shares, { increment }] = useCounter(
+    publication.stats.mirrors + publication.stats.quotes
+  );
 
   const handleWrongNetwork = useHandleWrongNetwork();
+  const { cache } = useApolloClient();
 
-  const { isSponsored, canUseLensManager, canBroadcast } =
+  const { canBroadcast, canUseLensManager } =
     checkDispatcherPermissions(currentProfile);
 
-  const hasQuotedOrMirrored = hasQuotedOrMirroredByMe(targetPublication.id);
-  const mirrorOrQuoteCount = getMirrorOrQuoteCountByPublicationId(
-    targetPublication.id
-  );
+  const generateOptimisticMirror = ({
+    txHash,
+    txId
+  }: {
+    txHash?: string;
+    txId?: string;
+  }): OptimisticTransaction => {
+    return {
+      mirrorOn: publication?.id,
+      txHash,
+      txId,
+      type: OptmisticPublicationType.Mirror
+    };
+  };
+
+  const updateCache = () => {
+    cache.modify({
+      fields: {
+        operations: (existingValue) => {
+          return { ...existingValue, hasMirrored: true };
+        }
+      },
+      id: cache.identify(publication)
+    });
+    cache.modify({
+      fields: { mirrors: () => shares + 1 },
+      id: cache.identify(publication.stats)
+    });
+  };
 
   const onError = (error?: any) => {
     setIsLoading(false);
@@ -68,10 +105,10 @@ const Mirror: FC<MirrorProps> = ({ publication, setIsLoading, isLoading }) => {
 
   const onCompleted = (
     __typename?:
-      | 'RelayError'
-      | 'RelaySuccess'
       | 'CreateMomokaPublicationResult'
       | 'LensProfileManagerRelayError'
+      | 'RelayError'
+      | 'RelaySuccess'
   ) => {
     if (
       __typename === 'RelayError' ||
@@ -81,12 +118,10 @@ const Mirror: FC<MirrorProps> = ({ publication, setIsLoading, isLoading }) => {
     }
 
     setIsLoading(false);
-    setMirrorOrQuoteConfig(targetPublication.id, {
-      countMirrorOrQuote: mirrorOrQuoteCount + 1,
-      mirroredOrQuoted: true
-    });
+    increment();
+    updateCache();
     toast.success('Post has been mirrored!');
-
+    Leafwatch.track(PUBLICATION.MIRROR, { publication_id: publication.id });
   };
 
   const { signTypedDataAsync } = useSignTypedData({ onError });
@@ -95,13 +130,14 @@ const Mirror: FC<MirrorProps> = ({ publication, setIsLoading, isLoading }) => {
     address: LENSHUB_PROXY,
     abi: LensHub,
     functionName: 'mirror',
-    onSuccess: () => {
+    onSuccess: (data) => {
+      addTransaction(generateOptimisticMirror({ txHash: data.hash }));
+      incrementLensHubOnchainSigNonce();
       onCompleted();
-      setLensHubOnchainSigNonce(lensHubOnchainSigNonce + 1);
     },
     onError: (error) => {
       onError(error);
-      setLensHubOnchainSigNonce(lensHubOnchainSigNonce - 1);
+      decrementLensHubOnchainSigNonce();
     }
   });
 
@@ -130,7 +166,7 @@ const Mirror: FC<MirrorProps> = ({ publication, setIsLoading, isLoading }) => {
         });
       }
 
-      setLensHubOnchainSigNonce(lensHubOnchainSigNonce + 1);
+
       const { data } = await broadcastOnchain({
         variables: { request: { id, signature } }
       });
@@ -170,7 +206,7 @@ const Mirror: FC<MirrorProps> = ({ publication, setIsLoading, isLoading }) => {
     onError
   });
 
-  if (targetPublication.operations.canMirror === TriStateValue.No) {
+  if (publication.operations.canMirror === TriStateValue.No) {
     return null;
   }
 
@@ -193,69 +229,64 @@ const Mirror: FC<MirrorProps> = ({ publication, setIsLoading, isLoading }) => {
     }
   };
 
-  const createMirror = async () => {
-    if (!currentProfile) {
-      return toast.error(Errors.SignWallet);
-    }
 
-    if (handleWrongNetwork()) {
-      return;
-    }
-
-    if (publication.momoka?.proof && !isSponsored) {
-      return toast.error(
-        'Momoka is currently in beta - during this time certain actions are not available to all profiles.'
-      );
-    }
-
-    try {
-      setIsLoading(true);
-      const request: OnchainMirrorRequest | MomokaMirrorRequest = {
-        mirrorOn: publication?.id
-      };
-
-      if (publication.momoka?.proof) {
+    const createMirror = async () => {
+      if (!currentProfile) {
+        return toast.error(Errors.SignWallet);
+      }
+  
+      
+      if (handleWrongNetwork()) {
+        return;
+      }
+      try {
+        setIsLoading(true);
+        const request: MomokaMirrorRequest | OnchainMirrorRequest = {
+          mirrorOn: publication?.id
+        };
+  
+        if (publication.momoka?.proof) {
+          if (canUseLensManager) {
+            return await createOnMomka(request);
+          }
+  
+          return await createMomokaMirrorTypedData({ variables: { request } });
+        }
+  
         if (canUseLensManager) {
-          return await createOnMomka(request);
+          return await createOnChain(request);
         }
-
-        return await createMomokaMirrorTypedData({ variables: { request } });
+  
+        return await createOnchainMirrorTypedData({
+          variables: {
+            options: { overrideSigNonce: lensHubOnchainSigNonce },
+            request
+          }
+        });
+      } catch (error) {
+        onError(error);
       }
-
-      if (canUseLensManager) {
-        return await createOnChain(request);
-      }
-
-      return await createOnchainMirrorTypedData({
-        variables: {
-          options: { overrideSigNonce: lensHubOnchainSigNonce },
-          request
+    };
+    return (
+      <MenuItem
+        as="div"
+        className={({ focus }) =>
+          cn(
+            { 'dropdown-active': focus },
+            hasMirrored ? 'text-green-500' : '',
+            'm-2 block cursor-pointer rounded-lg px-4 py-1.5 text-sm'
+          )
         }
-      });
-    } catch (error) {
-      onError(error);
-    }
+        disabled={isLoading}
+        onClick={createMirror}
+      >
+        <div className="flex items-center space-x-2">
+          <ArrowsRightLeftIcon className="w-4 h-4" />
+          <div>{hasMirrored ? 'Mirror again' : 'Mirror'}</div>
+        </div>
+      </MenuItem>
+    );
   };
-
-  return (
-    <MenuItem
-      as="div"
-      className={({ active }) =>
-        cn(
-          { 'dropdown-active': active },
-          hasQuotedOrMirrored ? 'text-green-500' : '',
-          'm-2 block cursor-pointer rounded-lg px-4 py-1.5 text-sm'
-        )
-      }
-      onClick={createMirror}
-      disabled={isLoading}
-    >
-      <div className="flex items-center space-x-2">
-        <ArrowsRightLeftIcon className="h-4 w-4" />
-        <div>{hasQuotedOrMirrored ? 'Mirrored' : 'Mirror'}</div>
-      </div>
-    </MenuItem>
-  );
-};
-
-export default Mirror;
+  
+  export default Mirror;
+  

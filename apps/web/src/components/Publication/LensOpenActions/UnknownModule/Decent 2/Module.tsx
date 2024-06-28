@@ -504,9 +504,9 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
             ) : null}
           </div>
           {nft.schema === 'erc1155' ? <QuantityConfig /> : null}
-          <div className="space-y-5 p-5 pt-2">
+          <div className="space-y-4 p-4 pt-2">
             <div>
-              <div className="ld-text-gray-500 flex items-center justify-between space-y-0.5">
+              <div className="ld-text-gray-500 flex items-center hidden justify-between space-y-0.5">
                 <span className="space-x-1">Price</span>
                 <div>
                   {(formattedTotalAmount - formattedTotalFees).toFixed(4)}{' '}
@@ -522,17 +522,18 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
               />
               <div className="mt-4 flex items-start justify-between space-y-0.5 text-xl text-gray-600 dark:text-gray-100">
                 <span className="flex items-baseline justify-start space-x-1">
-                  Total
+                  Total Price
+                  <span className="flex-col items-baseline ml-2 text-xs justify-start space-x-1">
+                ( fees included )
                 </span>
+                </span>
+                
                 <div className="flex flex-col items-end">
                   <p>
                     {formattedTotalAmount.toFixed(4)}{' '}
                     {getTokenDetails(selectedNftOaCurrency).symbol}
                   </p>
-                  <div className="ld-text-gray-500 mt-1 text-sm">
-                    ~$
-                    {(formattedTotalAmount * usdPrice).toFixed(4)}{' '}
-                  </div>
+                  
                 </div>
               </div>
             </div>
@@ -563,16 +564,6 @@ const DecentOpenActionModule: FC<DecentOpenActionModuleProps> = ({
               />
             ) : null}
             <div className="flex w-full items-center justify-center">
-              <button
-                className="ld-text-gray-500 flex items-center space-x-1"
-                onClick={(e) => {
-                  stopEventPropagation(e);
-                  setShowCurrencySelector(true);
-                }}
-              >
-                <span className="text-sm">Select another token</span>
-                <ChevronRightIcon className="h-3 w-3 stroke-black" />
-              </button>
             </div>
           </div>
         </>

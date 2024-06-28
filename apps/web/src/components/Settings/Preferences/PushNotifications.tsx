@@ -3,6 +3,7 @@ import { BellIcon } from '@heroicons/react/24/outline';
 import { SETTINGS } from '@lensshare/data/tracking';
 import { Leafwatch } from '@lib/leafwatch';
 import { type FC, useState, useEffect } from 'react';
+import { messaging } from 'src/utils/firebase';
 
 const PushNotifications: FC = () => {
   const [pushNotificationsEnabled, setPushNotificationsEnabled] =
@@ -13,7 +14,8 @@ const PushNotifications: FC = () => {
       setPushNotificationsEnabled(true);
     }
   }, []);
-  
+
+
 
   const togglePushNotifications = async () => {
     if (Notification.permission !== 'granted') {

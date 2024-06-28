@@ -17,8 +17,7 @@ import RentableBillboardOpenAction from './UnknownModule/RentableBillboard';
 import MarketEmbed from './UnknownModule/Polymarket/MarketEmbed';
 
 import EasPoll from '../Poll/eas';
-import PolymarketOpenAction from './UnknownModule/Polymarket';
-
+import Polymarket from './UnknownModule/Polymarket';
 
 
 interface OpenActionOnBodyProps {
@@ -31,7 +30,9 @@ const OpenActionOnBody: FC<OpenActionOnBodyProps> = ({ publication }) => {
       (module) =>
         module.contract.address === VerifiedOpenActionModules.Swap ||
         module.contract.address === VerifiedOpenActionModules.RentableBillboard ||
-        module.contract.address === VerifiedOpenActionModules.DecentNFT 
+        module.contract.address === VerifiedOpenActionModules.DecentNFT ||
+        module.contract.address === VerifiedOpenActionModules.Polymarket ||
+        module.contract.address === VerifiedOpenActionModules.Poll
     );
   
     if (!module) {
@@ -58,7 +59,9 @@ const OpenActionOnBody: FC<OpenActionOnBodyProps> = ({ publication }) => {
         {module.contract.address === VerifiedOpenActionModules.DecentNFT && (
           <DecentOpenAction publication={publication} />
         )}
-       
+        {module.contract.address === VerifiedOpenActionModules.Polymarket && (
+          <Polymarket conditionId={publication.metadata.id as  string } module={module as UnknownOpenActionModuleSettings} publication={publication} />
+        )}
         
       </div>
     );

@@ -28,7 +28,7 @@ const Explore: NextPage = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const { currentProfile } = useAppStore();
   const [focus, setFocus] = useState<PublicationMetadataMainFocusType>();
-  const { isRoomJoined } = useRoom();
+  const { state } = useRoom();
   const tabs = [
     {
       icon: <FireOutline className="h-5 w-5 text-blue-700" />,
@@ -90,10 +90,10 @@ const Explore: NextPage = () => {
                 className={({ selected }) =>
                   cn(
                     {
-                      'border-brand-500 border-b-2 !text-black dark:!text-white':
+                      'border-brand-500  border-b-2 !text-black dark:!text-white':
                         selected
                     },
-                    'lt-text-gray-500 px-4 pb-2 text-xs font-medium outline-none sm:text-sm'
+                    'lt-text-gray-500 px-4 py-2 text-xs font-medium outline-none sm:text-sm'
                   )
                 }
               >
@@ -101,19 +101,19 @@ const Explore: NextPage = () => {
               </Tab>
             ))}
           </TabList>
-          <FeedFocusType focus={focus} setFocus={setFocus} />
+          <FeedFocusType  focus={focus} setFocus={setFocus} />
           <TabPanels className={'py-2'}>
             {tabs.map((tab) => (
-              <TabPanel key={tab.type}>
-                <Feed focus={focus} feedType={tab.type} />
+              <TabPanel className={'p-2'} key={tab.type}>
+                <Feed  focus={focus} feedType={tab.type} />
               </TabPanel>
             ))}
           </TabPanels>
         </TabGroup>
       </GridItemEight>
-      <GridItemFour>
-        {currentProfile ? isRoomJoined && <SpacesWindow /> : null}
-
+      <GridItemFour className='pt-2'>
+        
+      {state === "connected" ? <SpacesWindow /> : null}
         <Footer />
       </GridItemFour>
     </GridLayout>

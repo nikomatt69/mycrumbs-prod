@@ -94,9 +94,9 @@ const Timeline: FC = () => {
           <QueuedPublication key={txn.txId} txn={txn} />
         ) : null
       )}
-      <Card>
+      <Card >
         <Virtuoso
-          className="virtual-divider-list-window"
+          className="virtual-divider-list-window "
           computeItemKey={(index, feedItem) => `${feedItem.id}-${index}`}
           data={feed}
           endReached={onEndReached}

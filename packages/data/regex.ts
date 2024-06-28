@@ -2,6 +2,7 @@ const RESTRICTED_SYMBOLS = '☑️✓✔✅';
 
 export const Regex = {
   cashtag: /(\$\w*[A-Za-z]\w*)/g,
+  club: /@club\/\w+/g,
   ethereumAddress: /^(0x)?[\da-f]{40}$/i,
   handle: /^[\dA-Za-z]\w{4,25}$/g,
   hashtag: /(#\w*[A-Za-z]\w*)/g,

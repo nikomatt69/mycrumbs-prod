@@ -2,11 +2,15 @@ import MetaTags from '@components/Common/MetaTags';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { useDisplayName } from '@huddle01/react/app-utils';
 import {
-  useAudio,
-  useHuddle01,
-  useLobby,
+
+
+  useLocalAudio,
+  useLocalPeer,
+  useLocalScreenShare,
+  useLocalVideo,
+  usePeerIds,
   useRoom,
-  useVideo
+
 } from '@huddle01/react/hooks';
 import { APP_NAME, STATIC_ASSETS_URL } from '@lensshare/data/constants';
 import cn from '@lensshare/ui/cn';
@@ -22,218 +26,210 @@ import { BasicIcons } from '../BasicIcons';
 import SwitchDeviceMenu from '../SwitchDeviceMenu';
 import { useMeetPersistStore } from 'src/store/persisted/meet';
 
-type HTMLAudioElementWithSetSinkId = HTMLAudioElement & {
-  setSinkId: (id: string) => void;
+import { AccessToken, Role } from "@huddle01/server-sdk/auth";
+type Props = {
+  token: string;
 };
 
-const Lobby: NextPage = () => {
-  const { query, push } = useRouter();
-  const { initialize } = useHuddle01();
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const { joinLobby, isLobbyJoined } = useLobby();
-  const { joinRoom } = useRoom();
-  const { fetchVideoStream, stopVideoStream, stream: camStream } = useVideo();
-  const { fetchAudioStream, stopAudioStream, stream: micStream } = useAudio();
-  const { setDisplayName } = useDisplayName();
+export default function Lobby({ token }: Props) {
+  const [displayName, setDisplayName] = useState<string>("");
   const { currentProfile } = useAppStore();
   const [displayUserName, setDisplayUserName] = useState<string>(
     currentProfile?.handle?.localName ?? ''
   );
-  const {
-    toggleMicMuted,
-    toggleCamOff,
-    isMicMuted,
-    isCamOff,
-    videoDevice,
-    audioInputDevice,
-    audioOutputDevice
-  } = useMeetPersistStore();
 
-  const [audio] = useState(new Audio() as HTMLAudioElementWithSetSinkId);
 
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const screenRef = useRef<HTMLVideoElement>(null);
+  const router = useRouter();
+  const [isRecording, setIsRecording] = useState<boolean>(false);
   const { resolvedTheme } = useTheme();
+  const { joinRoom, state } = useRoom({
+    onJoin: (room) => {
+      console.log("onJoin", room);
+      updateMetadata({ displayName: displayUserName });
+    },
+    onPeerJoin: (peer) => {
+      console.log("onPeerJoin", peer);
+    },
+  });
+  const { enableVideo, isVideoOn, stream, disableVideo } = useLocalVideo();
+  const { enableAudio, disableAudio, isAudioOn } = useLocalAudio();
+  const { startScreenShare, stopScreenShare, shareStream } =
+    useLocalScreenShare();
+  const { updateMetadata } = useLocalPeer<TPeerMetadata>();
+  const { peerIds } = usePeerIds();
 
   useEffect(() => {
-    if (query.roomid && '3kzet_ujpjtF8dzciFefEOAZqrDNpdQS') {
-      initialize('3kzet_ujpjtF8dzciFefEOAZqrDNpdQS');
+    if (stream && videoRef.current) {
+      videoRef.current.srcObject = stream;
     }
-  }, [initialize, query.roomid]);
+  }, [stream]);
 
   useEffect(() => {
-    if (camStream && videoRef.current) {
-      videoRef.current.srcObject = camStream;
+    if (shareStream && screenRef.current) {
+      screenRef.current.srcObject = shareStream;
     }
-  }, [camStream]);
+  }, [shareStream]);
 
-  addEventListener('app:cam-on', async () => {
-    console.log('On');
-    toggleCamOff(false);
-  });
-
-  addEventListener('app:cam-off', async () => {
-    console.log('off');
-    toggleCamOff(true);
-  });
-
-  addEventListener('app:mic-on', async () => {
-    toggleMicMuted(false);
-  });
-
-  addEventListener('app:mic-off', async () => {
-    toggleMicMuted(true);
-  });
-
-  useEffect(() => {
-    if (displayUserName) {
-      setDisplayName(displayUserName);
-    }
-  }, [displayUserName, setDisplayName]);
-
-  useEffect(() => {
-    joinLobby(query.roomid as string);
-  }, [joinLobby, query.roomid]);
-
-  useUpdateEffect(() => {
-    if (!isCamOff) {
-      stopVideoStream();
-      fetchVideoStream(videoDevice.deviceId);
-    }
-  }, [videoDevice]);
-
-  useUpdateEffect(() => {
-    if (!isMicMuted) {
-      stopAudioStream();
-      fetchAudioStream(audioInputDevice.deviceId);
-    }
-  }, [audioInputDevice]);
-
-  useUpdateEffect(() => {
-    audio.setSinkId(audioOutputDevice.deviceId);
-  }, [audioOutputDevice]);
-
-  addEventListener('room:joined', () => {
-    push(`/meet/${query.roomid}`);
-  });
 
   return (
-    <main className="bg-lobby flex h-screen flex-col items-center justify-center">
+    <main className="bg-lobby flex my-36 flex-col items-center justify-center">
       <MetaTags title={`${APP_NAME} Meet`} />
-      <div className="flex h-[35vh] w-[35vw] flex-col items-center justify-center gap-4">
-        <div
-          className={cn(
-            resolvedTheme == 'dark' ? 'bg-gray-900' : 'bg-brand-100',
-            'relative  flex items-center justify-center rounded-lg text-center'
-          )}
-        >
+    
+        
+          
+        <div className="flex-1 justify-between items-center flex flex-col">
+          <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
+            <div className="relative flex gap-2">
+              {isVideoOn && (
+                <div className="w-1/2 mx-auto border-2 rounded-xl border-blue-400">
+                  <video
+                    ref={videoRef}
+                    className="aspect-video rounded-xl"
+                    autoPlay
+                    muted
+                  />
+                </div>
+              )}
+              {shareStream && (
+                <div className="w-1/2 mx-auto border-2 rounded-xl border-blue-400">
+                  <video
+                    ref={screenRef}
+                    className="aspect-video rounded-xl"
+                    autoPlay
+                    muted
+                  />
+                </div>
+              )}
+            </div>
+            <code className="font-mono font-bold">{state}</code>
           <div className="xs:w-[44vw] flex h-[36vh] items-center justify-center rounded-lg sm:w-[44vw] md:w-[44vw] ">
-            {camStream ? (
-              <video
-                ref={videoRef}
-                autoPlay
-                muted
-                disablePictureInPicture
-                disableRemotePlayback
-                playsInline
-                style={{ transform: 'rotateY(180deg)' }}
-                className="min-h-full  self-stretch rounded-lg object-cover"
+          {state === "idle" && (
+            <>
+              <input
+                disabled={state !== "idle"}
+                placeholder="Display Name"
+                type="text"
+                className="border-2 border-blue-400 rounded-lg p-2 mx-2 bg-black text-white"
+                value={displayUserName}
+                onChange={(event) => setDisplayName(event.target.value)}
               />
-            ) : (
-              <img
-                src={`${STATIC_ASSETS_URL}/images/default-avatar.svg`}
-                alt="avatar"
-                className="mb-16 mt-16 h-24 w-24"
-                style={{ transform: 'rotateY(180deg)' }}
-              />
-            )}
-          </div>
-        </div>
-        <div
-          className={cn(
-            'flex items-center justify-center self-stretch rounded-lg p-2'
+
+              <button
+                disabled={!displayUserName}
+                type="button"
+                className="bg-blue-500 p-2 mx-2 rounded-lg"
+                onClick={async () => {
+                  await joinRoom({
+                    roomId: router.query.roomId as string,
+                    token,
+                  });
+                }}
+              >
+                Join Room
+              </button>
+            </>
           )}
-        >
-          <div className="flex w-full flex-row items-center justify-center gap-8">
-            {!camStream ? (
+
+          {state === "connected" && (
+            <>
               <button
-                onClick={() => {
-                  fetchVideoStream(videoDevice.deviceId);
+                type="button"
+                className="bg-blue-500 p-2 mx-2 rounded-lg"
+                onClick={async () => {
+                  isVideoOn ? await disableVideo() : await enableVideo();
                 }}
-                className="bg-brand-500 flex h-10 w-10 items-center justify-center rounded-xl"
               >
-                {BasicIcons.inactive['cam']}
+                {isVideoOn ? "Disable Video" : "Enable Video"}
               </button>
-            ) : (
               <button
-                onClick={stopVideoStream}
-                className={cn(
-                  'flex h-10 w-10 items-center justify-center rounded-xl'
-                )}
-              >
-                {BasicIcons.active['cam']}
-              </button>
-            )}
-            {!micStream ? (
-              <button
-                onClick={() => {
-                  fetchAudioStream(audioInputDevice.deviceId);
+                type="button"
+                className="bg-blue-500 p-2 mx-2 rounded-lg"
+                onClick={async () => {
+                  isAudioOn ? await disableAudio() : await enableAudio();
                 }}
-                className="bg-brand-500 flex h-10 w-10 items-center justify-center rounded-xl"
               >
-                {BasicIcons.inactive['mic']}
+                {isAudioOn ? "Disable Audio" : "Enable Audio"}
               </button>
-            ) : (
               <button
-                onClick={() => {
-                  stopAudioStream();
+                type="button"
+                className="bg-blue-500 p-2 mx-2 rounded-lg"
+                onClick={async () => {
+                  shareStream
+                    ? await stopScreenShare()
+                    : await startScreenShare();
                 }}
-                className={cn(
-                  'flex h-10 w-10 items-center justify-center rounded-xl'
-                )}
               >
-                {BasicIcons.active['mic']}
+                {shareStream ? "Disable Screen" : "Enable Screen"}
               </button>
-            )}
+              <button
+                type="button"
+                className="bg-blue-500 p-2 mx-2 rounded-lg"
+                onClick={async () => {
+                  const status = isRecording
+                    ? await fetch(
+                        `/api/stopRecording?roomId=${router.query.roomId}`
+                      )
+                    : await fetch(
+                        `/api/startRecording?roomId=${router.query.roomId}`
+                      );
+
+                  const data = await status.json();
+                  console.log({ data });
+                  setIsRecording(!isRecording);
+                }}
+              >
+                {isRecording ? "Stop Recording" : "Start Recording"}
+              </button>
+            </>
+          )}
             <SwitchDeviceMenu />
           </div>
-        </div>
-        <div className="flex w-full items-center">
-          <div className="flex w-full flex-col justify-center gap-1">
-            <div className="flex w-full flex-col justify-center gap-1">
-              Allow Mic and Cam
-            </div>
+          </div>
 
-            <div
-              className={cn(
-                resolvedTheme == 'dark' ? 'text-blue-700 ' : 'text-blue-700 ',
-                'flex w-full items-center justify-center gap-2 rounded-[10px]  backdrop-blur-[400px]'
-              )}
-            >
-              <input
-                type="text"
-                placeholder="Set Usernsme"
-                className=" max-w-xs  items-center rounded-lg  bg-transparent text-blue-700 outline-none "
-                value={displayUserName}
-                onChange={(e) => setDisplayUserName(e.target.value)}
-              />
-            </div>
+          <div className="mt-8 mb-32 grid gap-2 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
+            {peerIds.map((peerId) =>
+              peerId ? <RemotePeer key={peerId} peerId={peerId} /> : null
+            )}
           </div>
         </div>
-        <div className="flex w-full items-center">
-          <button
-            className="bg- bg-brand-500 mt-2 flex w-full items-center justify-center rounded-md p-2 text-blue-700 "
-            onClick={async () => {
-              if (isLobbyJoined) {
-                joinRoom();
-              }
-            }}
-          >
-            Start Meeting
-            <ArrowRightIcon className="ml-2 h-4 w-4" />
-          </button>
-        </div>
-      </div>
+        {state === "connected" && <ChatBox />}
+     
+    
     </main>
   );
 };
 
-export default Lobby;
+import { GetServerSidePropsContext } from "next";
+import { TPeerMetadata } from '@lensshare/types/hey';
+import ChatBox from '../ChatBox/ChatBox';
+import RemotePeer from '../RemotePeer/RemotePeer';
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const accessToken = new AccessToken({
+    apiKey: 'g6m5QybWE0XTq4drXk6k4rHxdCbIedsx' || "",
+    roomId: ctx.params?.roomId?.toString() || "",
+    role: Role.HOST,
+    permissions: {
+      admin: true,
+      canConsume: true,
+      canProduce: true,
+      canProduceSources: {
+        cam: true,
+        mic: true,
+        screen: true,
+      },
+      canRecvData: true,
+      canSendData: true,
+      canUpdateMetadata: true,
+    },
+  });
+
+  const token = await accessToken.toJwt();
+
+  return {
+    props: { token },
+  };
+};
+

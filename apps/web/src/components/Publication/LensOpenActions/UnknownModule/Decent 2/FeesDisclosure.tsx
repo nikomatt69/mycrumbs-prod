@@ -36,15 +36,13 @@ const FeesDisclosure: FC<FeesDisclosureProps> = ({
           className="flex items-center space-x-1.5"
           onClick={stopEventPropagation}
         >
-          <span>Fees</span>
+          <span>Lens Creator Fee</span>
           <ChevronDownIcon className="w-3 h-3" strokeWidth={3} />
         </DisclosureButton>
-        <span>
-          {formattedTotalFees.toFixed(4)} {tokenSymbol}
-        </span>
+        
       </div>
       <DisclosurePanel className="mt-1.5 space-y-1 text-sm">
-        <div className="ld-text-gray-500 flex items-center justify-between">
+        <div className="ld-text-gray-500 flex hidden items-center justify-between">
           <span className="flex items-center space-x-2">
             <span>↳</span>
             <p>

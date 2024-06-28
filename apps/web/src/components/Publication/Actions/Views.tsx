@@ -1,25 +1,30 @@
-import { ChartBarIcon } from '@heroicons/react/24/outline';
-import humanize from '@lensshare/lib/humanize';
-import nFormatter from '@lensshare/lib/nFormatter';
-import { Tooltip } from '@lensshare/ui';
-import { motion } from 'framer-motion';
-import { type FC } from 'react';
+import { ChartBarIcon } from "@heroicons/react/24/outline";
+import humanize from "@lensshare/lib/humanize";
+import nFormatter from "@lensshare/lib/nFormatter";
+import { Tooltip } from "@lensshare/ui";
+
+import { motion } from "framer-motion";
+import { FC } from "react";
+
 interface ViewsProps {
-  views: number;
   showCount: boolean;
+  views: number;
 }
 
-const Views: FC<ViewsProps> = ({ views, showCount }) => {
-  
+const Views: FC<ViewsProps> = ({ showCount, views }) => {
+  if (showCount) {
+    return null;
+  }
 
   return (
     <div className="ld-text-gray-500 flex items-center space-x-1">
       <motion.button
-        className="rounded-full p-1.5 outline-offset-2 outline-gray-400 hover:bg-gray-300/20"
-        whileTap={{ scale: 0.9 }}
         aria-label="Views"
+        className="rounded-full p-1.5 outline-offset-2 hover:bg-gray-300/20"
+        disabled
+        whileTap={{ scale: 0.9 }}
       >
-        <Tooltip placement="top" content={`${humanize(views)} Views`} withDelay>
+        <Tooltip content={`${humanize(views)} Views`} placement="top" withDelay>
           <ChartBarIcon className="w-[15px] sm:w-[18px]" />
         </Tooltip>
       </motion.button>

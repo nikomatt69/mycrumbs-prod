@@ -1,4 +1,3 @@
-import { useEventListener, useHuddle01, useRoom } from '@huddle01/react/hooks';
 
 import type { Dispatch, FC, SetStateAction } from 'react';
 import React, { useEffect, useState } from 'react';
@@ -41,8 +40,7 @@ const SpaceWindowHeader: FC<SpacesWindowProps> = ({
     setActiveSpeakerDevice
   } = useSpacesStore();
 
-  const { leaveRoom, endRoom } = useRoom();
-  const { me } = useHuddle01();
+
   const [micDevices, setMicDevices] = useState<MediaDeviceInfo[]>([]);
   const [speakerDevices, setSpeakerDevices] = useState<MediaDeviceInfo[]>([]);
 
@@ -56,9 +54,7 @@ const SpaceWindowHeader: FC<SpacesWindowProps> = ({
     (profile) => profile?.ownedBy.address === space.host
   ) as Profile;
 
-  useEventListener(SpacesEvents.ROOM_ME_LEFT, () => {
-    setShowSpacesWindow(false);
-  });
+
 
   useEffect(() => {
     if (!activeMicDevice || !activeSpeakerDevice) {
@@ -137,16 +133,8 @@ const SpaceWindowHeader: FC<SpacesWindowProps> = ({
             </div>
           </Dropdown>
 
-          {isExpanded &&
-            (me.role === 'host' ? (
-              <button className="text-brand-500 text-sm" onClick={endRoom}>
-                End Spaces
-              </button>
-            ) : (
-              <button className="text-brand-500 text-sm" onClick={leaveRoom}>
-                Leave room
-              </button>
-            ))}
+          
+           
         </div>
       </div>
 
