@@ -33,6 +33,7 @@ import { loadKeys } from '@lib/xmtp/keys';
 import { useRoom } from '@huddle01/react/hooks';
 import Meet from '@components/Meet/Meet';
 import Timeline from './Timeline';
+import UberCard from '@components/Uber';
 
 const Home: NextPage = () => {
   const { currentProfile } = useAppStore();
@@ -119,7 +120,7 @@ const Home: NextPage = () => {
           {/* Onboarding steps */}
           {loggedIn && (
             <>
-             
+              <UberCard />
               <EnableLensManager />
               <SetProfile />
 
