@@ -120,7 +120,7 @@ const Home: NextPage = () => {
           {/* Onboarding steps */}
           {loggedIn && (
             <>
-              <UberCard />
+              
               <EnableLensManager />
               <SetProfile />
 

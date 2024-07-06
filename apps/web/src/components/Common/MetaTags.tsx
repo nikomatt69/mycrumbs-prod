@@ -30,7 +30,7 @@ const MetaTags: FC<MetaTagsProps> = ({
         name="keywords"
       />
      <link href={url} rel="canonical" />
-     <link href='https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.css' rel='stylesheet' />
+     
 
       <meta content={url} property="og:url" />
       <meta property="og:site_name" content={APP_NAME} />
