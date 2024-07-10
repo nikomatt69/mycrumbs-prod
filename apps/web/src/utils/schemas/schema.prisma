@@ -1,0 +1,35 @@
+datasource db {
+  provider = "postgresql" // or your database provider
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id             Int      @id @default(autoincrement())
+  name           String
+  walletAddress  String
+  profileImage   String?
+  trips          Trip[]
+}
+
+model Ride {
+  id            Int      @id @default(autoincrement())
+  orderById     Int
+  title         String
+  priceMultiplier Float
+  icon          String
+}
+
+model Trip {
+  id            Int      @id @default(autoincrement())
+  dropoff       String
+  pickup        String
+  rideCategory  String
+  price         Float
+  rideTimestamp DateTime
+  passengerId   Int
+  passenger     User     @relation(fields: [passengerId], references: [id])
+}
