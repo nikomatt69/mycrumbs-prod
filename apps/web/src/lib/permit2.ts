@@ -121,7 +121,7 @@ export const getPermit2Allowance = async ({
   token: Address;
 }) => {
   const client = createPublicClient({
-    chain: IS_MAINNET ? polygon : polygonMumbai,
+    chain: IS_MAINNET ? polygon : polygon,
     transport: http(RPC_URL)
   });
 
