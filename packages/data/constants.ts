@@ -28,7 +28,8 @@ export const KNOWN_ATTRIBUTES = {
   HIDE_OEMBED : 'HideOembed',
   SWAP_OA_DEFAULT_AMOUNT: 'swapOADefaultAmount'
 };
-
+export const CLUBS_API_URL = 'https://us-central1-orbapp.cloudfunctions.net';
+export const CLUBS_APP_TOKEN = 'Qun7aDFo4FS7Dt2b9Ea8ve5TqvuXiCJXjZZTsao5Y9viFJxSEi5gYZa7DybrSzDGXST5L2vWMjBXzjsppj5RERo3AdPnJ3TVYuY2cLxBFa592rkjzU';
 export const HEY_USER_AGENT = 'MyCrumbs';
 export const DEFAULT_DECENT_OA_TOKEN = {
   contractAddress: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',

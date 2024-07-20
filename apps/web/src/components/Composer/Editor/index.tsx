@@ -28,6 +28,7 @@ import { useAppStore } from 'src/store/persisted/useAppStore';
 
 import getAvatar from '@lensshare/lib/getAvatar';
 import {  usePublicationStore } from 'src/store/non-persisted/usePublicationStore';
+import ClubPickerPlugin from '@components/Shared/Lexical/Plugins/ClubPicker';
 
 const TRANSFORMERS = [...TEXT_FORMAT_TRANSFORMERS];
 
@@ -92,6 +93,7 @@ const Editor: FC = () => {
         <LexicalAutoLinkPlugin />
         <HistoryPlugin />
         <HashtagPlugin />
+        <ClubPickerPlugin />
         <MentionsPlugin />
         <ImagesPlugin onPaste={handlePaste} />
         <MarkdownShortcutPlugin transformers={TRANSFORMERS} />

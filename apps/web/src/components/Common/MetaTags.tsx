@@ -30,6 +30,7 @@ const MetaTags: FC<MetaTagsProps> = ({
         name="keywords"
       />
      <link href={url} rel="canonical" />
+     
 
       <meta content={url} property="og:url" />
       <meta property="og:site_name" content={APP_NAME} />

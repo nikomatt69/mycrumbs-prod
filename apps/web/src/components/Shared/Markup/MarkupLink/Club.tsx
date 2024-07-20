@@ -13,20 +13,21 @@ const Club: FC<MarkupLinkProps> = ({ title }) => {
   if (!title) {
     return null;
   }
+
   const club = title.slice(1).replace(CLUB_HANDLE_PREFIX, '').toLowerCase();
   const clubHandle = `/${club}`;
 
   return (
-    <a
+    <Link
       className="cursor-pointer outline-none focus:underline"
+      href={`/c/${club}`}
       onClick={(event) => {
-        toast.success('Clubs coming soon!');
         stopEventPropagation(event);
         Leafwatch.track(PUBLICATION.CLICK_MENTION, { club: clubHandle });
       }}
     >
       {clubHandle}
-    </a>
+    </Link>
   );
 };
 

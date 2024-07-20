@@ -101,7 +101,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
           name="theme-color"
           content={resolvedTheme === 'dark' ? '#1b1b1d' : '#ffffff'}
         />
-
+        
         <link rel="manifest" href="/manifest.json" />
 
         <meta name="viewport" content="width=device-width, initial-scale=0.8 , maximum-scale=2" />
