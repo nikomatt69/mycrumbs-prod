@@ -1,4 +1,4 @@
-import { Menu } from '@headlessui/react';
+import { Menu, MenuItem } from '@headlessui/react';
 import cn from '@lensshare/ui/cn';
 import { useTheme } from 'next-themes';
 import type { FC } from 'react';
@@ -15,7 +15,7 @@ const DeviceList: FC<DeviceListProps> = ({ devices, setDevice }) => {
   return (
     <>
       {devices.map((device) => (
-        <Menu.Item key={device.deviceId}>
+        <MenuItem key={device.deviceId}>
           {({ active }) => (
             <button
               className={cn(
@@ -34,7 +34,7 @@ const DeviceList: FC<DeviceListProps> = ({ devices, setDevice }) => {
               {device.label}
             </button>
           )}
-        </Menu.Item>
+        </MenuItem>
       ))}
     </>
   );

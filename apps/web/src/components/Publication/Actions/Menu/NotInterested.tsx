@@ -1,4 +1,4 @@
-import { Menu } from '@headlessui/react';
+import { Menu, MenuItem } from '@headlessui/react';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { PUBLICATION } from '@lensshare/data/tracking';
 import {
@@ -81,7 +81,7 @@ const NotInterested: FC<NotInterestedProps> = ({ publication }) => {
   };
 
   return (
-    <Menu.Item
+    <MenuItem
       as="div"
       className={({ active }) =>
         cn(
@@ -107,7 +107,7 @@ const NotInterested: FC<NotInterestedProps> = ({ publication }) => {
           </>
         )}
       </div>
-    </Menu.Item>
+    </MenuItem>
   );
 };
 

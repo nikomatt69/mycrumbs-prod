@@ -120,6 +120,7 @@ export const CardItem = ({
   rotateZ?: number | string;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
+  // eslint-disable-next-line no-use-before-define
   const [isMouseEntered] = useMouseEnter();
 
   const handleAnimations = () => {

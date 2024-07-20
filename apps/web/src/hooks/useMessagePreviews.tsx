@@ -6,7 +6,7 @@ import type { Conversation } from '@xmtp/xmtp-js';
 import { DecodedMessage } from '@xmtp/xmtp-js';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
-
+import useXmtpClient from 'src/hooks/useXmtpClient';
 import { useAppStore } from 'src/store/persisted/useAppStore';
 import { useMessageStore } from 'src/store/messages';
 
@@ -16,14 +16,12 @@ import { useStreamConversations } from './useStreamConversations';
 import { buildConversationKey, parseConversationKey } from './conversationKey';
 import chunkArray from './chunkArray';
 import buildConversationId from './buildConversationId';
-import { useClient } from '@xmtp/react-sdk';
-import useXmtpClient from './useXmtpClient';
 
 const MAX_PROFILES_PER_REQUEST = 50;
 
 const useMessagePreviews = () => {
   const router = useRouter();
-  const { currentProfile } = useAppStore();
+  const {currentProfile} = useAppStore();
   const conversations = useMessageStore((state) => state.conversations);
   const setConversations = useMessageStore((state) => state.setConversations);
   const previewMessages = useMessageStore((state) => state.previewMessages);
@@ -37,7 +35,7 @@ const useMessagePreviews = () => {
   const reset = useMessageStore((state) => state.reset);
   const syncedProfiles = useMessageStore((state) => state.syncedProfiles);
   const addSyncedProfiles = useMessageStore((state) => state.addSyncedProfiles);
-  const { client } = useXmtpClient(true);
+  const { client, loading: creatingXmtpClient } = useXmtpClient();
   const [profileIds, setProfileIds] = useState<Set<string>>(new Set<string>());
   const [nonLensProfiles, setNonLensProfiles] = useState<Set<string>>(
     new Set<string>()
@@ -283,7 +281,7 @@ const useMessagePreviews = () => {
   }, [messageProfiles]);
 
   return {
-    authenticating: client,
+    authenticating: creatingXmtpClient,
     loading: messagesLoading || profilesLoading || messageProfiles == undefined,
     messages: previewMessages,
     profilesToShow,

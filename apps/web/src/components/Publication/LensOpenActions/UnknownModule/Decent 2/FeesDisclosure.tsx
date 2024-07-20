@@ -2,7 +2,9 @@ import type { FC } from 'react';
 
 import {
   Disclosure,
+  DisclosureButton,
   DisclosureButtonProps,
+  DisclosurePanel,
   DisclosurePanelProps
 } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
@@ -30,19 +32,17 @@ const FeesDisclosure: FC<FeesDisclosureProps> = ({
   return (
     <Disclosure>
       <div className="ld-text-gray-500 flex items-center justify-between space-y-0.5">
-        <Disclosure.Button
+        <DisclosureButton
           className="flex items-center space-x-1.5"
           onClick={stopEventPropagation}
         >
-          <span>Fees</span>
+          <span>Lens Creator Fee</span>
           <ChevronDownIcon className="w-3 h-3" strokeWidth={3} />
-        </Disclosure.Button>
-        <span>
-          {formattedTotalFees.toFixed(4)} {tokenSymbol}
-        </span>
+        </DisclosureButton>
+        
       </div>
-      <Disclosure.Panel className="mt-1.5 space-y-1 text-sm">
-        <div className="ld-text-gray-500 flex items-center justify-between">
+      <DisclosurePanel className="mt-1.5 space-y-1 text-sm">
+        <div className="ld-text-gray-500 flex hidden items-center justify-between">
           <span className="flex items-center space-x-2">
             <span>↳</span>
             <p>
@@ -72,7 +72,7 @@ const FeesDisclosure: FC<FeesDisclosureProps> = ({
             {(formattedTotalAmount * 0.05).toFixed(4)} {tokenSymbol}
           </p>
         </div>
-      </Disclosure.Panel>
+      </DisclosurePanel>
     </Disclosure>
   );
 };

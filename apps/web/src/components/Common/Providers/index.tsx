@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/rules-of-hooks */
+
 import { apolloClient, ApolloProvider } from '@lensshare/lens/apollo';
 import authLink from '@lib/authLink';
 import { Analytics } from '@vercel/analytics/react';
@@ -24,6 +24,7 @@ import OptimisticTransactionsProvider from './OptimisticTransactionsProvider';
 import PreferencesProvider from './PreferencesProvider';
 import LensAuthProvider from './LensAuthProvider';
 import NotificationsProvider from './NotificationsProvider';
+import { HuddleClient, HuddleProvider } from "@huddle01/react";
 
 const lensApolloClient = apolloClient(authLink);
 const livepeerClient = createReactClient({
@@ -36,6 +37,18 @@ const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false } }
 });
 
+ 
+const huddleClient = new HuddleClient({
+  projectId: 'VsUyt6exV91LFUKiQ1kF89kOU0rL7i9a',
+  options: {
+    
+    // `activeSpeakers` will be most active `n` number of peers, by default it's 8
+    activeSpeakers: {
+      size: 20,
+    },
+  },
+});
+ 
 const Providers = ({ children }: { children: ReactNode }) => {
   return (
     <ErrorBoundary>
@@ -43,11 +56,13 @@ const Providers = ({ children }: { children: ReactNode }) => {
       <LeafwatchProvider />
       <Web3Provider>
         <ApolloProvider client={lensApolloClient}>
+          
           <LensAuthProvider/>
           <LensSubscriptionsProvider />
-          <NotificationsProvider >
+          <HuddleProvider client={huddleClient}>
           <OptimisticTransactionsProvider />
           <QueryClientProvider client={queryClient}>
+         
             <PreferencesProvider />
             <LivepeerConfig client={livepeerClient} theme={getLivepeerTheme}>
               <ThemeProvider>
@@ -57,7 +72,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
               <Analytics />
             </LivepeerConfig>
           </QueryClientProvider>
-          </NotificationsProvider>
+          </HuddleProvider>
         </ApolloProvider>
       </Web3Provider>
     </ErrorBoundary>

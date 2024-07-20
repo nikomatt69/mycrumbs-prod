@@ -24,7 +24,7 @@ const assertProfileId = (profileId: string | undefined) => {
 };
 
 export const useMessageDb = () => {
-  const { currentProfile } = useAppStore();
+  const {currentProfile} = useAppStore();
 
   const batchPersistPreviewMessages = useCallback(
     async (previewMap: Map<string, DecodedMessage>) => {

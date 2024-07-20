@@ -12,6 +12,8 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import { usePublicationAttachmentStore } from 'src/store/non-persisted/usePublicationAttachmentStore';
 import { usePublicationAttributesStore } from 'src/store/non-persisted/usePublicationAttributesStore';
 import { MetadataAttributeType } from '@lens-protocol/metadata';
+import { UnknownOpenActionModuleSettings } from '@lensshare/lens';
+import MarketEmbed from '@components/Publication/LensOpenActions/UnknownModule/Polymarket/MarketEmbed';
 
 const LinkPreviews: FC = () => {
   const { publicationContent, quotedPublication } = usePublicationStore();
@@ -37,13 +39,15 @@ const LinkPreviews: FC = () => {
   ) {
     return null;
   }
-
+  const isPolymarket = (urls[0]).toLowerCase().includes('polymarket');
   return (
     <div className="relative m-5">
-      <Oembed
+    {   (isPolymarket) ? (
+       <MarketEmbed conditionId={urls[0] } module={module as unknown as UnknownOpenActionModuleSettings}  />):( <Oembed
         onLoad={(og) => setShowRemove(og?.title ? true : false)}
         url={urls[0]}
-      />
+      /> )}
+       
       {showRemove && (
         <div className="absolute top-0 -m-3">
           <button

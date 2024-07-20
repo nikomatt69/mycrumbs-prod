@@ -15,6 +15,7 @@ const plugins = [
   [stripMarkdown, { keep: ['strong', 'emphasis', 'inlineCode'] }],
   remarkBreaks,
   linkifyRegex(Regex.url),
+  linkifyRegex(Regex.club),
   linkifyRegex(Regex.mention),
   linkifyRegex(Regex.hashtag)
 ];

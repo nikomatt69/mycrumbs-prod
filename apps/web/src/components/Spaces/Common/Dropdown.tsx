@@ -1,4 +1,4 @@
-import { Menu } from '@headlessui/react';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import type { FC, ReactNode } from 'react';
 import React from 'react';
 
@@ -10,10 +10,10 @@ interface DropdownProps {
 const Dropdown: FC<DropdownProps> = ({ children, triggerChild }) => {
   return (
     <Menu>
-      <Menu.Button>{triggerChild}</Menu.Button>
-      <Menu.Items className="absolute z-10">
-        <Menu.Item disabled>{children}</Menu.Item>
-      </Menu.Items>
+      <MenuButton>{triggerChild}</MenuButton>
+      <MenuItems className="absolute z-10">
+        <MenuItem disabled>{children}</MenuItem>
+      </MenuItems>
     </Menu>
   );
 };

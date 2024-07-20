@@ -21,10 +21,12 @@ const getAllowanceOpenAction = (
       return { name: 'Tip Open Action' };
     case VerifiedOpenActionModules.Polymarket:
       return { name: 'Polymarket Open Action' };
-      case VerifiedOpenActionModules.DecentNFT:
-        return { name: 'NFT Mint Open Action' };  
+    case VerifiedOpenActionModules.DecentNFT:
+      return { name: 'NFT Mint Open Action' };  
     case VerifiedOpenActionModules.RentableBillboard:
-          return { name: 'Rentable Billboard' };
+      return { name: 'Rentable Billboard' };
+    case VerifiedOpenActionModules.Poll:
+      return { name: 'Poll Open Action' };
     default:
       return { name: 'Unknown Open Action' };
   }

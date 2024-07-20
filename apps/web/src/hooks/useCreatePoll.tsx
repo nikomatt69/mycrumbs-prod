@@ -1,35 +1,24 @@
-import getProfile from '@lensshare/lib/getProfile';
+
+import getAuthApiHeaders from '@components/Shared/Oembed/Portal/getAuthApiHeaders main';
+import { HEY_API_URL } from '@lensshare/data/constants';
 import axios from 'axios';
 import { usePublicationStore } from 'src/store/non-persisted/usePublicationStore';
-import { useAppStore } from 'src/store/persisted/useAppStore';
 
 type CreatePollResponse = string;
-
 const useCreatePoll = () => {
-  const { currentProfile } = useAppStore();
-  const { pollConfig, publicationContent } = usePublicationStore();
-
+  const {pollConfig} = usePublicationStore();
   // TODO: use useCallback
   const createPoll = async (): Promise<CreatePollResponse> => {
-    try {
-      const response = await axios({
-        url: `/api/createPoll`,
-        method: 'POST',
-        data: {
-          title: `Poll by ${getProfile(currentProfile).slugWithPrefix}`,
-          description: publicationContent,
-          choices: pollConfig.options,
-          length: pollConfig.length
-        }
-      });
-
-      return `${publicationContent}\n\n${response.data.snapshotUrl}`;
-    } catch (error) {
-      throw error;
-    }
+    const response = await axios.post(
+      `/api/polls/snapshot/create`,
+      {
+        length: pollConfig.length,
+        options: pollConfig.options
+      },
+      { headers: getAuthApiHeaders() }
+    );
+    return response.data.poll.id;
   };
-
   return createPoll;
 };
-
 export default useCreatePoll;

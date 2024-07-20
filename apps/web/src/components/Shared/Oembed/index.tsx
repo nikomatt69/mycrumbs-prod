@@ -8,7 +8,7 @@ import Player from './Player';
 import getFavicon from 'src/utils/oembed/getFavicon';
 
 
-import type { AnyPublication } from '@lensshare/lens';
+import type { AnyPublication, UnknownOpenActionModuleSettings } from '@lensshare/lens';
 import Portal from './Portal';
 
 import { VerifiedOpenActionModules } from '@lensshare/data/verified-openaction-modules';
@@ -18,6 +18,8 @@ import Frame from './Frame';
 import PolymarketWidget from './PolymarketWidget';
 import PolymarketOembed from './PolymarketOembed';
 import EmptyOembed from './EmptyOembed';
+import Polyframe from './Polyframe';
+import Market from '@components/Publication/LensOpenActions/UnknownModule/Polymarket';
 
 interface OembedProps {
   onLoad?: (og: OG) => void;
@@ -70,22 +72,33 @@ const Oembed: FC<OembedProps> = ({ onLoad, publication, url }) => {
 
   const og: OG = {
     description: data?.description,
-    favicon: getFavicon(data.url),
+    favicon: data?.url ? getFavicon(data.url) : '',
+    frame: data?.frame,
     html: data?.html,
     image: data?.image,
     nft: data?.nft,
     site: data?.site,
     title: data?.title,
-    url: url as string
+    url: url as string,
+    polymarket: data?.polymarket
   };
-
-  if (!og.title && !og.html) {
+  const isPolymarket = og.site?.toLowerCase().includes('polymarket');
+  if (!og.title && !og.html && !isPolymarket && !og.frame) {
     return null;
   }
 
+  if (isPolymarket) {
+    return <Market module={module as unknown as UnknownOpenActionModuleSettings} conditionId={data.url} publication={currentPublication?.id} />;
+  }
 
   if (og.html) {
     return <Player og={og} />;
+  }
+  if (og.frame) {
+    return <Frame frame={og.frame} publicationId={currentPublication?.id} />;
+  }
+  if (og.polymarket) {
+    return <Polyframe frame={og.polymarket} publicationId={currentPublication?.id} />;
   }
 
   return <Embed og={og} publicationId={currentPublication?.id} />;

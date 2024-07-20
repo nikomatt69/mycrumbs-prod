@@ -28,6 +28,9 @@ export const KNOWN_ATTRIBUTES = {
   HIDE_OEMBED : 'HideOembed',
   SWAP_OA_DEFAULT_AMOUNT: 'swapOADefaultAmount'
 };
+export const CLUBS_API_URL = 'https://us-central1-orbapp.cloudfunctions.net';
+export const CLUBS_APP_TOKEN = 'Qun7aDFo4FS7Dt2b9Ea8ve5TqvuXiCJXjZZTsao5Y9viFJxSEi5gYZa7DybrSzDGXST5L2vWMjBXzjsppj5RERo3AdPnJ3TVYuY2cLxBFa592rkjzU';
+export const HEY_USER_AGENT = 'MyCrumbs';
 export const DEFAULT_DECENT_OA_TOKEN = {
   contractAddress: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
   decimals: 18,
@@ -65,13 +68,14 @@ export const ADMIN_ADDRESS3 = '0x64979cA4449b9Db7aaB4052d96E42D3A5EAF4513';
 export const REWARDS_ADDRESS = '0xD47904193219374AcBe05fD0D6c42F5bC6349028';
 export const ZERO_PUBLICATION_ID = '0x00-0x00';
 export const MAX_UINT256 = 2n ** 256n - 1n;
+export const CLUB_HANDLE_PREFIX = 'club/';
 export const THIRDWEB_CLIENT_ID = 'cb587c94a1b0c6faad337b0d07e696a7';
 export const LENSHUB_PROXY = getEnvConfig().lensHubProxyAddress;
 export const DEFAULT_COLLECT_TOKEN = getEnvConfig().defaultCollectToken;
 export const LIT_PROTOCOL_ENVIRONMENT = getEnvConfig().litProtocolEnvironment;
 export const PUBLICACT_PROXY = getEnvConfig().publicActProxyAddress;
 export const PERMIT_2_ADDRESS = '0x000000000022D473030F116dDEE9F6B43aC78BA3';
-export const HEY_REFERRAL_PROFILE_ID = '';
+export const HEY_REFERRAL_PROFILE_ID = '37691';
 export const SUPERFLUID_SUBGRAPH =
   'https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-matic';
 
@@ -201,7 +205,7 @@ export const COVER = 'tr:w-1500,h-500';
 export const ATTACHMENT = 'tr:w-1000';
 
 export const TALLY_VERIFICATION_FORM_URL = 'https://tally.so/r/mY5e80';
-export const HUDDLE_API_KEY = 'wWUkmfVYqMCcYLKEGA8VE1fZ4hWyo5d0';
+export const HUDDLE_API_KEY = 'g6m5QybWE0XTq4drXk6k4rHxdCbIedsx';
 
 export const GROWTHBOOK_KEY = IS_MAINNET
   ? 'sdk-fDLRMwvpyh4Kq3b'

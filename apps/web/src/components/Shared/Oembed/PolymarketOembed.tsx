@@ -1,35 +1,40 @@
-import React from 'react';
-import { Card, Button, Tooltip } from '@lensshare/ui';
-import { PolymarketMarketData } from '@lensshare/types/polymarket';
-import { usePolymarketData } from 'src/hooks/getPolymarket';
+import React, { useEffect } from 'react';
+import { useMarketStore} from 'src/store/persisted/useMarketStore'
+
+import { usePolymarket } from 'src/hooks/usePolymarketHook';
+import { AnyPublication, MirrorablePublication, UnknownOpenActionModuleSettings } from '@lensshare/lens';
+import MarketCard from '@components/Publication/LensOpenActions/UnknownModule/Polymarket/MarketCard';
 
 
-interface PolymarketOembedProps {
-  marketId: string;
+
+interface MarketEmbedProps {
+  conditionId: string;
+  module: UnknownOpenActionModuleSettings;
+  publication?: AnyPublication | MirrorablePublication;
 }
 
-const PolymarketOembed: React.FC<PolymarketOembedProps> = ({ marketId }) => {
-  const { marketData, loading, error } = usePolymarketData(marketId);
+const MarketEmbed: React.FC<MarketEmbedProps> = ({ conditionId ,publication }) => {
+  const { market, loading, error, setMarket, setLoading, setError } = useMarketStore();
+const {market :SessionPoly} = usePolymarket(conditionId)
+  useEffect(() => {
+    const fetchMarket = async () => {
+      try {
+        setLoading(true);
+        const marketData = SessionPoly();
+        setMarket(marketData);
+      } catch (error_) {
+        setError('Failed to load market data.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMarket();
+  }, [conditionId, setMarket, setLoading, setError]);
 
-  if (loading) return <p>Loading market data...</p>;
-  if (error) return <p>Error: {error}</p>;
-  if (!marketData) return <p>No data found for this market.</p>;
+  if (loading) {return <p>Loading market data...</p>;}
+  if (error) {return <p className="text-red-500">{error}</p>;}
 
-  return (
-    <Card className="p-4">
-      <h3>{marketData.title}</h3>
-      <p>{marketData.description}</p>
-      <img src={marketData.imageUrl} alt="Market" />
-      {marketData.outcomes.map((outcome, index) => (
-        <Button key={index}>{`${outcome}: ${marketData.currentPrices[index]}`}</Button>
-      ))}
-      <Tooltip content="Visit Market">
-        <a href={`https://polymarket.com/market/${marketId}`} target="_blank" rel="noopener noreferrer">
-          <Button>View Market</Button>
-        </a>
-      </Tooltip>
-    </Card>
-  );
+  return <MarketCard market={market} />;
 };
 
-export default PolymarketOembed;
+export default MarketEmbed;

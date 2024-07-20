@@ -1,4 +1,4 @@
-import { Menu } from '@headlessui/react';
+import { Menu, MenuItem } from '@headlessui/react';
 import { NoSymbolIcon } from '@heroicons/react/24/outline';
 import type { Profile } from '@lensshare/lens';
 import getProfile from '@lensshare/lib/getProfile';
@@ -17,7 +17,7 @@ const Block: FC<BlockProps> = ({ profile }) => {
   const isBlockedByMe = profile.operations.isBlockedByMe.value;
 
   return (
-    <Menu.Item
+    <MenuItem
       as="div"
       className={({ active }) =>
         cn(
@@ -37,7 +37,7 @@ const Block: FC<BlockProps> = ({ profile }) => {
           {getProfile(profile).slugWithPrefix}
         </div>
       </div>
-    </Menu.Item>
+    </MenuItem>
   );
 };
 

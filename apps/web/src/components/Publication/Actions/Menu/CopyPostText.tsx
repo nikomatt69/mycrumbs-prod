@@ -1,4 +1,4 @@
-import { Menu } from '@headlessui/react';
+import { Menu, MenuItem } from '@headlessui/react';
 import { ClipboardDocumentIcon } from '@heroicons/react/24/outline';
 import { PUBLICATION } from '@lensshare/data/tracking';
 import type { AnyPublication } from '@lensshare/lens';
@@ -23,7 +23,7 @@ const CopyPostText: FC<CopyPostTextProps> = ({ publication }) => {
     getPublicationData(targetPublication.metadata)?.content || '';
 
   return (
-    <Menu.Item
+    <MenuItem
       as="div"
       className={({ active }) =>
         cn(
@@ -46,7 +46,7 @@ const CopyPostText: FC<CopyPostTextProps> = ({ publication }) => {
             : 'Copy post text'}
         </div>
       </div>
-    </Menu.Item>
+    </MenuItem>
   );
 };
 

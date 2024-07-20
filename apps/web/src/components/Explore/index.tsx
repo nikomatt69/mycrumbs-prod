@@ -2,7 +2,7 @@ import MetaTags from '@components/Common/MetaTags';
 
 import FeedFocusType from '@components/Shared/FeedFocusType';
 import Footer from '@components/Shared/Footer';
-import { Tab } from '@headlessui/react';
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react';
 import { APP_NAME } from '@lensshare/data/constants';
 import type { PublicationMetadataMainFocusType } from '@lensshare/lens';
 import { ExplorePublicationsOrderByType } from '@lensshare/lens';
@@ -28,7 +28,7 @@ const Explore: NextPage = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const { currentProfile } = useAppStore();
   const [focus, setFocus] = useState<PublicationMetadataMainFocusType>();
-  const { isRoomJoined } = useRoom();
+  const { state } = useRoom();
   const tabs = [
     {
       icon: <FireOutline className="h-5 w-5 text-blue-700" />,
@@ -72,7 +72,7 @@ const Explore: NextPage = () => {
           </div>
         </div>
 
-        <Tab.Group
+        <TabGroup
           defaultIndex={Number(router.query.tab)}
           onChange={(index) => {
             router.replace(
@@ -82,7 +82,7 @@ const Explore: NextPage = () => {
             );
           }}
         >
-          <Tab.List className="divider mx-auto  space-x-3">
+          <TabList className="divider mx-auto py-2 space-x-3">
             {tabs.map((tab, index) => (
               <Tab
                 key={tab.type}
@@ -90,30 +90,30 @@ const Explore: NextPage = () => {
                 className={({ selected }) =>
                   cn(
                     {
-                      'border-brand-500 border-b-2 !text-black dark:!text-white':
+                      'border-brand-500  border-b-2 !text-black dark:!text-white':
                         selected
                     },
-                    'lt-text-gray-500 px-4 pb-2 text-xs font-medium outline-none sm:text-sm'
+                    'lt-text-gray-500 px-4 py-2 text-xs font-medium outline-none sm:text-sm'
                   )
                 }
               >
                 {tab.icon}
               </Tab>
             ))}
-          </Tab.List>
-          <FeedFocusType focus={focus} setFocus={setFocus} />
-          <Tab.Panels>
+          </TabList>
+          <FeedFocusType  focus={focus} setFocus={setFocus} />
+          <TabPanels className={'py-2'}>
             {tabs.map((tab) => (
-              <Tab.Panel key={tab.type}>
-                <Feed focus={focus} feedType={tab.type} />
-              </Tab.Panel>
+              <TabPanel className={'p-2'} key={tab.type}>
+                <Feed  focus={focus} feedType={tab.type} />
+              </TabPanel>
             ))}
-          </Tab.Panels>
-        </Tab.Group>
+          </TabPanels>
+        </TabGroup>
       </GridItemEight>
-      <GridItemFour>
-        {currentProfile ? isRoomJoined && <SpacesWindow /> : null}
-
+      <GridItemFour className='pt-2'>
+        
+      {state === "connected" ? <SpacesWindow /> : null}
         <Footer />
       </GridItemFour>
     </GridLayout>

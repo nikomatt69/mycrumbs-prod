@@ -22,5 +22,6 @@ export { Toggle } from './src/Toggle';
 export { Tooltip } from './src/Tooltip';
 export { WarningMessage } from './src/WarningMessage';
 export { DynamicIsland } from './src/DynamicIsland';
-export { RangeSlider } from './src/RangeSlider';
-export { LampContainer } from './src/Lamp';
+export { RangeSlider} from './src/RangeSlider';
+export { FamilyDrawer }  from './src/FamilyDrawer';
+

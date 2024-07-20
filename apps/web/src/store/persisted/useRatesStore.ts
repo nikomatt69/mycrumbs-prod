@@ -1,5 +1,5 @@
 import { IndexDB } from "@lensshare/data/storage";
-import { FiatRate } from "@lensshare/types/misc";
+import type { FiatRate } from "@lensshare/types/misc";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import createIdbStorage from "../lib/createIdbStorage";

@@ -1,8 +1,7 @@
-import { useClient } from '@xmtp/react-sdk';
 import type { DecodedMessage } from '@xmtp/xmtp-js';
 import { useEffect, useRef } from 'react';
-import useXmtpClient from './useXmtpClient';
 
+import useXmtpClient from './useXmtpClient';
 
 type AllMessagesStream = Promise<AsyncGenerator<DecodedMessage>>;
 

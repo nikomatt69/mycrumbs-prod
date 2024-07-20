@@ -35,7 +35,7 @@ const getNftChainInfo = (
     case 'mumbai':
       return {
         logo: `${STATIC_ASSETS_URL}/images/chains/polygon.svg`,
-        name: chain === 'polygon' ? 'Polygon' : 'Polygon Mumbai'
+        name: chain === 'polygon' ? 'Polygon' : 'Polygon'
       };
     default:
       return {

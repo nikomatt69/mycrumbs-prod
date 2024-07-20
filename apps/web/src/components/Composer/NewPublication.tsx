@@ -65,11 +65,13 @@ import { useCollectModuleStore } from 'src/store/non-persisted/useCollectModuleS
 import { useReferenceModuleStore } from 'src/store/non-persisted/useReferenceModuleStore';
 import usePolymarket from 'src/hooks/usePolymarket';
 import MarketEditor from './Actions/OpenActionSettings/Config/Polymarket/MarketEditor';
-import { HEY_REFERRAL_PROFILE_ID, KNOWN_ATTRIBUTES } from '@lensshare/data/constants';
+import { ADMIN_ADDRESS, HEY_REFERRAL_PROFILE_ID, KNOWN_ATTRIBUTES } from '@lensshare/data/constants';
 import OpenActionsPreviews from './OpenActionsPreviews';
 import { useAppStore } from 'src/store/persisted/useAppStore';
 import { MetadataAttributeType } from '@lens-protocol/metadata';
 import getMentions from '@lensshare/lib/getMentions';
+import buildEncodedPollData from '@lib/buildEncodedPollData';
+import PolymarketEditor from './Actions/PolymarketSettings/PolymarketEditor';
 
 const Attachment = dynamic(
   () => import('@components/Composer/Actions/Attachment'),
@@ -98,8 +100,8 @@ const PollSettings = dynamic(
     loading: () => <div className="shimmer mb-1 h-5 w-5 rounded-lg" />
   }
 );
-const MarketSettings = dynamic(
-  () => import('@components/Composer/Actions/OpenActionSettings/Config/Polymarket/Composer'),
+const PolymarketSettings = dynamic(
+  () => import('@components/Composer/Actions/PolymarketSettings'),
   {
     loading: () => <div className="shimmer mb-1 h-5 w-5 rounded-lg" />
   }
@@ -181,7 +183,7 @@ const NewPublication: FC<NewPublicationProps> = ({ publication }) => {
 
   const [editor] = useLexicalComposerContext();
 
-  const createPoll = useCreatePoll();
+
   const getMetadata = usePublicationMetadata();
 const handleWrongNetwork = useHandleWrongNetwork();
  ;
@@ -194,7 +196,7 @@ const handleWrongNetwork = useHandleWrongNetwork();
   const hasVideo = attachments[0]?.type === 'Video';
 
   const noCollect = !collectModule.type;
-  const noOpenAction = !openAction;
+  const noOpenAction = !openAction && !showPollEditor;
   // Use Momoka if the profile the comment or quote has momoka proof and also check collect module has been disabled
   const useMomoka = isComment
     ? publication?.momoka?.proof
@@ -322,6 +324,10 @@ const handleWrongNetwork = useHandleWrongNetwork();
     const fallback =
       'ipfs://bafkreiaoua5s4iyg4gkfjzl6mzgenw4qw7mwgxj7zf7ev7gga72o5d3lf4';
 
+    const headers = {
+      'Access-Control-Allow-Origin': '*',
+    };
+
     if (attachments.length > 0 || hasAudio || hasVideo) {
       return attachments[0]?.uri || fallback;
     }
@@ -342,7 +348,7 @@ const handleWrongNetwork = useHandleWrongNetwork();
       return toast.error(Errors.SignWallet);
     }
 
-if (handleWrongNetwork()) {
+    if (handleWrongNetwork()) {
       return;
     }
     
@@ -370,41 +376,26 @@ if (handleWrongNetwork()) {
 
       setPublicationContentError('');
 
-      let pollId;
-      if (showPollEditor) {
-        pollId = await createPoll();
-      }
+      
 
       const processedPublicationContent =
         publicationContent.length > 0 ? publicationContent : undefined;
       const title = hasAudio
         ? audioPublication.title
         : `${getTitlePrefix()} by ${getProfile(currentProfile).slugWithPrefix}`;
-      const hasAttributes = Boolean(pollId);
+      
 
       const baseMetadata = {
         content: processedPublicationContent,
-        title,
-        ...(hasAttributes && {
-          attributes: [
-            ...(pollId
-              ? [
-                  {
-                    key: KNOWN_ATTRIBUTES.POLL_ID,
-                    type: MetadataAttributeType.STRING,
-                    value: pollId
-                  }
-                ]
-              : [])
-          ]
-        }),
         marketplace: {
           animation_url: getAnimationUrl(),
           description: processedPublicationContent,
           external_url: `https://mycrumbs.xyz${getProfile(currentProfile).link}`,
           name: title
-        }
+        },
+        title
       };
+     
 
       const metadata = getMetadata({ baseMetadata });
       const arweaveId = await uploadToArweave(metadata);
@@ -414,6 +405,15 @@ if (handleWrongNetwork()) {
 
       if (nftOpenActionEmbed) {
         openActionModules.push(nftOpenActionEmbed);
+      }
+
+      if (showPollEditor) {
+        openActionModules.push({
+          unknownOpenAction: {
+            address: VerifiedOpenActionModules.Poll,
+            data: buildEncodedPollData(pollConfig)
+          }
+        });
       }
 
       if (Boolean(collectModule.type)) {
@@ -494,6 +494,7 @@ if (handleWrongNetwork()) {
                 }
         })
       };
+      console.log('onChainRequest', onChainRequest);
 
       if (canUseLensManager) {
         if (isComment) {
@@ -536,6 +537,7 @@ if (handleWrongNetwork()) {
         }
       });
     } catch (error) {
+      console.log('createPublication: error', error);
       onError(error);
     }
   };
@@ -571,6 +573,7 @@ if (handleWrongNetwork()) {
       })}
       onClick={() => setShowEmojiPicker(false)}
     >
+      
       {error ? (
         <ErrorMessage
           className="!rounded-none"
@@ -585,6 +588,7 @@ if (handleWrongNetwork()) {
         </div>
       ) : null}
       {showPollEditor ? <PollEditor /> : null}
+      {showMarketEditor && ADMIN_ADDRESS ? <PolymarketEditor /> : null}
       {showLiveVideoEditor ? <LivestreamEditor /> : null}
       <OpenActionsPreviews setNftOpenActionEmbed={setNftOpenActionEmbed} />
       {!nftOpenActionEmbed ? <LinkPreviews /> : null}
@@ -629,6 +633,7 @@ if (handleWrongNetwork()) {
             </>
           ) : null}
           <PollSettings />
+          <PolymarketSettings />
           {!isComment && <LivestreamSettings />}
           
         </div>

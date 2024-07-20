@@ -70,6 +70,13 @@ const FeedType: FC<FeedTypeProps> = ({ setFeedType, feedType }) => {
           type={ProfileFeedType.Bytes.toLowerCase()}
           onClick={() => switchTab(ProfileFeedType.Bytes)}
         />
+         <TabButton
+            active={feedType === ProfileFeedType.Stats}
+            icon={<ChartBarIcon className="h-4 w-4" />}
+            name="Stats"
+            onClick={() => switchTab(ProfileFeedType.Stats)}
+            type={ProfileFeedType.Stats.toLowerCase()}
+          />
       </div>
       {feedType === ProfileFeedType.Media ? <MediaFilter /> : null}
     </div>

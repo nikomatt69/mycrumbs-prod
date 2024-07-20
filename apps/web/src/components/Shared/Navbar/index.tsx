@@ -78,7 +78,7 @@ const Navbar: FC = () => {
   };
 
   return (
-    <header className="divider fixed inset-x-0 top-0 z-10 w-full bg-white dark:bg-black">
+    <header className="divider fixed inset-x-0 top-0 z-10 w-full rounded-b-md bg-white dark:bg-black">
       <div className="container sticky mx-auto max-w-screen-xl px-5">
         <div className="relative flex h-14 items-center justify-between sm:h-16">
           <div className="flex items-center justify-start">
@@ -94,10 +94,10 @@ const Navbar: FC = () => {
             </button>
             <Link href="/" className="hidden md:block">
               <img
-                className="h-8 w-8"
-                height={32}
-                width={32}
-                src={'/logo.png'}
+                className="h-10 w-10"
+                height={36}
+                width={36}
+                src={'/logo.gif'}
                 alt="Logo"
               />
             </Link>
@@ -115,10 +115,10 @@ const Navbar: FC = () => {
             className={cn('md:hidden', !currentProfile?.id && 'ml-[60px]')}
           >
             <img
-              className="h-7 w-7"
-              height={32}
-              width={32}
-              src={'/logo.png'}
+              className="h-10 w-10"
+              height={36}
+              width={36}
+              src={'/logo.gif'}
               alt="Logo"
             />
           </Link>

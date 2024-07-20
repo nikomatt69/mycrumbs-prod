@@ -6,7 +6,7 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import { MetadataAttributeType } from '@lens-protocol/metadata';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useOpenActionStore } from 'src/store/non-persisted/useOpenActionStore';
 import { usePublicationStore } from 'src/store/non-persisted/usePublicationStore';
 import { usePublicationAttachmentStore } from 'src/store/non-persisted/usePublicationAttachmentStore';
@@ -20,6 +20,7 @@ import SwapOpenAction from '@components/Publication/LensOpenActions/UnknownModul
 import { UnknownOpenActionModuleSettings } from '@lensshare/lens';
 import getFavicon from 'src/utils/oembed/getFavicon';
 import { OG } from '@lensshare/types/misc';
+import PolymarketOembed from '@components/Shared/Oembed/PolymarketOembed';
 
 
 interface OpenActionsPreviewsProps {
@@ -95,6 +96,17 @@ const OpenActionsPreviews: FC<OpenActionsPreviewsProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urls.length]);
+  
+  const [currentMarketId, setCurrentMarketId] = useState<string>('');
+
+  useEffect(() => {
+    if (currentMarketId) {
+      setCurrentMarketId(currentMarketId);
+    } else {
+      setCurrentMarketId('');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentMarketId]);
 
   useEffect(() => {
     if (nftOpenActionEmbed) {
@@ -108,16 +120,19 @@ const OpenActionsPreviews: FC<OpenActionsPreviewsProps> = ({
   const og: OG = {
     description: data?.description,
     favicon: data?.url ? getFavicon(data.url) : '',
+    frame: data?.frame,
     html: data?.html,
     image: data?.image,
     nft: data?.nft,
     site: data?.site,
     title: data?.title,
-    url: url as string
+    url: url as string,
+    polymarket: data?.polymarket
   };
 
   if (
     !nftOpenActionEmbed ||
+    !currentMarketId ||
     !urls.length ||
     attachments.length ||
     quotedPublication ||
@@ -175,7 +190,10 @@ const OpenActionsPreviews: FC<OpenActionsPreviewsProps> = ({
       </div>
     );
   }
-
+  const isPolymarket = og.site?.toLowerCase().includes('polymarket');
+  if (isPolymarket) {
+    return <PolymarketOembed module={module as unknown as UnknownOpenActionModuleSettings} conditionId={og.url} publication={nftOpenActionEmbed} />;
+  }
   return null;
 };
 

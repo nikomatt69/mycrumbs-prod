@@ -10,11 +10,11 @@ import AggregatedNotificationTitle from '../AggregatedNotificationTitle';
 import { NotificationProfileAvatar } from '../Profile';
 import { useEffectOnce } from 'usehooks-ts';
 import pushToImpressions from '@lib/pushToImpressions';
-// million-ignore
+
 interface MentionNotificationProps {
   notification: MentionNotification;
 }
-// million-ignore
+
 const MentionNotification: FC<MentionNotificationProps> = ({
   notification
 }) => {

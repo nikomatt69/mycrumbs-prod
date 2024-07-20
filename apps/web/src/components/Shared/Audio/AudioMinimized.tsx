@@ -4,7 +4,6 @@ import type { FC, ReactNode } from 'react';
 import React, { createRef, useRef, useState } from 'react';
 import { useAppStore } from 'src/store/persisted/useAppStore';
 
-import { useAcl, useHuddle01, usePeers } from '@huddle01/react/hooks';
 import { useAppUtils } from '@huddle01/react/app-utils';
 import toast from 'react-hot-toast';
 import SpaceWindowHeader from '@components/Common/SpacesWindow/SpaceWindowHeader';
@@ -18,38 +17,18 @@ import AudioPlayer from '@components/Listen/AudioPlayer';
 const AudioMinimized: FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { setDisplayName, changeAvatarUrl, sendData } = useAppUtils();
-  const { changePeerRole } = useAcl();
-  const { me } = useHuddle01();
+
   const [showAcceptRequest, setShowAcceptRequest] = useState(false);
   const [requestedPeerId, setRequestedPeerId] = useState('');
   const { currentProfile } = useAppStore();
 
   const [requestType, setRequestType] = useState('');
-  const { peers } = usePeers();
+ 
   const [musicTrack, setMusicTrack] = useState('');
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const audioRef = createRef<HTMLAudioElementWithSetSinkId>();
 
-  const handleAcceptInvitation = (requestType: string) => {
-    const peerIds = Object.values(peers)
-      .filter(({ role }) => role === 'host' || role === 'coHost')
-      .map(({ peerId }) => peerId);
-    sendData(peerIds, {
-      requestType: `accepted-${requestType}`,
-      peerId: me.meId
-    });
-    toast.success('Invitation accepted');
-  };
-
-  const handleAccept = () => {
-    if (me.role == 'host' || me.role == 'coHost') {
-      changePeerRole(requestedPeerId, 'speaker');
-    }
-    if (requestType) {
-      handleAcceptInvitation(requestType);
-    }
-    setShowAcceptRequest(false);
-  };
+  
   const playerRef = useRef<APITypes>(null);
   return (
     <div className="fixed inset-0 bottom-20 top-auto z-[100] mx-auto flex h-fit w-screen grow rounded-xl xl:bottom-14">

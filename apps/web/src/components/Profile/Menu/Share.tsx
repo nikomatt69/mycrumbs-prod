@@ -1,4 +1,4 @@
-import { Menu } from '@headlessui/react';
+import { Menu, MenuItem } from '@headlessui/react';
 import { ClipboardDocumentIcon } from '@heroicons/react/24/outline';
 import { PROFILE } from '@lensshare/data/tracking';
 import type { Profile } from '@lensshare/lens';
@@ -15,7 +15,7 @@ interface ShareProps {
 
 const Share: FC<ShareProps> = ({ profile }) => {
   return (
-    <Menu.Item
+    <MenuItem
       as="div"
       className={({ active }) =>
         cn(
@@ -36,7 +36,7 @@ const Share: FC<ShareProps> = ({ profile }) => {
         <ClipboardDocumentIcon className="h-4 w-4" />
         <div>Copy link</div>
       </div>
-    </Menu.Item>
+    </MenuItem>
   );
 };
 

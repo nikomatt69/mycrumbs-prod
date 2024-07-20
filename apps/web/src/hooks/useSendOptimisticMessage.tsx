@@ -1,7 +1,9 @@
-import type {
-  Conversation,
-  DecodedMessage,
-  ContentTypeId
+import { fallbackHttpConfig } from '@apollo/client';
+import {
+  ContentTypeFallback,
+  type ContentTypeId,
+  type Conversation,
+  type DecodedMessage
 } from '@xmtp/xmtp-js';
 import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
@@ -29,15 +31,13 @@ function makePromise<T = void>() {
   };
 }
 
-export type PreparedMessage = Awaited<
-  ReturnType<Conversation['prepareMessage']>
->;
+type PreparedMessage = Awaited<ReturnType<Conversation['prepareMessage']>>;
 
 export type SendMessageOptions = {
   fallback?: string;
   id?: string;
   preparedMessage?: PreparedMessage;
-  renderPreview?: ReactNode;
+  renderPreview?: React.ReactNode;
 };
 
 export type PendingMessage = {
@@ -49,7 +49,7 @@ export type PendingMessage = {
   options?: SendMessageOptions;
   sent: Date;
   senderAddress: string;
-  render?: ReactNode;
+  render?: React.ReactNode;
 };
 
 export type FailedMessage = Omit<PendingMessage, 'status'> & {
@@ -58,8 +58,7 @@ export type FailedMessage = Omit<PendingMessage, 'status'> & {
   cancel: () => void;
 };
 
-export type MessageQueue = (PendingMessage | FailedMessage)[];
-export type PendingQueueItem = {
+type PendingQueueItem = {
   message: PendingMessage;
   resolve: (value: boolean) => void;
 };
@@ -114,7 +113,7 @@ const useSendOptimisticMessage = (
 
       addConversation(conversationId, conversation);
     } else {
-      conversation = conversations.get(conversationKey);
+      conversation = existingConversation;
     }
 
     if (!conversation) {
@@ -161,7 +160,11 @@ const useSendOptimisticMessage = (
 
       // prepare message to be sent
       prepared = await conversation.prepareMessage(preparedContent, {
-        contentType
+        contentType,
+      
+        
+        
+       
       });
     } else {
       // message is already prepared, use existing
@@ -201,9 +204,7 @@ const useSendOptimisticMessage = (
     try {
       // send prepared message
       await prepared.send();
-    } catch (error) {
-      console.error('Failed to send message', error);
-
+    } catch {
       // update message externally
       options?.onUpdate?.(id, {
         status: 'failed',

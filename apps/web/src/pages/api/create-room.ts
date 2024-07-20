@@ -14,7 +14,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       {
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': 'wWUkmfVYqMCcYLKEGA8VE1fZ4hWyo5d0' || '',
+          'x-api-key': 'g6m5QybWE0XTq4drXk6k4rHxdCbIedsx' || '',
           'Access-Control-Allow-Origin': '*'
         }
       }

@@ -1,3 +1,6 @@
+import { HEY_USER_AGENT, IS_MAINNET } from '@lensshare/data/constants';
+import { Errors } from '@lensshare/data/errors';
+import logger from '@lensshare/lib/logger';
 import parseJwt from '@lensshare/lib/parseJwt';
 import axios from 'axios';
 import { parseHTML } from 'linkedom';
@@ -5,73 +8,92 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import allowCors from 'src/utils/allowCors';
 import validateLensAccount from 'src/utils/middlewares/validateLensAccount';
 import getFrame from 'src/utils/oembed/meta/getFrame';
+import signFrameAction from 'src/utils/signFrameAction';
 import { polygon } from 'viem/chains';
 import { number, object, string } from 'zod';
 
 type ExtensionRequest = {
   buttonIndex: number;
+
   postUrl: string;
-  publicationId: string;
+  pubId: string;
 };
 
 const validationSchema = object({
   buttonIndex: number(),
+  
   postUrl: string(),
-  publicationId: string()
+  pubId: string()
 });
 
 // Default export for Next.js API route
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
-    // Handle non-POST requests
-    return res.status(405).json({ error: 'Method Not Allowed' });
-  }
-
   const { body } = req;
+
+  if (!body) {
+    return Errors.NoBody;
+  }
 
   const accessToken = req.headers['x-access-token'] as string;
   const validation = validationSchema.safeParse(body);
 
   if (!validation.success) {
-    return res.status(400).json({ error: 'Invalid request body' });
+    return Errors.NoBody
   }
 
-  if (!(await validateLensAccount(req))) {
-    return res.status(403).json({ error: 'Not allowed' });
+  const validateLensAccountStatus = await validateLensAccount(req);
+  if (!validateLensAccountStatus) {
+    return Errors.NoBody
   }
 
-  const { buttonIndex, postUrl, publicationId } = body as ExtensionRequest;
+  const { buttonIndex, postUrl, pubId } =
+    body as ExtensionRequest;
 
   try {
     const payload = parseJwt(accessToken);
-    const { evmAddress, id } = payload;
+    const { id } = payload;
 
-    const untrustedData = {
-      address: evmAddress,
+    const request = {
+      actionResponse: '',
       buttonIndex,
-      fid: id,
-      network: polygon.id,
+      inputText: '',
       profileId: id,
-      publicationId,
-      timestamp: Date.now(),
+      pubId,
+      specVersion: '1.0.0',
+      state: '',
       url: postUrl
+    };
+
+    const signature = await signFrameAction(
+      request,
+      accessToken,
+      IS_MAINNET ? 'mainnet' : 'mainnet'
+    );
+
+    const trustedData = { messageBytes: signature?.signature };
+    const untrustedData = {
+      
+      unixTimestamp: Math.floor(Date.now() / 1000),
+      ...signature?.signedTypedData.value
     };
 
     const { data } = await axios.post(
       postUrl,
-      { trustedData: untrustedData, untrustedData },
-      { headers: { 'User-Agent': 'HeyBot/0.1 (like TwitterBot)' } }
+      {clientProtocol: 'lens@1.0.0', trustedData, untrustedData },
+      { headers: { 'User-Agent': 'MyCrumbs/0.1 (like TwitterBot)' } }
     );
 
     const { document } = parseHTML(data);
 
-    console.info(`Open frame button clicked by ${id} on ${postUrl}`);
+    logger.info(`Open frame button clicked by ${id} on ${postUrl}`);
 
-    return res.status(200).json({ frame: getFrame(document), success: true });
+    return res
+      .status(200)
+      .json({ frame: getFrame(document, postUrl), success: true });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return Errors.NoBody
   }
-}
+};
 
 export default allowCors(handler);
+

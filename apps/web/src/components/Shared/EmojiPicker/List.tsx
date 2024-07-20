@@ -22,15 +22,10 @@ const List: FC<ListProps> = ({ setEmoji }) => {
   const [searchText, setSearchText] = useState('');
   const { data, error, isLoading } = useQuery({
     queryFn: async () => {
-      const response = await axios.get(`${STATIC_ASSETS_URL}/emoji.json`, {
-        // Adding CORS configuration to Axios request
-        headers: {
-          'Access-Control-Allow-Origin': '*', // This is a broad setting, consider specifying your domain
-        },
-      });
+      const response = await axios.get(`${STATIC_ASSETS_URL}/emoji.json`);
       return response.data;
     },
-    queryKey: ['emojisData']
+    queryKey: ['getEmojis']
   });
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -113,3 +108,4 @@ const List: FC<ListProps> = ({ setEmoji }) => {
 };
 
 export default List;
+

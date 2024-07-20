@@ -39,6 +39,7 @@
     "@huddle01/react": "^0.0.17",
     "@irys/sdk": "^0.1.1",
     "@lens-protocol/metadata": "^1.2.0",
+    "@million/lint": "^1.0.0-rc.12",
     "@mui/material": "^5.14.19",
     "@pushprotocol/restapi": "^1.4.44",
     "@radix-ui/react-collapsible": "^1.0.3",

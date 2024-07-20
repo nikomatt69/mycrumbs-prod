@@ -5,7 +5,7 @@ import Markup from '@components/Shared/Markup';
 import Oembed from '@components/Shared/Oembed';
 import Video from '@components/Shared/Video';
 import { EyeIcon } from '@heroicons/react/24/outline';
-import type { AnyPublication } from '@lensshare/lens';
+import type { AnyPublication, UnknownOpenActionModuleSettings } from '@lensshare/lens';
 import getPublicationData from '@lensshare/lib/getPublicationData';
 import getURLs from '@lensshare/lib/getURLs';
 import isPublicationMetadataTypeAllowed from '@lensshare/lib/isPublicationMetadataTypeAllowed';
@@ -18,7 +18,7 @@ import getProfileTheme from '@lib/getProfileTheme';
 
 import getPublicationAttribute from '@lensshare/lib/getPublicationAttribute';
 import { isIOS, isMobile } from 'react-device-detect';
-import Snapshot from './HeyOpenActions/Snapshot';
+
 import NotSupportedPublication from './NotSupportedPublication';
 import getSnapshotProposalId from '@lib/getSnapshotProposalId';
 import EncryptedPublication from './EncryptedPublication';
@@ -29,6 +29,8 @@ import { useProfileThemeStore } from '@components/Profile';
 import { useRouter } from 'next/router';
 import { KNOWN_ATTRIBUTES } from '@lensshare/data/constants';
 import { VerifiedOpenActionModules } from '@lensshare/data/verified-openaction-modules';
+import EasPoll from './Poll/eas';
+import SnapshotPoll from './Poll/snapshot';
 interface PublicationBodyProps {
   contentClassName?: string;
   publication: AnyPublication;
@@ -57,7 +59,7 @@ const PublicationBody: FC<PublicationBodyProps> = ({
   const canShowMore = filteredContent?.length > 450 && showMore;
   const urls = getURLs(filteredContent);
   const hasURLs = urls.length > 0;
-  const snapshotProposalId = getSnapshotProposalId(urls);
+
   let content = filteredContent;
 
   if (isIOS && isMobile && canShowMore) {
@@ -77,15 +79,18 @@ const PublicationBody: FC<PublicationBodyProps> = ({
     return <NotSupportedPublication type={metadata?.__typename} />;
   }
 
-  const showEmbed = metadata?.__typename === 'EmbedMetadataV3';
+
   // Show live if it's there
   const showLive = metadata?.__typename === 'LiveStreamMetadataV3';
   // Show attachments if it's there
   const showAttachments = filteredAttachments.length > 0 || filteredAsset;
-  const showSnapshot = snapshotProposalId;
-
-  const showPoll = (snapshotProposalId);
-  // Show live if it's there
+  const snapshotPollId = getPublicationAttribute(metadata.attributes, 'pollId');
+  const showSnapshotPoll = Boolean(snapshotPollId);
+  // Show Open Action Poll
+  const pollOpenActionModule = targetPublication.openActionModules.find(
+    (module) => module.contract.address === VerifiedOpenActionModules.Poll
+  );
+  const showOpenActionPoll = Boolean(pollOpenActionModule);
   const showSharingLink = metadata?.__typename === 'LinkMetadataV3';
   // Show oembed if no NFT, no attachments, no quoted publication
   const showQuote = targetPublication.__typename === 'Quote';
@@ -100,6 +105,8 @@ const PublicationBody: FC<PublicationBodyProps> = ({
   );
   const showOembed =
     !hasDecentOpenAction &&
+    !showOpenActionPoll
+    !showSnapshotPoll
     !hideOembed &&
     !showSharingLink &&
     hasURLs &&
@@ -137,7 +144,14 @@ const PublicationBody: FC<PublicationBodyProps> = ({
               attachments={filteredAttachments}
             />
           ) : null}
-          {showPoll ? <Snapshot proposalId={snapshotProposalId} /> : null}
+          {/* Poll */}
+      {showSnapshotPoll ? <SnapshotPoll id={snapshotPollId} /> : null}
+      {showOpenActionPoll ? (
+        <EasPoll
+          module={pollOpenActionModule as UnknownOpenActionModuleSettings}
+          publicationId={id}
+        />
+      ) : null}
           {showLive ? (
             <div className="mt-3">
               <Video src={metadata.liveURL || metadata.playbackURL} />

@@ -1,7 +1,13 @@
+import { DOCTYPE } from 'linkedom/types/shared/symbols';
 import Document, { Head, Html, Main, NextScript } from 'next/document';
 import Script from 'next/script';
 
+import { AppRegistry } from 'react-native';
+import { Children } from 'react';
+
+
 class LensShareDocument extends Document {
+  
   render() {
     return (
       <Html lang="en">
@@ -44,9 +50,10 @@ class LensShareDocument extends Document {
 
           {/* Corrected script tag */}
          
-          
+        
           {/* PWA config */}
           <link rel="manifest" href="/manifest.json" />
+         
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta name="mobile-web-app-capable" content="yes" />
           <meta
@@ -60,6 +67,7 @@ class LensShareDocument extends Document {
         <body>
           <Main />
           <NextScript />
+
         </body>
       </Html>
     );

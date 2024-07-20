@@ -1,26 +1,29 @@
-import { Bars3BottomLeftIcon } from '@heroicons/react/24/solid';
-import { Tooltip } from '@lensshare/ui';
-import { motion } from 'framer-motion';
 import type { FC } from 'react';
+
+import { Bars3BottomLeftIcon } from '@heroicons/react/24/solid';
+
+import { motion } from 'framer-motion';
 import { usePublicationStore } from 'src/store/non-persisted/usePublicationStore';
+import { Tooltip } from '@lensshare/ui';
 
 
 const PollSettings: FC = () => {
-  
-  const { setShowPollEditor, showPollEditor, resetPollConfig } =
-  usePublicationStore();
+  const { resetPollConfig, setShowPollEditor, showPollEditor } =
+    usePublicationStore();
+
   return (
-    <Tooltip placement="top" content="Poll">
+    <Tooltip content="Poll" placement="top">
       <motion.button
-        whileTap={{ scale: 0.9 }}
-        type="button"
+        aria-label="Poll"
+        className="rounded-full outline-offset-8"
         onClick={() => {
           resetPollConfig();
           setShowPollEditor(!showPollEditor);
         }}
-        aria-label="Poll"
+        type="button"
+        whileTap={{ scale: 0.9 }}
       >
-        <Bars3BottomLeftIcon className="text-brand h-5 w-5" />
+        <Bars3BottomLeftIcon className="w-5 h-5 text-brand" />
       </motion.button>
     </Tooltip>
   );

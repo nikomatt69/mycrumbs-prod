@@ -1,5 +1,5 @@
 import MenuTransition from '@components/Shared/MenuTransition';
-import { Menu } from '@headlessui/react';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import {
   GlobeAltIcon,
   UserGroupIcon,
@@ -51,7 +51,7 @@ const ReferenceSettings: FC = () => {
   }
 
   const Module: FC<ModuleProps> = ({ icon, onClick, selected, title }) => (
-    <Menu.Item
+    <MenuItem
       as="a"
       className={cn({ 'dropdown-active': selected }, 'menu-item')}
       onClick={onClick}
@@ -61,9 +61,9 @@ const ReferenceSettings: FC = () => {
           {icon}
           <div>{title}</div>
         </div>
-        {selected ? <CheckCircleIcon className="w-5 h-5" /> : null}
+        {selected ? <CheckCircleIcon className="w-5 h-5 text-brand" /> : null}
       </div>
-    </Menu.Item>
+    </MenuItem>
   );
 
   const getSelectedReferenceModuleTooltipText = () => {
@@ -85,18 +85,18 @@ const ReferenceSettings: FC = () => {
   return (
     <Tooltip content={getSelectedReferenceModuleTooltipText()} placement="top">
       <Menu as="div">
-        <Menu.Button
+        <MenuButton
           as={motion.button}
-          className="rounded-full outline-offset-8"
+          className="rounded-full text-brand outline-offset-8"
           whileTap={{ scale: 0.9 }}
         >
           {isEveryone ? <GlobeAltIcon className="w-5" /> : null}
           {isMyFollowers ? <UsersIcon className="w-5" /> : null}
           {isMyFollows ? <UserPlusIcon className="w-5" /> : null}
           {isFriendsOfFriends ? <UserGroupIcon className="w-5" /> : null}
-        </Menu.Button>
+        </MenuButton>
         <MenuTransition>
-          <Menu.Items
+          <MenuItems
             className="absolute z-[5] mt-2 rounded-xl border bg-white py-1 shadow-sm focus:outline-none dark:border-gray-700 dark:bg-gray-900"
             static
           >
@@ -144,7 +144,7 @@ const ReferenceSettings: FC = () => {
               selected={isFriendsOfFriends}
               title={FRIENDS_OF_FRIENDS}
             />
-          </Menu.Items>
+          </MenuItems>
         </MenuTransition>
       </Menu>
     </Tooltip>

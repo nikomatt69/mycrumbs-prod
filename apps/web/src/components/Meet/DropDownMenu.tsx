@@ -1,4 +1,4 @@
-import { Menu, Transition } from '@headlessui/react';
+import { Menu, MenuButton, MenuItems, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import cn from '@lensshare/ui/cn';
 import { useTheme } from 'next-themes';
@@ -72,7 +72,7 @@ const DropDownMenu: FC<DropDownProps> = ({ deviceType }) => {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <Menu.Button
+        <MenuButton
           className={cn(
             resolvedTheme == 'dark'
               ? 'bg-gray-900 text-slate-500'
@@ -89,7 +89,7 @@ const DropDownMenu: FC<DropDownProps> = ({ deviceType }) => {
             className="-mr-1 h-5 w-5 text-slate-500"
             aria-hidden="true"
           />
-        </Menu.Button>
+        </MenuButton>
       </div>
 
       <Transition
@@ -101,7 +101,7 @@ const DropDownMenu: FC<DropDownProps> = ({ deviceType }) => {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items
+        <MenuItems
           className={cn(
             resolvedTheme == 'dark' ? 'bg-gray-900' : 'bg-brand-100',
             'absolute right-0 z-10 mt-2 w-full origin-top-right rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'
@@ -130,7 +130,7 @@ const DropDownMenu: FC<DropDownProps> = ({ deviceType }) => {
               />
             )}
           </div>
-        </Menu.Items>
+        </MenuItems>
       </Transition>
     </Menu>
   );

@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 
-import { Menu } from '@headlessui/react';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import formatAddress from '@lensshare/lib/formatAddress';
 import getProfile from '@lensshare/lib/getProfile';
 import getStampFyiURL from '@lensshare/lib/getStampFyiURL';
@@ -35,15 +35,15 @@ const WalletUser: FC = () => {
 
   return (
     <Menu as="div" className="md:block">
-      <Menu.Button className="outline-brand-500 flex self-center rounded-full">
+      <MenuButton className="outline-brand-500 flex self-center rounded-full">
         <Avatar />
-      </Menu.Button>
+      </MenuButton>
       <MenuTransition>
-        <Menu.Items
+        <MenuItems
           className="absolute right-0 mt-2 w-48 rounded-xl border bg-white py-1 shadow-sm focus:outline-none dark:border-gray-700 dark:bg-black"
           static
         >
-          <Menu.Item
+          <MenuItem
             as={NextLink}
             className="m-2 flex items-center rounded-lg px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
             href={getProfile(currentProfile).link}
@@ -54,28 +54,28 @@ const WalletUser: FC = () => {
                 <Slug className="font-bold" slug={formatAddress(ens)} />
               </div>
             </div>
-          </Menu.Item>
+          </MenuItem>
           <div className="divider" />
-          <Menu.Item
+          <MenuItem
             as="div"
             className={({ active }) =>
               cn({ 'dropdown-active': active }, 'm-2 rounded-lg')
             }
           >
             <Logout />
-          </Menu.Item>
+          </MenuItem>
           <div className="divider" />
-          <Menu.Item
+          <MenuItem
             as="div"
             className={({ active }) =>
               cn({ 'dropdown-active': active }, 'm-2 rounded-lg')
             }
           >
             <ThemeSwitch />
-          </Menu.Item>
+          </MenuItem>
           <div className="divider" />
           <AppVersion />
-        </Menu.Items>
+        </MenuItems>
       </MenuTransition>
     </Menu>
   );

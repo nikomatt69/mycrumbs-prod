@@ -15,6 +15,8 @@ export const Localstorage = {
   LeafwatchStore: 'leafwatch.store',
   PushStore: 'push.store',
   NftOaCurrencyStore: 'nftoacurrency.store',
+  MarketStore : 'market.store',
+  OrderStore : 'order.store'
 };
 
 export const IndexDB = {

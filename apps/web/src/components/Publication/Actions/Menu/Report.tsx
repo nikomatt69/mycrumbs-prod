@@ -1,4 +1,4 @@
-import { Menu } from '@headlessui/react';
+import { Menu, MenuItem } from '@headlessui/react';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import type { AnyPublication } from '@lensshare/lens';
 import stopEventPropagation from '@lensshare/lib/stopEventPropagation';
@@ -15,7 +15,7 @@ const Report: FC<ReportProps> = ({ publication }) => {
   const { setShowPublicationReportModal } = useGlobalModalStateStore();
 
   return (
-    <Menu.Item
+    <MenuItem
       as="div"
       className={({ active }) =>
         cn(
@@ -32,7 +32,7 @@ const Report: FC<ReportProps> = ({ publication }) => {
         <ExclamationTriangleIcon className="h-4 w-4" />
         <div>Report post</div>
       </div>
-    </Menu.Item>
+    </MenuItem>
   );
 };
 

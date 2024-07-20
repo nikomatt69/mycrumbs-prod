@@ -1,6 +1,6 @@
 
 import { IndexDB } from '@lensshare/data/storage';
-import { AllowedToken } from '@lensshare/types/hey';
+import type { AllowedToken } from '@lensshare/types/hey';
 import { createTrackedSelector } from 'react-tracked';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';

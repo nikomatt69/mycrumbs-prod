@@ -1,6 +1,7 @@
 import { WALLETCONNECT_PROJECT_ID } from '@lensshare/data/constants';
 import { InjectedConnector } from '@wagmi/connectors/injected';
 import { WalletConnectConnector } from '@wagmi/connectors/walletConnect';
+import { CoinbaseWalletConnector } from '@wagmi/connectors/coinbaseWallet';
 import type { FC, ReactNode } from 'react';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import {
@@ -38,6 +39,10 @@ const connectors: any = [
   new WalletConnectConnector({
     chains,
     options: { projectId: WALLETCONNECT_PROJECT_ID }
+  }),
+  new CoinbaseWalletConnector({
+    chains,
+    options: { appName: 'MyCrumbs' }
   })
 ];
 
@@ -45,7 +50,6 @@ const wagmiConfig = createConfig({
   autoConnect: true,
   connectors,
   publicClient
-  
 });
 
 interface Web3ProviderProps {

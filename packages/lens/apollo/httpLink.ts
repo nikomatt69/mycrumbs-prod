@@ -1,4 +1,4 @@
-import { HttpLink } from '@apollo/client';
+import { DefaultContext, GraphQLRequest, HttpLink } from '@apollo/client';
 import { API_URL, APP_NAME } from '@lensshare/data/constants';
 import { setContext } from '@apollo/client/link/context';
 
@@ -11,17 +11,16 @@ const httpLinkWithCSRF = new HttpLink({
   },
 });
 
+const csrfLink = setContext((operation: GraphQLRequest<Record<string, any>>, { headers = {} }: DefaultContext): { headers: any } => ({
+  headers: {
+    ...headers,
+    'x-apollo-operation-name': operation.operationName || '',
+    'apollo-require-preflight': 'true',
+  }
+}));
 
-const csrfLink = setContext((_, { headers }) => {
-  return {
-    headers: {
-      ...headers,
-      'x-apollo-operation-name': 'your-operation-name', // Example value
-      'apollo-require-preflight': 'true', // Example value
-    }
-  };
-});
+const httpLink = csrfLink.concat( httpLinkWithCSRF);
 
-const httpLink = csrfLink.concat(httpLinkWithCSRF);
 
 export default httpLink;
+

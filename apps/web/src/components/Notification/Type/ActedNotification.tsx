@@ -13,11 +13,11 @@ import { NotificationProfileAvatar } from '../Profile';
 import { useEffectOnce } from 'usehooks-ts';
 import pushToImpressions from '@lib/pushToImpressions';
 import usePushToImpressions from 'src/hooks/usePushToImpressions';
-// million-ignore
+
 interface ActedNotificationProps {
   notification: ActedNotification;
 }
-// million-ignore
+
 const ActedNotification: FC<ActedNotificationProps> = ({ notification }) => {
   const publication = notification?.publication;
   const targetPublication = isMirrorPublication(publication)

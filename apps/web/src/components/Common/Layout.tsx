@@ -22,20 +22,14 @@ import { useRouter } from 'next/router';
 
 import { useSpacesStore } from 'src/store/persisted/spaces';
 import React from 'react';
-import {
-  RefreshControl,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet
-} from 'react-native';
+
 import getCurrentSession from '@lib/getCurrentSession';
 
 import { usePreferencesStore } from 'src/store/non-persisted/usePreferencesStore';
 import { useNonceStore } from 'src/store/non-persisted/useNonceStore';
 import { hydrateAuthTokens, signOut } from 'src/store/persisted/useAuthStore';
-import useNotifictionSubscriptions from './Providers/useNotifictionSubscriptions';
-import { useOaTransactionStore } from 'src/store/persisted/useOaTransactionStore';
-import OaTransactionToaster from './OaTransactionToaster';
+
+
 import { CachedConversation, useStreamMessages } from '@xmtp/react-sdk';
 import { useMessagesStore } from 'src/store/non-persisted/useMessagesStore';
 import { useIsClient } from '@uidotdev/usehooks';
@@ -49,8 +43,6 @@ const Layout: FC<LayoutProps> = ({ children }) => {
   const { currentProfile, setCurrentProfile, setFallbackToCuratedFeed } =
     useAppStore();
   const { setLensHubOnchainSigNonce } = useNonceStore();
-  const [refreshing, setRefreshing] = React.useState(false);
-  const transactions = useOaTransactionStore((state) => state.transactions);
   const isMounted = useIsClient();
   const { disconnect } = useDisconnect();
 
@@ -64,7 +56,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
       location.reload();
     }
   };
-
+  const { state } = useRoom();
   const { loading } = useCurrentProfileQuery({
     onCompleted: ({ profile, userSigNonces }) => {
       setCurrentProfile(profile as Profile);
@@ -87,15 +79,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
       logout();
     }
   };
-  const { isRoomJoined } = useRoom();
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1
-    },
-    scrollView: {
-      flex: 1
-    }
-  });
+ 
   useSpacesStore();
 
   useEffect(() => {
@@ -117,36 +101,30 @@ const Layout: FC<LayoutProps> = ({ children }) => {
           name="theme-color"
           content={resolvedTheme === 'dark' ? '#1b1b1d' : '#ffffff'}
         />
-
+        
         <link rel="manifest" href="/manifest.json" />
 
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=0.8 , maximum-scale=2" />
       </Head>
       <Toaster
         position="bottom-right"
         containerStyle={{ wordBreak: 'break-word' }}
         toastOptions={getToastOptions(resolvedTheme)}
+        
       />
       
       <GlobalModals />
       <GlobalBanners />
       <GlobalAlerts />
       <div className="flex min-h-screen  flex-col pb-14 md:pb-0">
-        <SafeAreaView style={styles.container}>
+      
           <Navbar />
-          {transactions.map((tx) => (
-          <OaTransactionToaster
-          key={tx.txHash}
-          onClose={() => {}}
-          platformName={tx.platformName}
-          txHash={tx.txHash}
-          />
-          ))}
+        
           {children}
          
-          {isRoomJoined ? <SpacesWindow /> : null}
+          {state === "connected" ? <SpacesWindow /> : null}
           <BottomNavigation />
-        </SafeAreaView>
+        
       </div>
     </>
   );

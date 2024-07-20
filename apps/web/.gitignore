@@ -3,3 +3,5 @@ src/locales/**/*.js
 .env.production
 .env
 certificates
+# Million Lint
+.million

@@ -53,6 +53,7 @@ const CommentModal: FC<Props> = ({ publication }) => {
       <Modal
         isOpen={isOpen}
         placement={'bottom'}
+        className='pb-9'
         backdrop="blur"
         onOpenChange={onOpenChange}
         autoFocus={false}
@@ -79,12 +80,12 @@ const CommentModal: FC<Props> = ({ publication }) => {
       >
         <ModalContent
           autoFocus={false}
-          className="h-[flex] max-h-[80vh] justify-between rounded-xl border border-b-0 border-gray-500 bg-white dark:bg-gray-900 "
+          className="h-[flex] max-h-[73vh]  justify-between rounded-xl border border-b-0 border-gray-500 bg-white dark:bg-gray-900 "
         >
           <ModalHeader autoFocus />
           <ModalBody
             autoFocus={false}
-            className="max-w-lg overflow-y-auto overflow-y-hidden  bg-white dark:bg-gray-900"
+            className="max-w-lg overflow-y-auto overflow-y-hidden   bg-white dark:bg-gray-900"
           >
             <div className="center-items z-100  flex w-full overflow-y-auto border-0 bg-white pt-4 dark:bg-gray-900/70">
               <ByteComments

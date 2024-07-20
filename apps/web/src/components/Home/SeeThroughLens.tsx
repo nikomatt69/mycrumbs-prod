@@ -1,7 +1,7 @@
 import Loader from '@components/Shared/Loader';
 import MenuTransition from '@components/Shared/MenuTransition';
 import UserProfile from '@components/Shared/UserProfile';
-import { Menu } from '@headlessui/react';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import { HOME } from '@lensshare/data/tracking';
@@ -88,7 +88,7 @@ const SeeThroughLens: FC = () => {
     <Menu as="div" className="relative">
       {({ open }) => (
         <>
-          <Menu.Button as={Fragment}>
+          <MenuButton as={Fragment}>
             <button
               className="flex items-center space-x-1 rounded-md p-1 text-sm hover:bg-gray-300/20"
               onClick={() => {
@@ -118,9 +118,9 @@ const SeeThroughLens: FC = () => {
               </span>
               <ChevronDownIcon className="h-4 w-4" />
             </button>
-          </Menu.Button>
+          </MenuButton>
           <MenuTransition>
-            <Menu.Items
+            <MenuItems
               className="absolute right-0 z-[5] mt-1 w-64 rounded-xl border bg-white shadow-sm focus:outline-none dark:border-gray-700 dark:bg-gray-900"
               static
             >
@@ -161,7 +161,7 @@ const SeeThroughLens: FC = () => {
                 ) : (
                   <>
                     {profiles.map((profile: Profile) => (
-                      <Menu.Item
+                      <MenuItem
                         as="div"
                         className={({ active }) =>
                           cn(
@@ -185,7 +185,7 @@ const SeeThroughLens: FC = () => {
                           profile={profile}
                           showUserPreview={false}
                         />
-                      </Menu.Item>
+                      </MenuItem>
                     ))}
                     {profiles.length === 0 || error ? (
                       <div className="py-4 text-center">
@@ -195,7 +195,7 @@ const SeeThroughLens: FC = () => {
                   </>
                 )}
               </div>
-            </Menu.Items>
+            </MenuItems>
           </MenuTransition>
         </>
       )}
