@@ -2,7 +2,6 @@ import { DefaultContext, GraphQLRequest, HttpLink } from '@apollo/client';
 import { API_URL, APP_NAME } from '@lensshare/data/constants';
 import { setContext } from '@apollo/client/link/context';
 
-
 const httpLinkWithCSRF = new HttpLink({
   uri: API_URL,
   fetchOptions: 'no-cors',
@@ -21,6 +20,7 @@ const csrfLink = setContext((operation: GraphQLRequest<Record<string, any>>, { h
 }));
 
 const httpLink = csrfLink.concat( httpLinkWithCSRF);
+
 
 export default httpLink;
 
