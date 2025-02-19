@@ -17,6 +17,7 @@ import {
   zoraTestnet
 } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
+import React from 'react';
 
 const { chains, publicClient } = configureChains(
   [

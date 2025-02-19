@@ -52,8 +52,6 @@
     "@nextui-org/react": "^2.2.10",
     "@polymarket/clob-client": "^4.5.1",
     "@prisma/client": "5.12.1",
-    "@privy-io/react-auth": "^1.58.1",
-    "@privy-io/wagmi-connector": "^0.1.12",
     "@pushprotocol/restapi": "^1.5.7",
     "@pushprotocol/socket": "^0.5.3",
     "@tanstack/react-query": "^5.4.3",
@@ -142,9 +140,9 @@
     "zod": "^3.22.4",
     "zustand": "^4.4.6"
   },
-  "packageManager": "yarn@1.22.19",
+
   "engines": {
-    "node": ">=16.x <=19.x"
+    "node": ">=16.x <=23.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
