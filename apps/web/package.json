@@ -30,7 +30,7 @@
     "@huddle01/react": "^2.0.16",
     "@huddle01/server-sdk": "^2.2.2",
     "@layerzerolabs/scan-client": "^0.0.8",
-    "@lens-protocol/metadata": "1.2.0",
+
     "@lensshare/abis": "*",
     "@lensshare/data": "*",
     "@lensshare/image-cropper": "*",
@@ -92,7 +92,7 @@
     "expo-router": "^3.5.16",
     "expo-status-bar": "~1.11.1",
     "firebase": "^10.12.2",
-    "framer-motion": "^10.16.4",
+    "framer-motion": "^12.0.0",
     "generate-password": "^1.7.1",
     "gif-picker-react": "^1.3.2",
     "graphql": "^16.8.1",
@@ -141,9 +141,7 @@
     "zustand": "^4.4.6"
   },
 
-  "engines": {
-    "node": ">=16.x <=23.7.0"
-  },
+
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@lensshare/config": "*",
@@ -151,7 +149,6 @@
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.6",
     "@tanstack/react-query-devtools": "^5.17.0",
-    "@types/firebase": "^3.2.1",
     "@types/node": "^20.8.10",
     "@types/react": "^18.2.34",
     "@types/react-dom": "^18.2.14",

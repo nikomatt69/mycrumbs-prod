@@ -21,9 +21,7 @@
     "typecheck": "tsc --pretty"
   },
 
-  "engines": {
-    "node": ">=16.x <=23.7.0"
-  },
+
   "dependencies": {
     "@aws-sdk/client-sts": "^3.454.0",
     "@clickhouse/client-web": "^0.2.6",
