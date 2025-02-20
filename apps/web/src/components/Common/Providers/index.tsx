@@ -29,7 +29,7 @@ import { HuddleClient, HuddleProvider } from "@huddle01/react";
 const lensApolloClient = apolloClient(authLink);
 const livepeerClient = createReactClient({
   provider: studioProvider({
-    apiKey: '9e17a7ab-3370-4e31-85c3-43072da2315e' || '',
+    apiKey: '9e17a7ab-3370-4e31-85c3-43072da2315e',
     baseUrl: BASE_URL
   })
 });
